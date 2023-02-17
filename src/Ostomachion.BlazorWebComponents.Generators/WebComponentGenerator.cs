@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Linq.Expressions;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
@@ -63,8 +64,19 @@ public class WebComponentGenerator : IIncrementalGenerator
 
             var namespaceName = GetNamespace(item.Class);
 
+            // TODO: Get actual value, not the expresssion.
             var tagNameExpression = item.Attribute.ArgumentList!.Arguments.First()
                 .Expression.NormalizeWhitespace().ToFullString();
+
+            var filePath = item.Class.SyntaxTree.FilePath;
+            var htmlPath = Path.GetFileName(filePath).EndsWith(".razor.cs") ?
+                Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + ".html") :
+                filePath + ".html";
+            var cssPath = htmlPath + ".css";
+
+
+            var templateHtml = File.Exists(htmlPath) ? File.ReadAllText(htmlPath) : "<slot />";
+            var templateCss = File.Exists(cssPath) ? File.ReadAllText(cssPath) : null;
 
             var classContent = $$"""
                 using Microsoft.AspNetCore.Components;
@@ -79,9 +91,9 @@ public class WebComponentGenerator : IIncrementalGenerator
 
                     public static string TagName => {{tagNameExpression}};
 
-                    public static string TemplateHtml => "<h1>Hello, world!</h1>";
+                    public static string TemplateHtml => {{SymbolDisplay.FormatLiteral(templateHtml, true)}};
 
-                    public static string? TemplateCss => "* { background: red; }";
+                    public static string? TemplateCss => {{(templateCss is null ? "null" : SymbolDisplay.FormatLiteral(templateCss, true))}};
                 }
                 """;
 

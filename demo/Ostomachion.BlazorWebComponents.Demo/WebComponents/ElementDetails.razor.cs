@@ -16,5 +16,4 @@ public partial class ElementDetails
 
     [Parameter]
     public IEnumerable<AttributeDefinition> Attributes { get; set; } = Enumerable.Empty<AttributeDefinition>();
-
 }
