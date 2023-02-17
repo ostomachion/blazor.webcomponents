@@ -1,4 +1,4 @@
-﻿function registerBlazorWebComponent(elementName, templateHtml, templateCss) {
+﻿export function registerBlazorWebComponent(elementName, templateHtml, templateCss) {
     if (!customElements.get(elementName)) {
         customElements.define(elementName, class extends HTMLElement {
             constructor() {
@@ -8,14 +8,14 @@
             }
         });
     }
+}
 
-    function getTemplateNodes(templateHtml, templateCss) {
-        const style = document.createElement('style');
-        style.textContent = templateCss;
+function getTemplateNodes(templateHtml, templateCss) {
+    const style = document.createElement('style');
+    style.textContent = templateCss;
 
-        const template = document.createElement('template');
-        template.innerHTML = templateHtml;
+    const template = document.createElement('template');
+    template.innerHTML = templateHtml;
 
-        return [style, ...template.content.childNodes];
-    }
+    return [style, ...template.content.childNodes];
 }
