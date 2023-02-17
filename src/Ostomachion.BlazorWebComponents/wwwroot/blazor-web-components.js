@@ -10,8 +10,12 @@
     }
 
     function getTemplateNodes(templateHtml, templateCss) {
+        const style = document.createElement('style');
+        style.textContent = templateCss;
+
         const template = document.createElement('template');
-        template.innerHTML = (templateCss ? `<style>\n${templateCss}\n</style>\n` : '') + templateHtml;
-        return template.content.childNodes;
+        template.innerHTML = templateHtml;
+
+        return [style, ...template.content.childNodes];
     }
 }
