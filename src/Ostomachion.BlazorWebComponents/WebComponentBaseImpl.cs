@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reflection;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.JSInterop;
@@ -10,8 +11,12 @@ namespace Ostomachion.BlazorWebComponents;
 public abstract class WebComponentBaseImpl<T> : ComponentBase
     where T : WebComponentBase<T>, IWebComponent
 {
+    protected string ModulePath => $"./_content/{Assembly.GetExecutingAssembly().GetName().Name}/blazor-web-components.js";
+
     [Inject]
     protected IJSRuntime JSRuntime { get; set; } = null!;
+
+    protected IJSObjectReference? Module { get; set; }
 
     protected virtual void BuildRenderTreeImpl(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
     protected void BaseBuildRenderTree(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
@@ -28,7 +33,8 @@ public abstract class WebComponentBaseImpl<T> : ComponentBase
     protected Task BaseOnInitializedAsync() => base.OnInitializedAsync();
     protected sealed override async Task OnInitializedAsync()
     {
-        await JSRuntime.InvokeVoidAsync("registerBlazorWebComponent", T.TagName, T.TemplateHtml, T.TemplateCss);
+        Module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
+        await Module.InvokeVoidAsync("registerBlazorWebComponent", T.TagName, T.TemplateHtml, T.TemplateCss);
         await OnInitializedImplAsync();
     }
 }
