@@ -1,0 +1,14 @@
+﻿<span slot="element-name">@Name</span>
+
+<span slot="description">@Description</span>
+
+@if (Attributes.Any())
+{
+    <dl slot="attributes">
+        @foreach (var attr in Attributes)
+        {
+            <dt>@attr.Name</dt>
+            <dd>@attr.Definition</dd>
+        }
+    </dl>
+}

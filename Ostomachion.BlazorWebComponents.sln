@@ -5,7 +5,9 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ostomachion.BlazorWebComponents", "src\Ostomachion.BlazorWebComponents\Ostomachion.BlazorWebComponents.csproj", "{37CBD47E-B03D-445C-824C-5DC4FE1AB473}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ostomachion.BlazorWebComponents.Demo", "demo\Ostomachion.BlazorWebComponents.Demo\Ostomachion.BlazorWebComponents.Demo.csproj", "{7E520718-EB8B-47B8-97B5-F7B1B2127667}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ostomachion.BlazorWebComponents.Demo", "demo\Ostomachion.BlazorWebComponents.Demo\Ostomachion.BlazorWebComponents.Demo.csproj", "{7E520718-EB8B-47B8-97B5-F7B1B2127667}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ostomachion.BlazorWebComponents.Generators", "src\Ostomachion.BlazorWebComponents.Generators\Ostomachion.BlazorWebComponents.Generators.csproj", "{2C34B7B4-248F-47A2-84C1-2FF4118C5E08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{7E520718-EB8B-47B8-97B5-F7B1B2127667}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E520718-EB8B-47B8-97B5-F7B1B2127667}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E520718-EB8B-47B8-97B5-F7B1B2127667}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C34B7B4-248F-47A2-84C1-2FF4118C5E08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C34B7B4-248F-47A2-84C1-2FF4118C5E08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C34B7B4-248F-47A2-84C1-2FF4118C5E08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C34B7B4-248F-47A2-84C1-2FF4118C5E08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
