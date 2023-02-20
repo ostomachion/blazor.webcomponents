@@ -8,15 +8,35 @@
         new ("name", "the name of the slot.")
     };
 }
-<ElementDetails Name="slot"
+<ElementDetails ElementName="slot"
                 Description="A placeholder inside a web
                     component that users can fill with their own markup,
                     with the effect of composing different DOM trees
                     together."
                 Attributes=slotAttributes />
 
-<ElementDetails Name="template"
+<ElementDetails ElementName="template"
                 Description="A mechanism for holding client-
                     side content that is not to be rendered when a page is
                     loaded but may subsequently be instantiated during
                     runtime using JavaScript." />
+
+<ElementDetailsSlotted ElementName="slot" Attributes=slotAttributes>
+    <Description>
+        A placeholder inside a web component that users
+        can fill with their own markup, with the effect
+        of composing different DOM trees together.
+    </Description>
+    <AttributesTemplate>
+        @if (context.Any())
+        {
+            <dl>
+                @foreach (var item in context)
+                {
+                    <dt>@item.Name</dt>
+                    <dd>@item.Definition</dd>
+                }
+            </dl>
+        }
+    </AttributesTemplate>
+</ElementDetailsSlotted>

@@ -1,13 +1,17 @@
 ﻿export function registerBlazorWebComponent(elementName, templateHtml, templateCss) {
     if (!customElements.get(elementName)) {
-        customElements.define(elementName, class extends HTMLElement {
-            constructor() {
-                super()
-                    .attachShadow({ mode: 'open' })
-                    .append(...getTemplateNodes(templateHtml, templateCss));
-            }
-        });
+        customElements.define(elementName, createElementClass(templateHtml, templateCss));
     }
+}
+
+function createElementClass(templateHtml, templateCss) {
+    return class extends HTMLElement {
+        constructor() {
+            super()
+                .attachShadow({ mode: 'open' })
+                .append(...getTemplateNodes(templateHtml, templateCss));
+        }
+    };
 }
 
 function getTemplateNodes(templateHtml, templateCss) {

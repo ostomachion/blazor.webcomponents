@@ -23,11 +23,19 @@ public abstract class WebComponentBaseImpl<T> : ComponentBase
     protected sealed override void BuildRenderTree(RenderTreeBuilder builder)
     {
         builder.OpenElement(0, T.TagName);
+
         builder.OpenRegion(1);
+        BuildRenderTreeSlots(builder);
+        builder.CloseRegion();
+
+        builder.OpenRegion(2);
         BuildRenderTreeImpl(builder);
         builder.CloseRegion();
+
         builder.CloseElement();
     }
+
+    protected virtual void BuildRenderTreeSlots(RenderTreeBuilder builder) { }
 
     protected virtual Task OnInitializedImplAsync() => base.OnInitializedAsync();
     protected Task BaseOnInitializedAsync() => base.OnInitializedAsync();
