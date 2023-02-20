@@ -18,5 +18,5 @@ public partial class ElementDetails
 
     [Parameter]
     [Slot("attributes", IsTemplated = true)]
-    public IEnumerable<AttributeDefinition> Attributes { get; set; } = Enumerable.Empty<AttributeDefinition>();
+    public IEnumerable<AttributeDefinition>? Attributes { get; set; }
 }

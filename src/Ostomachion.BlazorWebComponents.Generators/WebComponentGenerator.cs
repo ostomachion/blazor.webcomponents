@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Immutable;
-using System.Linq.Expressions;
+﻿using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -170,36 +168,41 @@ public partial class WebComponentGenerator : IIncrementalGenerator
                     rootElementName ??= isTemplated || type == "Microsoft.AspNetCore.Components.RenderFragment" ? "\"div\"" : "\"span\"";
 
                     _ = builder.AppendLine($$"""
-                                builder.OpenElement({{sequence++}}, {{rootElementName}});
-                                builder.AddAttribute({{sequence++}}, "slot", {{slotName}});
+                                if ({{name}} is not null)
+                                {
+                                    builder.OpenElement({{sequence++}}, {{rootElementName}});
+                                    builder.AddAttribute({{sequence++}}, "slot", {{slotName}});
                         """);
 
                     if (isTemplated)
                     {
                         _ = builder.AppendLine($$"""
-                                    if (this.{{name}}Template is null)
-                                    {
-                                        builder.AddContent({{sequence++}}, this.{{name}});
-                                    }
-                                    else
-                                    {
-                                        builder.AddContent({{sequence++}}, this.{{name}}Template, this.{{name}});
-                                    }
+                                        if (this.{{name}}Template is null)
+                                        {
+                                            builder.AddContent({{sequence++}}, this.{{name}});
+                                        }
+                                        else
+                                        {
+                                            builder.AddContent({{sequence++}}, this.{{name}}Template, this.{{name}});
+                                        }
                             """);
                     }
                     else
                     {
                         _ = builder.AppendLine($$"""
-                                    builder.AddContent({{sequence++}}, this.{{name}});
+                                        builder.AddContent({{sequence++}}, this.{{name}});
                             """);
                     }
 
                     _ = builder.AppendLine($$"""
-                                builder.CloseElement();
+                                    builder.CloseElement();
+                                }
                         """);
                 }
 
-                _ = builder.AppendLine("    }");
+                _ = builder.AppendLine($$"""
+                        }
+                    """);
             }
 
             _ = builder.Append("}");
