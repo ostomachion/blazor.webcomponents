@@ -13,7 +13,7 @@ public partial class ElementDetails
 
     [Parameter]
     [EditorRequired]
-    [Slot("description")]
+    [Slot("description", RootElement = "span")]
     public RenderFragment Description { get; set; } = null!;
 
     [Parameter]
