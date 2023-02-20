@@ -114,14 +114,14 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 
                     partial class {{className}} : IWebComponent
                     {
-                        [Parameter]
-                        public ShadowRootMode ShadowRootMode { get; set; }
-
                         public static string TagName => {{tagNameExpression}};
 
                         public static string TemplateHtml => {{SymbolDisplay.FormatLiteral(templateHtml, true)}};
 
                         public static string? TemplateCss => {{(templateCss is null ? "null" : SymbolDisplay.FormatLiteral(templateCss, true))}};
+                        
+                        [Parameter]
+                        public ShadowRootMode ShadowRootMode { get; set; }
                     """);
 
             foreach (var slotSyntax in item.SlotSyntaxes)
@@ -139,7 +139,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
                     .AppendLine($$"""
                             
                             [Parameter]
-                            public RenderFragment<{{type}}> {{name}}Template { get; set; } = null!;
+                            public RenderFragment<{{type}}>? {{name}}Template { get; set; }
                         """);
             }
 
@@ -177,7 +177,14 @@ public partial class WebComponentGenerator : IIncrementalGenerator
                     if (isTemplated)
                     {
                         _ = builder.AppendLine($$"""
-                                    builder.AddContent({{sequence++}}, this.{{name}}Template, this.{{name}});
+                                    if (this.{{name}}Template is null)
+                                    {
+                                        builder.AddContent({{sequence++}}, this.{{name}});
+                                    }
+                                    else
+                                    {
+                                        builder.AddContent({{sequence++}}, this.{{name}}Template, this.{{name}});
+                                    }
                             """);
                     }
                     else
