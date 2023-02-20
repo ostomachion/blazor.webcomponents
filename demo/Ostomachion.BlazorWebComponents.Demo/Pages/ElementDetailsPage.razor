@@ -8,20 +8,7 @@
         new ("name", "the name of the slot.")
     };
 }
-<ElementDetails ElementName="slot"
-                Description="A placeholder inside a web
-                    component that users can fill with their own markup,
-                    with the effect of composing different DOM trees
-                    together."
-                Attributes=slotAttributes />
-
-<ElementDetails ElementName="template"
-                Description="A mechanism for holding client-
-                    side content that is not to be rendered when a page is
-                    loaded but may subsequently be instantiated during
-                    runtime using JavaScript." />
-
-<ElementDetailsSlotted ElementName="slot" Attributes=slotAttributes>
+<ElementDetails ElementName="slot" Attributes=slotAttributes>
     <Description>
         A placeholder inside a web component that users
         can fill with their own markup, with the effect
@@ -39,4 +26,13 @@
             </dl>
         }
     </AttributesTemplate>
-</ElementDetailsSlotted>
+</ElementDetails>
+
+<ElementDetails ElementName="template">
+    <Description>
+        A placeholder inside a web
+        component that users can fill with their own markup,
+        with the effect of composing different DOM trees
+        together.
+    </Description>
+</ElementDetails>
