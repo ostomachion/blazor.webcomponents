@@ -1,11 +1,13 @@
 ﻿@page "/element-details"
 
+<PageTitle>element-details - web component using &lt;template&gt; and &lt;slot&gt;</PageTitle>
+
 <h1>element-details - web component using <code>&lt;template&gt;</code> and <code>&lt;slot&gt;</code></h1>
 
 @{
     var slotAttributes = new List<AttributeDefinition>
     {
-        new ("name", "the name of the slot.")
+        new ("name", @<text>the name of the slot.</text>)
     };
 }
 <ElementDetails ElementName="slot" Attributes="slotAttributes">

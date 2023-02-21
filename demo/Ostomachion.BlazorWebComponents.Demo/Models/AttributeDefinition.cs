@@ -1,3 +1,5 @@
-﻿namespace Ostomachion.BlazorWebComponents.Demo.Models;
+﻿using Microsoft.AspNetCore.Components;
 
-public record class AttributeDefinition(string Name, string Definition);
+namespace Ostomachion.BlazorWebComponents.Demo.Models;
+
+public record class AttributeDefinition(string Name, RenderFragment Definition);
