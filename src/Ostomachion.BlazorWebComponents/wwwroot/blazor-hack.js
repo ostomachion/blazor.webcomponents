@@ -9,8 +9,9 @@
     // checks if the parent is an SVG element by checking the namespaceURI. We
     // replace Element.prototype.namespaceURI so we can save the last element that it
     // was called on. We also replace document.createElement so that if we're
-    // creating an element called <#shadow-root>, we instead create and attach a
-    // shadow root to the parent element that we saved earlier.
+    // creating an element called '#shadow-root (open)' or '#shadow-root (closed)',
+    // we instead create and attach a shadow root to the parent element that we saved
+    // earlier.
     //
     // Since shadowRoot implements DocumentFragment and the developers of Blazor are
     // amazing, everything else just seems to work, at least well enough for what I'm
@@ -32,8 +33,11 @@
 
     const createElementReference = document.createElement;
     document.createElement = function (tagName) {
-        if (tagName === '#shadow-root') {
+        if (tagName === '#shadow-root (open)') {
             return element.attachShadow({ mode: 'open' });
+        }
+        else if (tagName === '#shadow-root (closed)') {
+            return element.attachShadow({ mode: 'closed' });
         }
         else {
             return createElementReference.apply(this, arguments);
