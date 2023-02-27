@@ -5,6 +5,7 @@ namespace Ostomachion.BlazorWebComponents.Generators;
 internal class SlotSyntax
 {
     public PropertyDeclarationSyntax PropertyDeclarationSyntax { get; set; }
+    public bool IsTemplated { get; set; }
     public AttributeSyntax AttributeSyntax { get; set; }
     public string TypeString { get; set; }
 

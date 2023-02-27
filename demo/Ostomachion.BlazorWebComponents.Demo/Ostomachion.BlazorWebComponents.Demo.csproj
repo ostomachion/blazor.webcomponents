@@ -4,7 +4,7 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<UseRazorSourceGenerator>false</UseRazorSourceGenerator>
+		<DisableScopedCssBundling>true</DisableScopedCssBundling>
 	</PropertyGroup>
 
 	<ItemGroup>

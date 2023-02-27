@@ -39,10 +39,13 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 
     private static IEnumerable<SlotSyntax> GetSlotProperties(GeneratorSyntaxContext context)
     {
+        Dictionary<string, SlotSyntax> value = new();
+        HashSet<string> templates = new();
         var classDeclarationSyntax = (ClassDeclarationSyntax)context.Node;
         var properties = classDeclarationSyntax.Members.OfType<PropertyDeclarationSyntax>();
         foreach (var property in properties)
         {
+            var name = property.Identifier.ToString();
             var attribute = GetAttribute("Ostomachion.BlazorWebComponents.SlotAttribute", context, property.AttributeLists);
             if (attribute is not null)
             {
@@ -50,9 +53,25 @@ public partial class WebComponentGenerator : IIncrementalGenerator
                 var symbol = context.SemanticModel.GetTypeInfo(property.Type).Type;
                 typeString = symbol!.ToDisplayString();
 
-                yield return new SlotSyntax(property, attribute, typeString);
+                value.Add(name, new SlotSyntax(property, attribute, typeString));
+            }
+
+            if (name.EndsWith("Template"))
+            {
+                var baseName = name.Substring(0, name.Length - "Template".Length);
+                _ = templates.Add(baseName);
             }
         }
+
+        foreach (var baseName in templates)
+        {
+            if (value.TryGetValue(baseName, out var slotSyntax))
+            {
+                slotSyntax.IsTemplated = true;
+            }
+        }
+
+        return value.Values;
     }
 
     private static AttributeSyntax? GetAttribute(string fullName, GeneratorSyntaxContext context, SyntaxList<AttributeListSyntax> attributeLists)
@@ -89,14 +108,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
                 .Expression.NormalizeWhitespace().ToFullString();
 
             var filePath = item.ClassDeclarationSyntax.SyntaxTree.FilePath;
-            var htmlPath = Path.GetFileName(filePath).EndsWith(".razor.cs") ?
-                Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + ".html") :
-                filePath + ".html";
-            var cssPath = htmlPath + ".css";
-
-            var slotTemplateHtml = new StringBuilder(); // TODO: ???
-
-            var templateHtml = File.Exists(htmlPath) ? File.ReadAllText(htmlPath) : "<slot></slot>";
+            var cssPath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + ".css");
 
             var templateCss = File.Exists(cssPath) ? File.ReadAllText(cssPath) : null;
 
@@ -113,33 +125,9 @@ public partial class WebComponentGenerator : IIncrementalGenerator
                     partial class {{className}} : IWebComponent
                     {
                         public static string TagName => {{tagNameExpression}};
-
-                        public static string TemplateHtml => {{SymbolDisplay.FormatLiteral(templateHtml, true)}};
-
+                    
                         public static string? TemplateCss => {{(templateCss is null ? "null" : SymbolDisplay.FormatLiteral(templateCss, true))}};
-                        
-                        [Parameter]
-                        public ShadowRootMode ShadowRootMode { get; set; }
                     """);
-
-            foreach (var slotSyntax in item.SlotSyntaxes)
-            {
-                var type = slotSyntax.TypeString;
-                var name = slotSyntax.PropertyDeclarationSyntax.Identifier.ValueText;
-                var isTemplated = slotSyntax.AttributeSyntax.ArgumentList?.Arguments
-                    .Any(x => x.NormalizeWhitespace().GetText().ContentEquals(SourceText.From("IsTemplated = true"))) ?? false;
-                if (!isTemplated)
-                {
-                    continue;
-                }
-
-                _ = builder.AppendLine()
-                    .AppendLine($$"""
-                            
-                            [Parameter]
-                            public RenderFragment<{{type}}>? {{name}}Template { get; set; }
-                        """);
-            }
 
             if (item.SlotSyntaxes.Any())
             {
@@ -156,25 +144,24 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 
                     var type = slotSyntax.TypeString;
                     var name = slotSyntax.PropertyDeclarationSyntax.Identifier.ValueText;
-                    var isTemplated = slotSyntax.AttributeSyntax.ArgumentList!.Arguments
-                        .Any(x => x.NormalizeWhitespace().GetText().ContentEquals(SourceText.From("IsTemplated = true")));
 
+                    // TODO: Support optional names. Default to property name.
                     var slotName = slotSyntax.AttributeSyntax.ArgumentList!.Arguments.First().GetText();
 
                     var rootElementName = slotSyntax.AttributeSyntax.ArgumentList!.Arguments
                         .FirstOrDefault(x => x.NormalizeWhitespace().GetText().ToString().StartsWith("RootElement = "))
                         ?.NormalizeWhitespace().GetText().ToString().Substring("RootElement = ".Length);
 
-                    rootElementName ??= isTemplated || type == "Microsoft.AspNetCore.Components.RenderFragment" ? "\"div\"" : "\"span\"";
+                    rootElementName ??= slotSyntax.IsTemplated || type == "Microsoft.AspNetCore.Components.RenderFragment" ? "\"div\"" : "\"span\"";
 
                     _ = builder.AppendLine($$"""
-                                if ({{name}} is not null)
+                                if ({{name}} is not null && RenderedSlots.Contains("{{name}}"))
                                 {
                                     builder.OpenElement({{sequence++}}, {{rootElementName}});
                                     builder.AddAttribute({{sequence++}}, "slot", {{slotName}});
                         """);
 
-                    if (isTemplated)
+                    if (slotSyntax.IsTemplated)
                     {
                         _ = builder.AppendLine($$"""
                                         if (this.{{name}}Template is null)
@@ -202,6 +189,27 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 
                 _ = builder.AppendLine($$"""
                         }
+                    """);
+            }
+
+
+            foreach (var slotSyntax in item.SlotSyntaxes)
+            {
+                var name = slotSyntax.PropertyDeclarationSyntax.Identifier.ValueText;
+
+                // TODO: Support optional names. Default to property name.
+                var slotName = slotSyntax.AttributeSyntax.ArgumentList!.Arguments.First().GetText();
+
+                _ = builder.AppendLine($$"""
+
+                        private RenderFragment {{name}}Slot => (builder) =>
+                        {
+                            RenderedSlots.Add("{{name}}");
+                            builder.OpenElement(0, "slot");
+                            builder.AddAttribute(1, "name", {{slotName}});
+                            builder.AddContent(2, {{slotName}});
+                            builder.CloseElement();
+                        };
                     """);
             }
 

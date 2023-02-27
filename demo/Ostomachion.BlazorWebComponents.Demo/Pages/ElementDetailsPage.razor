@@ -1,13 +1,14 @@
 ﻿@page "/element-details"
+@using System.Collections.Specialized;
 
 <PageTitle>element-details - web component using &lt;template&gt; and &lt;slot&gt;</PageTitle>
 
 <h1>element-details - web component using <code>&lt;template&gt;</code> and <code>&lt;slot&gt;</code></h1>
 
 @{
-    var slotAttributes = new List<AttributeDefinition>
+    var slotAttributes = new AttributeList
     {
-        new ("name", @<text>the name of the slot.</text>)
+        ["name"] = @<text>The name of the slot.</text>
     };
 }
 <ElementDetails ElementName="slot" Attributes="slotAttributes">
@@ -16,18 +17,6 @@
         can fill with their own markup, with the effect
         of composing different DOM trees together.
     </Description>
-    <AttributesTemplate>
-        @if (context.Any())
-        {
-            <dl>
-                @foreach (var item in context)
-                {
-                    <dt>@item.Name</dt>
-                    <dd>@item.Definition</dd>
-                }
-            </dl>
-        }
-    </AttributesTemplate>
 </ElementDetails>
 
 <ElementDetails ElementName="template">

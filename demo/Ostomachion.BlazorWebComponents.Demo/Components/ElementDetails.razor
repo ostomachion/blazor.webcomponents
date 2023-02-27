@@ -1,1 +1,34 @@
 ﻿@inherits WebComponentBase<ElementDetails>
+<details>
+    <summary>
+        <span>
+            <code class="name">&lt;@ElementName&gt;</code>
+            <i class="desc">@DescriptionSlot</i>
+        </span>
+    </summary>
+    <div class="attributes">
+        <h4><span>Attributes</span></h4>
+        @if (AttributesTemplate is null)
+        {
+            if (Attributes?.Any() ?? false)
+            {
+                <dl>
+                    @foreach (var item in Attributes)
+                    {
+                        <dt>@item.Key</dt>
+                        <dd>@item.Value</dd>
+                    }
+                </dl>
+            }
+            else
+            {
+                <p>None</p>
+            }
+        }
+        else
+        {
+            @AttributesSlot
+        }
+    </div>
+</details>
+<hr>

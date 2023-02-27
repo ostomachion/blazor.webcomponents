@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
-using System.Reflection;
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.JSInterop;
+using Ostomachion.BlazorWebComponents.Extensions;
 
 namespace Ostomachion.BlazorWebComponents;
 
@@ -11,38 +11,44 @@ namespace Ostomachion.BlazorWebComponents;
 public abstract class WebComponentBaseImpl<T> : ComponentBase
     where T : WebComponentBase<T>, IWebComponent
 {
-    protected string ModulePath => $"./_content/{Assembly.GetExecutingAssembly().GetName().Name}/blazor-web-components.js";
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected HashSet<string> RenderedSlots { get; } = new();
 
-    [Inject]
-    protected IJSRuntime JSRuntime { get; set; } = null!;
-
-    protected IJSObjectReference? Module { get; set; }
-
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void BuildRenderTreeImpl(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected void BaseBuildRenderTree(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
     protected sealed override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        builder.OpenElement(0, T.TagName);
+        RenderedSlots.Clear();
 
-        builder.OpenRegion(1);
-        BuildRenderTreeSlots(builder);
-        builder.CloseRegion();
+        builder.OpenElement(Line(), T.TagName);
 
-        builder.OpenRegion(2);
+        builder.OpenShadowRoot(Line());
+
+        if (!String.IsNullOrWhiteSpace(T.TemplateCss))
+        {
+            builder.OpenElement(Line(), "style");
+            builder.AddContent(Line(), T.TemplateCss);
+            builder.CloseElement();
+        }
+
+        builder.OpenRegion(Line());
         BuildRenderTreeImpl(builder);
         builder.CloseRegion();
 
+        builder.CloseShadowRoot();
+
+        builder.OpenRegion(Line());
+        BuildRenderTreeSlots(builder);
+        builder.CloseRegion();
+
         builder.CloseElement();
+
+        static int Line([CallerLineNumber] int line = 0) => line;
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void BuildRenderTreeSlots(RenderTreeBuilder builder) { }
-
-    protected virtual Task OnInitializedImplAsync() => base.OnInitializedAsync();
-    protected Task BaseOnInitializedAsync() => base.OnInitializedAsync();
-    protected sealed override async Task OnInitializedAsync()
-    {
-        Module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
-        await Module.InvokeVoidAsync("registerBlazorWebComponent", T.TagName, T.TemplateHtml, T.TemplateCss);
-        await OnInitializedImplAsync();
-    }
 }

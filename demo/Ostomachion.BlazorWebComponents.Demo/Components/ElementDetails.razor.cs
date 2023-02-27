@@ -8,7 +8,6 @@ public partial class ElementDetails
 {
     [Parameter]
     [EditorRequired]
-    [Slot("element-name")]
     public string ElementName { get; set; } = null!;
 
     [Parameter]
@@ -17,6 +16,9 @@ public partial class ElementDetails
     public RenderFragment Description { get; set; } = null!;
 
     [Parameter]
-    [Slot("attributes", IsTemplated = true)]
-    public IEnumerable<AttributeDefinition>? Attributes { get; set; }
+    [Slot("attributes")]
+    public AttributeList? Attributes { get; set; }
+
+    [Parameter]
+    public RenderFragment<AttributeList>? AttributesTemplate { get; set; }
 }
