@@ -5,6 +5,6 @@
 }
 
 <form>
-    <input hidden="@(!Editing)" required @bind="Value" @ref=_input @onblur="Blur" />
+    <input hidden="@(!Editing)" required @bind="Value" @ref=_input @onblur="LabelBlur" />
 </form>
-<span hidden="@Editing" @onclick="Click">@Value</span>
+<span hidden="@Editing" @onclick="TextClick">@Value</span>
