@@ -14,15 +14,9 @@ public partial class EditWord
 
     private ElementReference _input;
 
-    public void Click(MouseEventArgs e)
-    {
-        Editing = true;
-    }
+    public void Click(MouseEventArgs e) => Editing = true;
 
-    public void Blur(FocusEventArgs e)
-    {
-        Editing = false;
-    }
+    public void Blur(FocusEventArgs e) => Editing = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
