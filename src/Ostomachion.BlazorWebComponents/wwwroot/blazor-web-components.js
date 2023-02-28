@@ -44,6 +44,38 @@ window.blazorWebComponents = {
                 return createElementReference.apply(this, arguments);
             }
         };
+
+        // Element references may be hidden in a shadow DOM.
+        // Hijack document.querySelector so that Blazor can still find them.
+        const querySelectorReference = document.querySelector;
+        document.querySelector = function (selectors) {
+            // This is the attribute pattern that Blazor uses for element references.
+            // Only look into shadow roots if we're looking for an element reference for the document root.
+            if (/^\[_bl_\w+\]$/.test(selectors)) {
+                return querySelectorDeep(this, arguments);
+            }
+            else {
+                return querySelectorReference.apply(this, arguments);
+            }
+
+            function querySelectorDeep(root, args) {
+                const lightResult = root instanceof HTMLDocument ? querySelectorReference.apply(root, args) : root.querySelector(...args);
+                if (lightResult !== null) {
+                    return lightResult;
+                }
+
+                for (var el of root.querySelectorAll('*')) {
+                    if (el.shadowRoot) {
+                        const result = querySelectorDeep(el.shadowRoot, args);
+                        if (result !== null) {
+                            return result;
+                        }
+                    }
+                }
+
+                return null;
+            }
+        };
     },
 
     defineWebComponent: function (name) {
