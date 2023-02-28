@@ -1,0 +1,20 @@
+﻿@page "/edit-word"
+@using Ostomachion.BlazorWebComponents.Demo.Demos.EditWord
+
+<PageTitle>edit-word demo</PageTitle>
+
+<header>
+    <h1><code>edit-word</code> demo</h1>
+
+    <nav><a href="/">‹ Back to list.</a></nav>
+
+    <p class="source"><strong>Source:</strong> <a href="https://github.com/ostomachion/BlazorWebComponents/tree/main/demo/Ostomachion.BlazorWebComponents.Demo/Demos/EditWord">/BlazorWebComponents/demo/Ostomachion.BlazorWebComponents.Demo/Demos/EditWord</a></p>
+</header>
+
+<main>
+    <PersonDetails PersonAge="36" PersonOccupation="Accountant">
+        <PersonName><EditWord Value="Morgan" /> Stanley</PersonName>
+    </PersonDetails>
+
+    <p>My name is <EditWord Value="Chris" />, the man said.</p>
+</main>
