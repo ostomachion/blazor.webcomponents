@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace Ostomachion.BlazorWebComponents.Demo.Demos.ComposedComposedPath;
 
-public partial class ComposedComposedPathPage
+public partial class Index
 {
     [Inject]
     protected IJSRuntime JS { get; set; } = null!;
