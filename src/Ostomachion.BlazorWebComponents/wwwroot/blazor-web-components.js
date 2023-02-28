@@ -8,11 +8,11 @@ window.blazorWebComponents = {
         // This is super hacky and not guaranteed to work with future versions of Blazor.
         // The hack relies on the fact that when Blazor inserts an element, it first
         // checks if the parent is an SVG element by checking the namespaceURI. We
-        // replace Element.prototype.namespaceURI so we can save the last element that it
-        // was called on. We also replace document.createElement so that if we're
-        // creating an element called '#shadow-root (open)' or '#shadow-root (closed)',
-        // we instead create and attach a shadow root to the parent element that we saved
-        // earlier.
+        // replace the getter for Element.prototype.namespaceURI so we can save the last
+        // element that it was called on. We also replace document.createElement so that
+        // if we're tyring to create an element called '#shadow-root (open)' or
+        // '#shadow-root (closed)', we instead create and attach a shadow root to the
+        // parent element that we saved earlier in the namesapceURI getter.
         //
         // Since shadowRoot implements DocumentFragment and the developers of Blazor are
         // amazing, everything else just seems to work, at least well enough for what I'm
