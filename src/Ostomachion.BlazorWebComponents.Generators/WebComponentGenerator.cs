@@ -155,7 +155,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
                     rootElementName ??= slotSyntax.IsTemplated || type == "Microsoft.AspNetCore.Components.RenderFragment" ? "\"div\"" : "\"span\"";
 
                     _ = builder.AppendLine($$"""
-                                if ({{name}} is not null && RenderedSlots.Contains("{{name}}"))
+                                if ((object?){{name}} is not null && RenderedSlots.Contains("{{name}}"))
                                 {
                                     builder.OpenElement({{sequence++}}, {{rootElementName}});
                                     builder.AddAttribute({{sequence++}}, "slot", {{slotName}});
