@@ -4,8 +4,12 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<DisableScopedCssBundling>true</DisableScopedCssBundling>
+		<DisableScopedCss>true</DisableScopedCss>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Demos\ElementDetailsPage.razor.css" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.2" />
@@ -15,6 +19,10 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Ostomachion.BlazorWebComponents.Generators\Ostomachion.BlazorWebComponents.Generators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
 		<ProjectReference Include="..\..\src\Ostomachion.BlazorWebComponents\Ostomachion.BlazorWebComponents.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Components\" />
 	</ItemGroup>
 
 </Project>

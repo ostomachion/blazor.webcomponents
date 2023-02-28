@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Ostomachion.BlazorWebComponents.Demo.Models;
 
-namespace Ostomachion.BlazorWebComponents.Demo.Components;
+namespace Ostomachion.BlazorWebComponents.Demo.Demos.ElementDetails;
 
 [WebComponent("element-details")]
 public partial class ElementDetails
