@@ -3,90 +3,110 @@
 
 <PageTitle>element-details - web component using &lt;template&gt; and &lt;slot&gt;</PageTitle>
 
-<h1>element-details - web component using <code>&lt;template&gt;</code> and <code>&lt;slot&gt;</code></h1>
+<header>
+    <h1>element-details - web component using <code>&lt;template&gt;</code> and <code>&lt;slot&gt;</code></h1>
 
-<nav><a href="/">‹ Back to list.</a></nav>
+    <nav><a href="/">‹ Back to list.</a></nav>
 
-<p class="source"><strong>Source:</strong> <a href="https://github.com/ostomachion/BlazorWebComponents/tree/main/demo/Ostomachion.BlazorWebComponents.Demo/Demos/ElementDetails">/BlazorWebComponents/demo/Ostomachion.BlazorWebComponents.Demo/Demos/ElementDetails</a></p>
+    <p class="source"><strong>Source:</strong> <a href="https://github.com/ostomachion/BlazorWebComponents/tree/main/demo/Ostomachion.BlazorWebComponents.Demo/Demos/ElementDetails">/BlazorWebComponents/demo/Ostomachion.BlazorWebComponents.Demo/Demos/ElementDetails</a></p>
+</header>
 
-@{
-    var slotAttributes = new AttributeList
-    {
-        ["name"] = @<text>The name of the slot.</text>
-    };
-}
-<ElementDetails ElementName="slot" Attributes="slotAttributes">
-    <Description>
-        A placeholder inside a web component that users
-        can fill with their own markup, with the effect
-        of composing different DOM trees together.
-    </Description>
-</ElementDetails>
+<main>
+    @{
+        var slotAttributes = new AttributeList
+        {
+            ["name"] = @<text>The name of the slot.</text>
+        };
+    }
+    <ElementDetails ElementName="slot" Attributes="slotAttributes">
+        <Description>
+            A placeholder inside a web component that users
+            can fill with their own markup, with the effect
+            of composing different DOM trees together.
+        </Description>
+    </ElementDetails>
 
-<ElementDetails ElementName="template">
-    <Description>
-        A mechanism for holding client-side content that is
-        not to be rendered when a page is loaded but may
-        subsequently be instantiated during runtime using
-        JavaScript.
-    </Description>
-</ElementDetails>
+    <ElementDetails ElementName="template">
+        <Description>
+            A mechanism for holding client-side content that is
+            not to be rendered when a page is loaded but may
+            subsequently be instantiated during runtime using
+            JavaScript.
+        </Description>
+    </ElementDetails>
 
 
-<p>And an example to show how a component can optionally define a template for a slot:</p>
+    <p>And an example to show how a component can optionally define a template for a slot:</p>
 
-@{
-    var marqueeAttributes = new AttributeList
-    {
-        ["behavior"] = @<text>Sets how text is scrolled within the marquee.
-            Possible values are <code>scroll</code>, <code>slide</code>,
-            and <code>alternate</code>. If no value is specified, the
-            default value is <code>scroll</code>.</text>,
-        ["bgcolor"] = @<text>Sets the background color through color name or
-            hexidecimal value.</text>,
-        ["direction"] = @<text>Sets the direction of the scrolling within
-            the marquee. Possible values are <code>left</code>,
-            <code>right</code>, <code>up</code>, and <code>down</code>. If no
-            value is specified, the default value is <code>left</code>.</text>,
-        ["height"] = @<text>Sets the height in pixels or percentage value.</text>,
-        ["hspace"] = @<text>Sets the horizontal margin.</text>,
-        ["loop"] = @<text>Sets the number of times the marquee will scroll. If
-            no value is specified, the default value is -1, which means the
-            marquee will scroll continuously.</text>,
-        ["scrollamount"] = @<text>Sets the amount of scrolling at each interval
-            in pixels. The default value is 6.</text>,
-        ["scrolldelay"] = @<text>Sets the interval between each scroll movement
-            in milliseconds. The default value is 85. Note that any value smaller
-            than 60 is ignored and the value 60 is used instead unless
-            <code>truespeed</code> is specified.</text>,
-        ["truespeed"] = @<text>By default, <code>scrolldelay</code> values lower
-            than 60 are ignored. If <code>truespeed</code> is present, those
-            values are not ignored.</text>,
-        ["vspace"] = @<text>Sets the vertical margin in pixels or percentage
-            values.</text>,
-        ["width"] = @<text>Sets the width in pixels or percentage value.</text>
-    };
-}
-<ElementDetails ElementName="marquee" Attributes="marqueeAttributes">
-    <Description>
-        Used to insert a scrolling area of text. You can
-        control what happens when the text reaches the edges
-        of its content area using its attributes.
-        <br />
-        <span class="warning">
-            <strong>Deprecated:</strong> This feature is no
-            longer recommended. Though some browsers might still support it,
-            it may have already been removed from the relevant web standards,
-            may be in the process of being dropped, or may only be kept for
-            compatibility purposes.
-        </span>
-    </Description>
-    <AttributesTemplate>
-        <ul>
-            @foreach (var item in context)
-            {
-                <li><code>@item.Key</code> - @item.Value</li>
-            }
-        </ul>
-    </AttributesTemplate>
-</ElementDetails>
+    @{
+        var marqueeAttributes = new AttributeList
+        {
+            ["behavior"] = @<text>
+                Sets how text is scrolled within the marquee.
+                Possible values are <code>scroll</code>, <code>slide</code>,
+                and <code>alternate</code>. If no value is specified, the
+                default value is <code>scroll</code>.
+            </text>,
+            ["bgcolor"] = @<text>
+                Sets the background color through color name or
+                hexidecimal value.
+            </text>,
+            ["direction"] = @<text>
+                Sets the direction of the scrolling within
+                the marquee. Possible values are <code>left</code>,
+                <code>right</code>, <code>up</code>, and <code>down</code>. If no
+                value is specified, the default value is <code>left</code>.
+            </text>,
+            ["height"] = @<text>Sets the height in pixels or percentage value.</text>,
+            ["hspace"] = @<text>Sets the horizontal margin.</text>,
+            ["loop"] = @<text>
+                Sets the number of times the marquee will scroll. If
+                no value is specified, the default value is -1, which means the
+                marquee will scroll continuously.
+            </text>,
+            ["scrollamount"] = @<text>
+                Sets the amount of scrolling at each interval
+                in pixels. The default value is 6.
+            </text>,
+            ["scrolldelay"] = @<text>
+                Sets the interval between each scroll movement
+                in milliseconds. The default value is 85. Note that any value smaller
+                than 60 is ignored and the value 60 is used instead unless
+                <code>truespeed</code> is specified.
+            </text>,
+            ["truespeed"] = @<text>
+                By default, <code>scrolldelay</code> values lower
+                than 60 are ignored. If <code>truespeed</code> is present, those
+                values are not ignored.
+            </text>,
+            ["vspace"] = @<text>
+                Sets the vertical margin in pixels or percentage
+                values.
+            </text>,
+            ["width"] = @<text>Sets the width in pixels or percentage value.</text>
+        };
+    }
+    <ElementDetails ElementName="marquee" Attributes="marqueeAttributes">
+        <Description>
+            Used to insert a scrolling area of text. You can
+            control what happens when the text reaches the edges
+            of its content area using its attributes.
+            <br />
+            <span class="warning">
+                <strong>Deprecated:</strong> This feature is no
+                longer recommended. Though some browsers might still support it,
+                it may have already been removed from the relevant web standards,
+                may be in the process of being dropped, or may only be kept for
+                compatibility purposes.
+            </span>
+        </Description>
+        <AttributesTemplate>
+            <ul>
+                @foreach (var item in context)
+                {
+                    <li><code>@item.Key</code> - @item.Value</li>
+                }
+            </ul>
+        </AttributesTemplate>
+    </ElementDetails>
+</main>
