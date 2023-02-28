@@ -2,13 +2,41 @@
 @using Ostomachion.BlazorWebComponents.Demo.Demos.DefinedPseudoClass
 
 <PageTitle>:defined demo</PageTitle>
+<HeadContent>
+    <style>
+        /* TODO: Figure out the right way to move this to a CSS file without turning on CSS isolation.*/
+        main p {
+            background: yellow;
+        }
 
-<h1><code>:defined</code> demo</h1>
+        main simple-custom {
+            background: cyan;
+        }
 
-<nav><a href="/">‹ Back to list.</a></nav>
+        main :defined {
+            font-style: italic;
+        }
 
-<p class="source"><strong>Source:</strong> <a href="https://github.com/ostomachion/BlazorWebComponents/tree/main/demo/Ostomachion.BlazorWebComponents.Demo/Demos/DefinedPseudoClass">/BlazorWebComponents/demo/Ostomachion.BlazorWebComponents.Demo/Demos/DefinedPseudoClass</a></p>
+        main simple-custom:not(:defined) {
+            display: none;
+        }
 
-<SimpleCustom Text="Custom element example text" />
+        main simple-custom:defined {
+            display: block;
+        }
+    </style>
+</HeadContent>
 
-<p>Standard paragraph example text</p>
+<header>
+    <h1><code>:defined</code> demo</h1>
+
+    <nav><a href="/">‹ Back to list.</a></nav>
+
+    <p class="source"><strong>Source:</strong> <a href="https://github.com/ostomachion/BlazorWebComponents/tree/main/demo/Ostomachion.BlazorWebComponents.Demo/Demos/DefinedPseudoClass">/BlazorWebComponents/demo/Ostomachion.BlazorWebComponents.Demo/Demos/DefinedPseudoClass</a></p>
+</header>
+
+<main>
+    <SimpleCustom Text="Custom element example text" />
+
+    <p>Standard paragraph example text</p>
+</main>
