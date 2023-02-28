@@ -1,6 +1,10 @@
 ﻿@inherits WebComponentBase<EditWord>
 
-<form style="display: none">
-    <input style="width: 50px" required value="@Value" />
+@{
+    HostAttributes["tabindex"] = 0;
+}
+
+<form>
+    <input hidden="@(!Editing)" required @bind="Value" @ref=_input @onblur="Blur" />
 </form>
-<span style="display: inline-block">@Value</span>
+<span hidden="@Editing" @onclick="Click">@Value</span>
