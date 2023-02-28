@@ -18,6 +18,8 @@ public abstract class WebComponentBaseImpl<T> : ComponentBase
 
     public virtual ShadowRootMode ShadowRootMode => ShadowRootMode.Open;
 
+    public AttributeSet HostAttributes { get; } = new();
+
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected HashSet<string> RenderedSlots { get; } = new();
 
@@ -31,6 +33,7 @@ public abstract class WebComponentBaseImpl<T> : ComponentBase
         RenderedSlots.Clear();
 
         builder.OpenElement(Line(), T.TagName);
+        builder.AddMultipleAttributes(Line(), HostAttributes!);
 
         builder.OpenShadowRoot(Line(), ShadowRootMode);
 
