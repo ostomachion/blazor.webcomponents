@@ -12,7 +12,7 @@ public partial class Index
 
     protected override async Task OnInitializedAsync()
     {
-        Module = await JS.InvokeAsync<IJSObjectReference>("import", "./Demos/ComposedComposedPath/ComposedComposedPathPage.razor.js");
+        Module = await JS.InvokeAsync<IJSObjectReference>("import", "./Demos/ComposedComposedPath/Index.razor.js");
 
         await Module.InvokeVoidAsync("initialize");
     }
