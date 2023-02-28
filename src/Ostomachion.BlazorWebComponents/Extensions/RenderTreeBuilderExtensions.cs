@@ -7,7 +7,7 @@ public static class RenderTreeBuilderExtensions
     {
         // I hacked JS/Blazor to attach a shadow root instead of creating an element
         // when it comes across these special names.
-        // See blazor-hack.js for the code, if you dare.
+        // See the initialize function in blazor-web-components.js for the code, if you dare.
         builder.OpenElement(sequence, mode switch
         {
             ShadowRootMode.Open => "#shadow-root (open)",
