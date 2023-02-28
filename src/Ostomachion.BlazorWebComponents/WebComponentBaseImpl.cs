@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.JSInterop;
 using Ostomachion.BlazorWebComponents.Extensions;
 
 namespace Ostomachion.BlazorWebComponents;
@@ -11,6 +12,10 @@ namespace Ostomachion.BlazorWebComponents;
 public abstract class WebComponentBaseImpl<T> : ComponentBase
     where T : WebComponentBase<T>, IWebComponent
 {
+    [Inject]
+    protected virtual IJSRuntime JS { get; set; } = null!;
+    protected IJSObjectReference? Module { get; set; }
+
     public virtual ShadowRootMode ShadowRootMode => ShadowRootMode.Open;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -53,4 +58,18 @@ public abstract class WebComponentBaseImpl<T> : ComponentBase
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void BuildRenderTreeSlots(RenderTreeBuilder builder) { }
+
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual Task OnInitializedAsyncImpl() => base.OnInitializedAsync();
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected Task BaseOnInitializedAsync() => base.OnInitializedAsync();
+    protected sealed override async Task OnInitializedAsync()
+    {
+        // TODO: Maybe change where this is called so it's only called once.
+        await JS.InvokeVoidAsync("window.blazorWebComponents.defineWebComponent", T.TagName);
+
+        await OnInitializedAsyncImpl();
+    }
 }

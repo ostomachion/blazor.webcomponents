@@ -10,4 +10,8 @@ public abstract class WebComponentBase<T> : WebComponentBaseImpl<T>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected sealed override void BuildRenderTreeImpl(RenderTreeBuilder builder) => BuildRenderTree(builder);
     protected new virtual void BuildRenderTree(RenderTreeBuilder builder) => BaseBuildRenderTree(builder);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected sealed override Task OnInitializedAsyncImpl() => OnInitializedAsync();
+    protected new virtual Task OnInitializedAsync() => BaseOnInitializedAsync();
 }
