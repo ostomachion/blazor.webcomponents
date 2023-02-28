@@ -11,7 +11,7 @@ namespace Ostomachion.BlazorWebComponents;
 public abstract class WebComponentBaseImpl<T> : ComponentBase
     where T : WebComponentBase<T>, IWebComponent
 {
-    public virtual ShadowRootMode Mode { get; set; } = ShadowRootMode.Closed;
+    public virtual ShadowRootMode ShadowRootMode => ShadowRootMode.Open;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected HashSet<string> RenderedSlots { get; } = new();
@@ -27,7 +27,7 @@ public abstract class WebComponentBaseImpl<T> : ComponentBase
 
         builder.OpenElement(Line(), T.TagName);
 
-        builder.OpenShadowRoot(Line(), Mode);
+        builder.OpenShadowRoot(Line(), ShadowRootMode);
 
         if (!String.IsNullOrWhiteSpace(T.TemplateCss))
         {
