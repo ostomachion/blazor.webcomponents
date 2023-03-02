@@ -24,42 +24,90 @@ window.blazorWebComponents = {
 
         let element;
 
-        const namespaceURIGetterReference = Object.getOwnPropertyDescriptor(Element.prototype, 'namespaceURI').get;
+        const namespaceURIRef = Object.getOwnPropertyDescriptor(Element.prototype, 'namespaceURI').get;
         Object.defineProperty(Element.prototype, 'namespaceURI', {
             get() {
                 element = this;
-                return namespaceURIGetterReference.apply(this, arguments);
+                return namespaceURIRef.apply(this, arguments);
             }
         });
 
-        const createElementReference = document.createElement;
-        document.createElement = function (tagName) {
+        const createElementRef = HTMLDocument.prototype.createElement;
+        HTMLDocument.prototype.createElement = function (tagName) {
             if (tagName === '#shadow-root (open)') {
-                return element.attachShadow({ mode: 'open' });
+                const shadowRoot = element.attachShadow({ mode: 'open' });
+                attachEvents(shadowRoot, element);
+                return shadowRoot;
             }
             else if (tagName === '#shadow-root (closed)') {
-                return element.attachShadow({ mode: 'closed' });
+                const shadowRoot = element.attachShadow({ mode: 'closed' });
+                attachEvents(shadowRoot, element);
+                return shadowRoot;
             }
             else {
-                return createElementReference.apply(this, arguments);
+                return createElementRef.apply(this, arguments);
+            }
+
+            // For events that aren't composed, we need to re-dispatch them once
+            // they hit the shadow root. We also store the original event's
+            // composedPath and target on the new event to trick Blazor.
+            function attachEvents(shadowRoot) {
+                // TODO: Should we do the same thing to other non-composed events?
+                // The change event is used internally by Blazor so we need this one.
+                shadowRoot.addEventListener('change', function (e) {
+                    if (!e.composed) {
+                        const newEvent = new Event('change', {
+                            bubbles: e.bubbles,
+                            cancelable: e.cancelable,
+                            composed: false
+                        });
+                        newEvent.shadowComposedPath = e.composedPath();
+                        newEvent.shadowTarget = e.target;
+                        shadowRoot.host.dispatchEvent(newEvent);
+                    }
+                });
             }
         };
 
+        // We re-dispatch non-composed events once they hit the shadow root.
+        // But we need to use give Blazor the original target and composedPath.
+        const composedPathRef = Event.prototype.composedPath;
+        Event.prototype.composedPath = function () {
+            const value = composedPathRef.apply(this, arguments);
+            if (this.hasOwnProperty('shadowComposedPath')) {
+                return this.shadowComposedPath.concat(value);
+            }
+            else {
+                return value;
+            }
+        };
+        const targetRef = Object.getOwnPropertyDescriptor(Event.prototype, 'target').get;
+        Object.defineProperty(Event.prototype, 'target', {
+            get() {
+                if (this.hasOwnProperty('shadowTarget')) {
+                    return this.shadowTarget;
+                }
+                else {
+                    return targetRef.apply(this, arguments);
+                }
+            }
+        });
+
         // Element references may be hidden in a shadow DOM.
         // Hijack document.querySelector so that Blazor can still find them.
-        const querySelectorReference = document.querySelector;
-        document.querySelector = function (selectors) {
+        const querySelectorRef = HTMLDocument.prototype.querySelector;
+        HTMLDocument.prototype.querySelector = function (selectors) {
             // This is the attribute pattern that Blazor uses for element references.
             // Only look into shadow roots if we're looking for an element reference for the document root.
             if (/^\[_bl_\w+\]$/.test(selectors)) {
                 return querySelectorDeep(this, arguments);
             }
             else {
-                return querySelectorReference.apply(this, arguments);
+                return querySelectorRef.apply(this, arguments);
             }
 
             function querySelectorDeep(root, args) {
-                const lightResult = root instanceof HTMLDocument ? querySelectorReference.apply(root, args) : root.querySelector(...args);
+                const lightResult = root instanceof HTMLDocument ? querySelectorRef.apply(root, args) : root.querySelector(...args);
                 if (lightResult !== null) {
                     return lightResult;
                 }
@@ -79,7 +127,6 @@ window.blazorWebComponents = {
     },
 
     defineWebComponent: function (name) {
-        console.log('Defining element ' + name);
         if (!customElements.get(name)) {
             customElements.define(name,
                 class extends HTMLElement {
