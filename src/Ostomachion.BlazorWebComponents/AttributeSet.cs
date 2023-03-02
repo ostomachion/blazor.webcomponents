@@ -2,16 +2,46 @@
 using System.Diagnostics.CodeAnalysis;
 
 namespace Ostomachion.BlazorWebComponents;
+
 public class AttributeSet : IDictionary<string, object?>
 {
     private readonly Dictionary<string, object> _value = new();
 
+    public ClassList ClassList { get; } = new();
+
+    public AttributeSet()
+    {
+        ClassList.Updated += (s, e) =>
+        {
+            var classList = ClassList.ToString();
+            if (classList is null)
+            {
+                _ = _value.Remove("class");
+            }
+            else if (_value.ContainsKey("class"))
+            {
+                _value["class"] = classList;
+            }
+            else
+            {
+                _value.Add("class", classList);
+            }
+        };
+    }
+
     public object? this[string key]
     {
-        get => _value.TryGetValue(key, out var value) ? value : null;
+        get
+        {
+            return _value.TryGetValue(key, out var value) ? value : null;
+        }
         set
         {
-            if (value is null)
+            if (key == "class")
+            {
+                ClassList.SetFromClassString(value?.ToString());
+            }
+            else if (value is null)
             {
                 _ = _value.Remove(key);
             }
@@ -55,15 +85,13 @@ public class AttributeSet : IDictionary<string, object?>
 
     public bool Remove(KeyValuePair<string, object?> item)
     {
-        if (Contains(item))
+        var found = Contains(item);
+        if (found)
         {
             _ = _value.Remove(item.Key);
-            return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return found;
     }
 
     public bool TryGetValue(string key, [MaybeNullWhen(false)] out object? value)
@@ -72,5 +100,5 @@ public class AttributeSet : IDictionary<string, object?>
         return value is not null;
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => _value.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_value).GetEnumerator();
 }
