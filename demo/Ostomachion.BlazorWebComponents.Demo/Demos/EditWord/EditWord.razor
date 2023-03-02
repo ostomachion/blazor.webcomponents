@@ -4,7 +4,11 @@
     HostAttributes["tabindex"] = 0;
 }
 
-<form>
-    <input hidden="@(!Editing)" required @bind="Value" @ref=_input @onblur="LabelBlur" />
+<form @onsubmit="FormSubmitAsync" @onsubmit:preventDefault="true">
+    <input @ref="_input"
+           @bind="Value"
+           required
+           hidden="@(!Editing)"
+           @onblur="LabelBlur" />
 </form>
-<span hidden="@Editing" @onclick="TextClick">@Value</span>
+<span @ref="_span" hidden="@Editing" @onclick="TextClickAsync">@Value</span>

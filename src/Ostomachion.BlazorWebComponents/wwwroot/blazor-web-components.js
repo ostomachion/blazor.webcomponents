@@ -22,6 +22,7 @@ window.blazorWebComponents = {
         // used by the declarative shadow DOM proposal so that we can create the shadow
         // root as soon as we get to the the element.
 
+        const sourceEventSymbol = Symbol('sourceEvent');
         let element;
 
         const namespaceURIRef = Object.getOwnPropertyDescriptor(Element.prototype, 'namespaceURI').get;
@@ -61,8 +62,7 @@ window.blazorWebComponents = {
                             cancelable: e.cancelable,
                             composed: false
                         });
-                        newEvent.shadowComposedPath = e.composedPath();
-                        newEvent.shadowTarget = e.target;
+                        newEvent[sourceEventSymbol] = e;
                         shadowRoot.host.dispatchEvent(newEvent);
                     }
                 });
@@ -74,24 +74,33 @@ window.blazorWebComponents = {
         const composedPathRef = Event.prototype.composedPath;
         Event.prototype.composedPath = function () {
             const value = composedPathRef.apply(this, arguments);
-            if (this.hasOwnProperty('shadowComposedPath')) {
-                return this.shadowComposedPath.concat(value);
+            if (this.hasOwnProperty(sourceEventSymbol)) {
+                return this[sourceEventSymbol].composedPath().concat(value);
             }
             else {
                 return value;
             }
         };
-        const targetRef = Object.getOwnPropertyDescriptor(Event.prototype, 'target').get;
-        Object.defineProperty(Event.prototype, 'target', {
-            get() {
-                if (this.hasOwnProperty('shadowTarget')) {
-                    return this.shadowTarget;
+        // TODO: Figure out why Blazor's onfoo:preventDefault isn't working.
+        const props = ['target', 'defaultPrevented', 'cancelBubble'];
+        for (const prop of props) {
+            const ref = Object.getOwnPropertyDescriptor(Event.prototype, prop).get;
+            Object.defineProperty(Event.prototype, prop, {
+                get() {
+                    if (this.hasOwnProperty(sourceEventSymbol)) {
+                        console.group();
+                        console.log('shadow ' + prop);
+                        console.dir(this);
+                        console.dir(this[sourceEventSymbol]);
+                        console.groupEnd();
+                        return this[sourceEventSymbol][prop];
+                    }
+                    else {
+                        return ref.apply(this, arguments);
+                    }
                 }
-                else {
-                    return targetRef.apply(this, arguments);
-                }
-            }
-        });
+            });
+        }
 
         // Element references may be hidden in a shadow DOM.
         // Hijack document.querySelector so that Blazor can still find them.

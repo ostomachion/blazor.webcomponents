@@ -14,7 +14,6 @@ public abstract class WebComponentBaseImpl<T> : ComponentBase
 {
     [Inject]
     protected virtual IJSRuntime JS { get; set; } = null!;
-    protected IJSObjectReference? Module { get; set; }
 
     public virtual ShadowRootMode ShadowRootMode => ShadowRootMode.Open;
 
