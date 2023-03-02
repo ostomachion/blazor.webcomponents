@@ -50,8 +50,8 @@ window.blazorWebComponents = {
             }
 
             // For events that aren't composed, we need to re-dispatch them once
-            // they hit the shadow root. We also store the original event's
-            // composedPath and target on the new event to trick Blazor.
+            // they hit the shadow root. We also store a reference to the original
+            // event on the new event so that we can trick Blazor into acessing it.
             function attachEvents(shadowRoot) {
                 // TODO: Should we do the same thing to other non-composed events?
                 // The change event is used internally by Blazor so we need this one.
@@ -135,6 +135,7 @@ window.blazorWebComponents = {
         };
     },
 
+    // Sensible code starts here.
     defineWebComponent: function (name) {
         if (!customElements.get(name)) {
             customElements.define(name,
