@@ -17,8 +17,8 @@ function getString(obj) {
         return 'Window';
     }
 
-    if (obj instanceof HTMLDocument) {
-        return 'HTMLDocument';
+    if (obj instanceof Document) {
+        return 'Document';
     }
 
     if (obj instanceof ShadowRoot) {

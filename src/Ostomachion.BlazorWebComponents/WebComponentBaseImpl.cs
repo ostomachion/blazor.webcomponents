@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.JSInterop;
-using Ostomachion.BlazorWebComponents.Extensions;
 
 namespace Ostomachion.BlazorWebComponents;
 
@@ -34,7 +33,13 @@ public abstract class WebComponentBaseImpl<T> : ComponentBase
         builder.OpenElement(Line(), T.TagName);
         builder.AddMultipleAttributes(Line(), HostAttributes!);
 
-        builder.OpenShadowRoot(Line(), ShadowRootMode);
+        builder.OpenElement(Line(), "template");
+        builder.AddAttribute(Line(), "shadowrootmode", ShadowRootMode switch
+        {
+            ShadowRootMode.Open => "open",
+            ShadowRootMode.Closed => "closed",
+            _ => throw new InvalidOperationException("Unknown shadow root mode.")
+        });
 
         if (!String.IsNullOrWhiteSpace(T.TemplateCss))
         {
@@ -47,7 +52,7 @@ public abstract class WebComponentBaseImpl<T> : ComponentBase
         BuildRenderTreeImpl(builder);
         builder.CloseRegion();
 
-        builder.CloseShadowRoot();
+        builder.CloseElement();
 
         builder.OpenRegion(Line());
         BuildRenderTreeSlots(builder);
