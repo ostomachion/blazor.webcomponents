@@ -4,7 +4,7 @@
     HostAttributes["tabindex"] = 0;
 }
 
-<form @onsubmit="FormSubmitAsync" @onsubmit:preventDefault="true">
+<form @onsubmit="FormSubmit" @onsubmit:preventDefault="true">
     <input @ref="_input"
            @bind="Value"
            required

@@ -30,9 +30,9 @@ public partial class EditWord
         Editing = false;
     }
 
-    private async Task FormSubmitAsync(EventArgs e)
+    private void FormSubmit(EventArgs e)
     {
-        await UpdateWidthAsync();
+        Editing = false;
     }
 
     private async Task SelectAllAsync() => await (Module?.InvokeVoidAsync("selectAll", _input) ?? ValueTask.CompletedTask);
