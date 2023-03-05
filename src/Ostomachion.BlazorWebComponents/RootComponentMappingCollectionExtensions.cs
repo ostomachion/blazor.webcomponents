@@ -21,8 +21,6 @@ public static class RootComponentMappingCollectionExtensions
         typeof(TComponent).GetProperty(nameof(IWebComponent.Identifier), BindingFlags.Public | BindingFlags.Static)!
             .SetValue(null, identifier);
 
-        var namespaceParts = typeof(TComponent).Namespace!.Split('.');
-
         BlazorWebComponentManager.RegisterComponent<TComponent>(rootComponentMappings, identifier);
     }
 }
