@@ -49,6 +49,9 @@ public abstract class WebComponentBaseImpl : ComponentBase
         RenderedSlots.Clear();
 
         builder.OpenElement(Line(), identifier);
+        builder.AddAttribute(Line(), "xmlns:wc", GetType().Namespace);
+        builder.AddAttribute(Line(), $"wc:{GetType().Name}");
+
         builder.AddMultipleAttributes(Line(), HostAttributes!);
 
         builder.OpenElement(Line(), "template");
