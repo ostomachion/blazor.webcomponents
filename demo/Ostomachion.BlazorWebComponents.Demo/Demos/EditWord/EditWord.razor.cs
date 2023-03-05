@@ -4,7 +4,7 @@ using Microsoft.JSInterop;
 
 namespace Ostomachion.BlazorWebComponents.Demo.Demos.EditWord;
 
-[WebComponent("edit-word")]
+[WebComponent]
 public partial class EditWord
 {
     protected IJSObjectReference? Module { get; set; }
