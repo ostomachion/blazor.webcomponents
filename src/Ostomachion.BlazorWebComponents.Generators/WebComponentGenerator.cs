@@ -98,7 +98,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 
     private static void GenerateSource(SourceProductionContext context, ImmutableArray<WebComponentSyntax> webComponentSyntaxes)
     {
-        foreach (var item in webComponentSyntaxes.Where(x => x.SlotSyntaxes.Any()))
+        foreach (var item in webComponentSyntaxes)
         {
             var className = item.ClassDeclarationSyntax.Identifier.Text;
 
