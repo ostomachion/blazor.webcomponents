@@ -11,7 +11,8 @@ namespace Ostomachion.BlazorWebComponents;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class WebComponentBaseImpl : ComponentBase
 {
-    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
 
     private string? _identifier;
     private string? _stylesheetUrl;
