@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
@@ -10,6 +11,11 @@ namespace Ostomachion.BlazorWebComponents;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class WebComponentBaseImpl : ComponentBase
 {
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+
+    private string? _identifier;
+    private string? _stylesheetUrl;
+
     private string? GetIdentifier()
     {
         _identifier ??= (string?)GetType().GetProperty(nameof(IWebComponent.Identifier), BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
@@ -80,18 +86,4 @@ public abstract class WebComponentBaseImpl : ComponentBase
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void BuildRenderTreeSlots(RenderTreeBuilder builder) { }
-
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual Task OnInitializedAsyncImpl() => base.OnInitializedAsync();
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected Task BaseOnInitializedAsync() => base.OnInitializedAsync();
-    protected sealed override async Task OnInitializedAsync()
-    {
-        // TODO: Maybe change where this is called so it's only called once.
-        await JS.InvokeVoidAsync("window.blazorWebComponents.defineWebComponent", T.TagName);
-
-        await OnInitializedAsyncImpl();
-    }
 }
