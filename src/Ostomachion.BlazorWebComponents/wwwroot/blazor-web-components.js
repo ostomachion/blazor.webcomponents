@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 window.blazorWebComponents = {
-    defineWebComponent: function (name) {
+    defineCustomElement: function (name) {
         if (!customElements.get(name)) {
             customElements.define(name,
                 class extends HTMLElement {
