@@ -10,6 +10,7 @@ namespace Ostomachion.BlazorWebComponents.Generators;
 [Generator]
 public partial class WebComponentGenerator : IIncrementalGenerator
 {
+    // TODO: Create copies of .css files in wwwroot
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         // Do a simple filter for classes.
