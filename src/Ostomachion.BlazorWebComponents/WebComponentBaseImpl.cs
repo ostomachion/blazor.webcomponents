@@ -8,9 +8,20 @@ namespace Ostomachion.BlazorWebComponents;
 
 // TODO: See if there's a better design pattern to accomplish this?
 [EditorBrowsable(EditorBrowsableState.Never)]
-public abstract class WebComponentBaseImpl<T> : ComponentBase
-    where T : WebComponentBase<T>, IWebComponent
+public abstract class WebComponentBaseImpl : ComponentBase
 {
+    private string? GetIdentifier()
+    {
+        _identifier ??= (string?)GetType().GetProperty(nameof(IWebComponent.Identifier), BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
+        return _identifier;
+    }
+
+    private string? GetStylesheetUrl()
+    {
+        _stylesheetUrl ??= (string?)GetType().GetProperty(nameof(IWebComponent.StylesheetUrl), BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
+        return _stylesheetUrl;
+    }
+
     [Inject]
     protected virtual IJSRuntime JS { get; set; } = null!;
 
@@ -28,9 +39,12 @@ public abstract class WebComponentBaseImpl<T> : ComponentBase
     protected void BaseBuildRenderTree(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
     protected sealed override void BuildRenderTree(RenderTreeBuilder builder)
     {
+        var identifier = GetIdentifier() ?? throw new InvalidOperationException("The web component's identifier has not been set.");
+        var stylesheetUrl = GetStylesheetUrl();
+
         RenderedSlots.Clear();
 
-        builder.OpenElement(Line(), T.TagName);
+        builder.OpenElement(Line(), identifier);
         builder.AddMultipleAttributes(Line(), HostAttributes!);
 
         builder.OpenElement(Line(), "template");
@@ -41,10 +55,11 @@ public abstract class WebComponentBaseImpl<T> : ComponentBase
             _ => throw new InvalidOperationException("Unknown shadow root mode.")
         });
 
-        if (!String.IsNullOrWhiteSpace(T.TemplateCss))
+        if (stylesheetUrl is not null)
         {
-            builder.OpenElement(Line(), "style");
-            builder.AddContent(Line(), T.TemplateCss);
+            builder.OpenElement(Line(), "link");
+            builder.AddAttribute(Line(), "rel", "stylesheet");
+            builder.AddAttribute(Line(), "href", stylesheetUrl);
             builder.CloseElement();
         }
 

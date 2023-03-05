@@ -116,6 +116,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
                 .AppendLine($$"""
                     #nullable enable
 
+                    using System;
                     using Microsoft.AspNetCore.Components;
                     using Microsoft.AspNetCore.Components.Rendering;
                     using Ostomachion.BlazorWebComponents;
@@ -124,9 +125,21 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 
                     partial class {{className}} : IWebComponent
                     {
-                        public static string TagName => {{tagNameExpression}};
+                        private static string? _identifier;
+                        public static string? Identifier
+                        {
+                            get => _identifier;
+                            set
+                            {
+                                if (_identifier is not null)
+                                {
+                                    throw new InvalidOperationException("Identifier has already been set.");
+                                }
+                                _identifier = value;
+                            }
+                        }
                     
-                        public static string? TemplateCss => {{(templateCss is null ? "null" : SymbolDisplay.FormatLiteral(templateCss, true))}};
+                        public static string? StylesheetUrl => _identifier is null ? null : $"/custom-elements/{_identifier}.css";
                     """);
 
             if (item.SlotSyntaxes.Any())
@@ -191,7 +204,6 @@ public partial class WebComponentGenerator : IIncrementalGenerator
                         }
                     """);
             }
-
 
             foreach (var slotSyntax in item.SlotSyntaxes)
             {

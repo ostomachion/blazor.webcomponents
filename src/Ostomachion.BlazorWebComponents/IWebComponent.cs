@@ -2,7 +2,7 @@
 
 public interface IWebComponent
 {
-    public static abstract string TagName { get; }
+    public static abstract string? Identifier { get; set; }
 
-    public static abstract string? TemplateCss { get; }
+    public static abstract string? StylesheetUrl { get; }
 }
