@@ -40,7 +40,7 @@ public partial class EditWord
 
     protected override async Task OnInitializedAsync()
     {
-        Module = await JS.InvokeAsync<IJSObjectReference>("import", "./Demos/EditWord/EditWord.razor.js");
+        Module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Demos/EditWord/EditWord.razor.js");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

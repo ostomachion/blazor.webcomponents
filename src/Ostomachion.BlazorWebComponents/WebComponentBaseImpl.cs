@@ -23,7 +23,7 @@ public abstract class WebComponentBaseImpl : ComponentBase
     }
 
     [Inject]
-    protected virtual IJSRuntime JS { get; set; } = null!;
+    protected virtual IJSRuntime JSRuntime { get; set; } = null!;
 
     public virtual ShadowRootMode ShadowRootMode => ShadowRootMode.Open;
 

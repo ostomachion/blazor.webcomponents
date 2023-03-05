@@ -9,5 +9,5 @@ public partial class OpenShadow
 
     [Parameter]
     [EditorRequired]
-    public string Text { get; set; } = null!;
+    public string Text { get; set; } = default!;
 }

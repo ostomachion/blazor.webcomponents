@@ -6,13 +6,13 @@ namespace Ostomachion.BlazorWebComponents.Demo.Demos.ComposedComposedPath;
 public partial class Index
 {
     [Inject]
-    protected IJSRuntime JS { get; set; } = null!;
+    protected IJSRuntime JSRuntime { get; set; } = default!;
 
     protected IJSObjectReference? Module { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Module = await JS.InvokeAsync<IJSObjectReference>("import", "./Demos/ComposedComposedPath/Index.razor.js");
+        Module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Demos/ComposedComposedPath/Index.razor.js");
 
         await Module.InvokeVoidAsync("initialize");
     }
