@@ -97,20 +97,11 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 
     private static void GenerateSource(SourceProductionContext context, ImmutableArray<WebComponentSyntax> webComponentSyntaxes)
     {
-        foreach (var item in webComponentSyntaxes)
+        foreach (var item in webComponentSyntaxes.Where(x => x.SlotSyntaxes.Any()))
         {
             var className = item.ClassDeclarationSyntax.Identifier.Text;
 
             var namespaceName = GetNamespace(item.ClassDeclarationSyntax);
-
-            // TODO: Get actual value, not the expresssion.
-            var tagNameExpression = item.AttributeSyntax.ArgumentList!.Arguments.First()
-                .Expression.NormalizeWhitespace().ToFullString();
-
-            var filePath = item.ClassDeclarationSyntax.SyntaxTree.FilePath;
-            var cssPath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + ".css");
-
-            var templateCss = File.Exists(cssPath) ? File.ReadAllText(cssPath) : null;
 
             var builder = new StringBuilder()
                 .AppendLine($$"""
