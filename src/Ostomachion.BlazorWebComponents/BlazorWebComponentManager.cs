@@ -15,9 +15,6 @@ public class BlazorWebComponentManager : ComponentBase
     [Inject]
     private IJSRuntime JSRuntime { get; set; } = default!;
 
-    [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
-
     private static Dictionary<IJSComponentConfiguration, Dictionary<string, Type>> _registeredComponents { get; } = new();
 
     public static ISet<string> GetRegisteredIdentifiers(RootComponentMappingCollection rootComponentMappings)
