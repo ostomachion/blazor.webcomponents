@@ -1,0 +1,22 @@
+﻿@namespace wc 'ostomachion.blazorwebcomponents.demo.demos.definedpseudoclass';
+
+/* TODO: Figure out the right way to move this to a CSS file without turning on CSS isolation.*/
+main p {
+    background: yellow;
+}
+
+main [wc|simplecustom] {
+    background: cyan;
+}
+
+main :defined {
+    font-style: italic;
+}
+
+main [wc|simplecustom]:not(:defined) {
+    display: none;
+}
+
+main [wc|simplecustom]:defined {
+    display: block;
+}

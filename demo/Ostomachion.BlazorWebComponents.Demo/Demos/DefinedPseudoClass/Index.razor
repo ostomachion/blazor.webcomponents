@@ -6,28 +6,8 @@
 </PageHeader>
 
 <HeadContent>
-    <style>
-        /* TODO: Figure out the right way to move this to a CSS file without turning on CSS isolation.*/
-        main p {
-            background: yellow;
-        }
-
-        main simple-custom {
-            background: cyan;
-        }
-
-        main :defined {
-            font-style: italic;
-        }
-
-        main simple-custom:not(:defined) {
-            display: none;
-        }
-
-        main simple-custom:defined {
-            display: block;
-        }
-    </style>
+    @*TODO: Move this source file to be with this page.*@
+    <link rel="stylesheet" href="css/defined-pseudo-class.css" />
 </HeadContent>
 
 <main>
