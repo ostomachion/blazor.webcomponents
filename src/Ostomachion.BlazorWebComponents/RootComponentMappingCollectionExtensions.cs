@@ -11,12 +11,12 @@ public static class RootComponentMappingCollectionExtensions
 
     private static void RegisterWebComponent(this RootComponentMappingCollection rootComponentMappings, Type type, string identifier)
     {
-        var registeredIdentifiers = BlazorWebComponentManager.GetRegisteredIdentifiers(rootComponentMappings);
+        var registeredIdentifiers = BlazorWebComponentManager.GetRegisteredTypes(rootComponentMappings);
         if (!registeredIdentifiers.Any())
         {
             rootComponentMappings.Add<BlazorWebComponentManager>("head::after");
         }
-        else if (registeredIdentifiers.Contains(identifier))
+        else if (registeredIdentifiers.ContainsKey(identifier))
         {
             throw new InvalidOperationException($"The identifier {identifier} has already been registered.");
         }
@@ -33,8 +33,11 @@ public static class RootComponentMappingCollectionExtensions
         {
             if (type.IsAssignableTo(typeof(WebComponentBase)))
             {
-                var identifier = type.FullName?.ToLower().Replace('.', '-') ?? throw new NotSupportedException("Cannot get full name of type.");
-                rootComponentMappings.RegisterWebComponent(type, identifier);
+                if (!BlazorWebComponentManager.GetRegisteredTypes(rootComponentMappings).ContainsValue(type))
+                {
+                    var identifier = type.FullName?.ToLower().Replace('.', '-') ?? throw new NotSupportedException("Cannot get full name of type.");
+                    rootComponentMappings.RegisterWebComponent(type, identifier);
+                }
             }
         }
     }

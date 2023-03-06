@@ -17,17 +17,10 @@ public class BlazorWebComponentManager : ComponentBase
 
     private static Dictionary<IJSComponentConfiguration, Dictionary<string, Type>> _registeredComponents { get; } = new();
 
-    public static ISet<string> GetRegisteredIdentifiers(RootComponentMappingCollection rootComponentMappings)
-    {
-        if (_registeredComponents.TryGetValue(rootComponentMappings, out var registeredComponents))
-        {
-            return registeredComponents.Keys.ToImmutableHashSet();
-        }
-        else
-        {
-            return ImmutableHashSet<string>.Empty;
-        }
-    }
+    public static ImmutableDictionary<string, Type> GetRegisteredTypes(RootComponentMappingCollection rootComponentMappings)
+        => _registeredComponents.TryGetValue(rootComponentMappings, out var registeredComponents)
+            ? registeredComponents.ToImmutableDictionary()
+            : ImmutableDictionary<string, Type>.Empty;
 
     internal static void RegisterComponent(RootComponentMappingCollection rootComponentMappings, Type type, string identifier)
     {
