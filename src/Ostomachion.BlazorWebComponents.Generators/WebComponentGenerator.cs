@@ -3,7 +3,6 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Ostomachion.BlazorWebComponents.Generators;
 
@@ -104,6 +103,8 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 
             var namespaceName = GetNamespace(item.ClassDeclarationSyntax);
 
+            var styleSheetUrl = GetStyleSheetUrl(item.ClassDeclarationSyntax.SyntaxTree.FilePath);
+
             var builder = new StringBuilder()
                 .AppendLine($$"""
                     #nullable enable
@@ -131,7 +132,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
                             }
                         }
                     
-                        public static string? StylesheetUrl => _identifier is null ? null : $"/custom-elements/{_identifier}.css";
+                        public static string? StylesheetUrl => {{(styleSheetUrl is null ? "null;" : $$"""_identifier is null ? null : $"{{styleSheetUrl}}";""")}}
                     """);
 
             if (item.SlotSyntaxes.Any())
@@ -253,5 +254,14 @@ public partial class WebComponentGenerator : IIncrementalGenerator
         }
 
         return value;
+    }
+
+    private static string? GetStyleSheetUrl(string csPath)
+    {
+        // TODO: I really want to use a URL and not an inline stylesheet.
+        // I'm doing a dumb compromise with data-URLs until I figure out how to move the files in a good way.
+        var razorPath = Path.ChangeExtension(csPath, null);
+        var cssPath = Path.GetExtension(razorPath) == ".razor" && File.Exists(razorPath) ? razorPath + ".css" : csPath + ".css";
+        return File.Exists(cssPath) ? $"data:text/css;base64,{Convert.ToBase64String(File.ReadAllBytes(cssPath))}" : null;
     }
 }
