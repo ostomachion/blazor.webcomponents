@@ -16,13 +16,17 @@ public abstract class WebComponentBaseImpl : ComponentBase
 
     private string? GetIdentifier()
     {
-        _identifier ??= (string?)GetType().GetProperty(nameof(IWebComponent.Identifier), BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
+        _identifier ??= (string?)GetType()
+            .GetProperty(nameof(IWebComponent.Identifier), BindingFlags.Public | BindingFlags.Static)!
+            .GetValue(null);
         return _identifier;
     }
 
     private string? GetStylesheetUrl()
     {
-        _stylesheetUrl ??= (string?)GetType().GetProperty(nameof(IWebComponent.StylesheetUrl), BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
+        _stylesheetUrl ??= (string?)GetType()
+            .GetProperty(nameof(IWebComponent.StylesheetUrl), BindingFlags.Public | BindingFlags.Static)!
+            .GetValue(null);
         return _stylesheetUrl;
     }
 
