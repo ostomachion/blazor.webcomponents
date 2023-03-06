@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Ostomachion.BlazorWebComponents.Demo.Demos.EditWord;
 
-[WebComponent]
+[WebComponent("person-details")]
 public partial class PersonDetails
 {
     [Parameter]
