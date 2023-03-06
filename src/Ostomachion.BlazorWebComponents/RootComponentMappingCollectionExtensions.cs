@@ -7,6 +7,9 @@ public static class RootComponentMappingCollectionExtensions
 {
     public static void RegisterWebComponent<TComponent>(this RootComponentMappingCollection rootComponentMappings, string identifier)
         where TComponent : IComponent
+        => rootComponentMappings.RegisterWebComponent(typeof(TComponent), identifier);
+
+    private static void RegisterWebComponent(this RootComponentMappingCollection rootComponentMappings, Type type, string identifier)
     {
         var registeredIdentifiers = BlazorWebComponentManager.GetRegisteredIdentifiers(rootComponentMappings);
         if (!registeredIdentifiers.Any())
@@ -18,9 +21,21 @@ public static class RootComponentMappingCollectionExtensions
             throw new InvalidOperationException($"The identifier {identifier} has already been registered.");
         }
 
-        typeof(TComponent).GetProperty(nameof(IWebComponent.Identifier), BindingFlags.Public | BindingFlags.Static)!
+        type.GetProperty(nameof(IWebComponent.Identifier), BindingFlags.Public | BindingFlags.Static)!
             .SetValue(null, identifier);
 
-        BlazorWebComponentManager.RegisterComponent<TComponent>(rootComponentMappings, identifier);
+        BlazorWebComponentManager.RegisterComponent(rootComponentMappings, type, identifier);
+    }
+
+    public static void RegisterAllWebComponents(this RootComponentMappingCollection rootComponentMappings, Assembly assembly)
+    {
+        foreach (var type in assembly.DefinedTypes)
+        {
+            if (type.IsAssignableTo(typeof(WebComponentBase)))
+            {
+                var identifier = type.FullName?.ToLower().Replace('.', '-') ?? throw new NotSupportedException("Cannot get full name of type.");
+                rootComponentMappings.RegisterWebComponent(type, identifier);
+            }
+        }
     }
 }

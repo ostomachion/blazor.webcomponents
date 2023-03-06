@@ -29,8 +29,7 @@ public class BlazorWebComponentManager : ComponentBase
         }
     }
 
-    public static void RegisterComponent<TComponent>(RootComponentMappingCollection rootComponentMappings, string identifier)
-        where TComponent : IComponent
+    internal static void RegisterComponent(RootComponentMappingCollection rootComponentMappings, Type type, string identifier)
     {
         if (!_registeredComponents.TryGetValue(rootComponentMappings, out var registeredComponents))
         {
@@ -43,7 +42,12 @@ public class BlazorWebComponentManager : ComponentBase
             throw new InvalidOperationException($"The identifier {identifier} has already been registered.");
         }
 
-        registeredComponents.Add(identifier, typeof(TComponent));
+        if (!type.IsAssignableTo(typeof(IComponent)))
+        {
+            throw new ArgumentException($"Component must implement {nameof(IComponent)}.", nameof(identifier));
+        }
+
+        registeredComponents.Add(identifier, type);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
