@@ -1,7 +1,10 @@
 ﻿@page "/defined-pseudo-class"
 @using Ostomachion.BlazorWebComponents.Demo.Demos.DefinedPseudoClass
 
-<PageTitle>:defined demo</PageTitle>
+<PageHeader RelativeSourceUrl="Demos/DefinedPseudoClass" PageTitle=":defined demo">
+    <Heading><code>:defined</code> demo</Heading>
+</PageHeader>
+
 <HeadContent>
     <style>
         /* TODO: Figure out the right way to move this to a CSS file without turning on CSS isolation.*/
@@ -26,14 +29,6 @@
         }
     </style>
 </HeadContent>
-
-<header>
-    <h1><code>:defined</code> demo</h1>
-
-    <nav><a href="/">‹ Back to list.</a></nav>
-
-    <p class="source"><strong>Source:</strong> <a href="https://github.com/ostomachion/BlazorWebComponents/tree/main/demo/Ostomachion.BlazorWebComponents.Demo/Demos/DefinedPseudoClass">/BlazorWebComponents/demo/Ostomachion.BlazorWebComponents.Demo/Demos/DefinedPseudoClass</a></p>
-</header>
 
 <main>
     <SimpleCustom Text="Custom element example text" />

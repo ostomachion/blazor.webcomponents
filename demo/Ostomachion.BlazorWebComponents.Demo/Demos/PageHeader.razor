@@ -1,0 +1,17 @@
+﻿<PageTitle>@PageTitle</PageTitle>
+
+<header>
+    <h1>@Heading</h1>
+
+    <nav><a href="/">‹ Back to list.</a></nav>
+
+    <p class="source"><strong>Source:</strong> <a href="https://github.com/ostomachion/BlazorWebComponents/tree/main/demo/Ostomachion.BlazorWebComponents.Demo/@RelativeSourceUrl">/BlazorWebComponents/demo/Ostomachion.BlazorWebComponents.Demo/@RelativeSourceUrl</a></p>
+</header>
+
+@code {
+    [Parameter][EditorRequired] public string PageTitle { get; set; } = default!;
+
+    [Parameter][EditorRequired] public string RelativeSourceUrl { get; set; } = default!;
+
+    [Parameter][EditorRequired] public RenderFragment Heading { get; set; } = default!;
+}

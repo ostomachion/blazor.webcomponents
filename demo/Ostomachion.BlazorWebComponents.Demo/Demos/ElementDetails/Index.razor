@@ -1,15 +1,9 @@
 ﻿@page "/element-details"
 @using Ostomachion.BlazorWebComponents.Demo.Demos.ElementDetails
 
-<PageTitle>element-details - web component using &lt;template&gt; and &lt;slot&gt;</PageTitle>
-
-<header>
-    <h1>element-details - web component using <code>&lt;template&gt;</code> and <code>&lt;slot&gt;</code></h1>
-
-    <nav><a href="/">‹ Back to list.</a></nav>
-
-    <p class="source"><strong>Source:</strong> <a href="https://github.com/ostomachion/BlazorWebComponents/tree/main/demo/Ostomachion.BlazorWebComponents.Demo/Demos/ElementDetails">/BlazorWebComponents/demo/Ostomachion.BlazorWebComponents.Demo/Demos/ElementDetails</a></p>
-</header>
+<PageHeader RelativeSourceUrl="Demos/ElementDetails" PageTitle="element-details - web component using &lt;template&gt; and &lt;slot&gt;">
+    <Heading>element-details - web component using <code>&lt;template&gt;</code> and <code>&lt;slot&gt;</code></Heading>
+</PageHeader>
 
 <main>
     @{
@@ -47,44 +41,44 @@
                 and <code>alternate</code>. If no value is specified, the
                 default value is <code>scroll</code>.
             </text>,
-            ["bgcolor"] = @<text>
+        ["bgcolor"] = @<text>
                 Sets the background color through color name or
                 hexidecimal value.
             </text>,
-            ["direction"] = @<text>
+        ["direction"] = @<text>
                 Sets the direction of the scrolling within
                 the marquee. Possible values are <code>left</code>,
                 <code>right</code>, <code>up</code>, and <code>down</code>. If no
                 value is specified, the default value is <code>left</code>.
             </text>,
-            ["height"] = @<text>Sets the height in pixels or percentage value.</text>,
-            ["hspace"] = @<text>Sets the horizontal margin.</text>,
-            ["loop"] = @<text>
+        ["height"] = @<text>Sets the height in pixels or percentage value.</text>,
+        ["hspace"] = @<text>Sets the horizontal margin.</text>,
+        ["loop"] = @<text>
                 Sets the number of times the marquee will scroll. If
                 no value is specified, the default value is -1, which means the
                 marquee will scroll continuously.
             </text>,
-            ["scrollamount"] = @<text>
+        ["scrollamount"] = @<text>
                 Sets the amount of scrolling at each interval
                 in pixels. The default value is 6.
             </text>,
-            ["scrolldelay"] = @<text>
+        ["scrolldelay"] = @<text>
                 Sets the interval between each scroll movement
                 in milliseconds. The default value is 85. Note that any value smaller
                 than 60 is ignored and the value 60 is used instead unless
                 <code>truespeed</code> is specified.
             </text>,
-            ["truespeed"] = @<text>
+        ["truespeed"] = @<text>
                 By default, <code>scrolldelay</code> values lower
                 than 60 are ignored. If <code>truespeed</code> is present, those
                 values are not ignored.
             </text>,
-            ["vspace"] = @<text>
+        ["vspace"] = @<text>
                 Sets the vertical margin in pixels or percentage
                 values.
             </text>,
-            ["width"] = @<text>Sets the width in pixels or percentage value.</text>
-        };
+        ["width"] = @<text>Sets the width in pixels or percentage value.</text>
+    };
     }
     <ElementDetails ElementName="marquee" Attributes="marqueeAttributes">
         <Description>
