@@ -104,7 +104,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
             var namespaceName = GetNamespace(item.ClassDeclarationSyntax);
 
             var styleSheetUrl = GetStyleSheetUrl(item.ClassDeclarationSyntax.SyntaxTree.FilePath);
-
+            
             var builder = new StringBuilder()
                 .AppendLine($$"""
                     #nullable enable
@@ -165,11 +165,16 @@ public partial class WebComponentGenerator : IIncrementalGenerator
                                 {
                                     builder.OpenElement({{sequence++}}, {{rootElementName}});
                                     builder.AddAttribute({{sequence++}}, "slot", {{slotName}});
+
+                                    builder.AddAttribute({{sequence++}}, "xmlns:wc", GetType().Namespace);
+                                    builder.AddAttribute({{sequence++}}, $"wc:{nameof({{name}})}");
                         """);
 
                     if (slotSyntax.IsTemplated)
                     {
                         _ = builder.AppendLine($$"""
+                                        builder.AddAttribute({{sequence++}}, $"wc:{nameof({{name}}Template)}");
+
                                         if (this.{{name}}Template is null)
                                         {
                                             builder.AddContent({{sequence++}}, this.{{name}});
