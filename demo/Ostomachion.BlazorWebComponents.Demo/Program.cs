@@ -10,7 +10,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.RootComponents.RegisterAllWebComponents(Assembly.GetExecutingAssembly());
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddSingleton<IJSComponentConfiguration>(sp => builder.RootComponents);
+builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddSingleton<IJSComponentConfiguration>(_ => builder.RootComponents);
 
 builder.Build().RunAsync();

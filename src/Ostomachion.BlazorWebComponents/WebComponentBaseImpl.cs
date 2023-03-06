@@ -23,12 +23,15 @@ public abstract class WebComponentBaseImpl : ComponentBase
     }
 
     private string? GetStylesheetUrl()
-    {
+    {       
         _stylesheetUrl ??= (string?)GetType()
             .GetProperty(nameof(IWebComponent.StylesheetUrl), BindingFlags.Public | BindingFlags.Static)!
             .GetValue(null);
         return _stylesheetUrl;
     }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected HashSet<string> RenderedSlots { get; } = new();
 
     [Inject]
     protected virtual IJSRuntime JSRuntime { get; set; } = null!;
@@ -38,19 +41,16 @@ public abstract class WebComponentBaseImpl : ComponentBase
     public AttributeSet HostAttributes { get; } = new();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected HashSet<string> RenderedSlots { get; } = new();
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void BuildRenderTreeImpl(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected void BaseBuildRenderTree(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
     protected sealed override void BuildRenderTree(RenderTreeBuilder builder)
     {
+        RenderedSlots.Clear();
+
         var identifier = GetIdentifier() ?? throw new InvalidOperationException("The web component's identifier has not been set.");
         var stylesheetUrl = GetStylesheetUrl();
-
-        RenderedSlots.Clear();
 
         builder.OpenElement(Line(), identifier);
         builder.AddAttribute(Line(), "xmlns:wc", GetType().Namespace);
