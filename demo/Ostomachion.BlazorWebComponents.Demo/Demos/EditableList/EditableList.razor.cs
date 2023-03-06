@@ -25,7 +25,10 @@ public partial class EditableList
 
     private void AddListItem(MouseEventArgs e)
     {
-        ListItems.Add(InputValue);
-        InputValue = String.Empty;
+        if (!String.IsNullOrWhiteSpace(InputValue))
+        {
+            ListItems.Add(InputValue);
+            InputValue = String.Empty;
+        }
     }
 }
