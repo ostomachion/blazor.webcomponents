@@ -15,6 +15,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Include="wwwroot\css\editable-list.css" />
 	  <None Include="wwwroot\css\defined-pseudo-class.css" />
 	</ItemGroup>
 

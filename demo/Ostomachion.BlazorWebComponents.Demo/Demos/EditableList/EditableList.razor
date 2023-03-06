@@ -1,0 +1,17 @@
+﻿@inherits WebComponentBase
+
+<h3>@Title</h3>
+<ul class="item-list">
+    @foreach (var listItem in ListItems)
+    {
+        <li>
+            @listItem
+            <button class="editable-list-remove-item icon" @onclick="_ => RemoveListItem(listItem)">&ominus;</button>
+        </li>
+    }
+</ul>
+<div>
+    <label>@AddItemText</label>
+    <input class="add-new-list-item-input" type="text" @bind="InputValue" />
+    <button class="editable-list-add-item icon" @onclick="AddListItem">&oplus;</button>
+</div>
