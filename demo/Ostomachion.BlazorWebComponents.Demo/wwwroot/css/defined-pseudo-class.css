@@ -1,6 +1,5 @@
 ﻿@namespace wc 'ostomachion.blazorwebcomponents.demo.demos.definedpseudoclass';
 
-/* TODO: Figure out the right way to move this to a CSS file without turning on CSS isolation.*/
 main p {
     background: yellow;
 }
