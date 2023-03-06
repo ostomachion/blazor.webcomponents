@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
 using System.Collections.Immutable;
-using System.Reflection;
 
 namespace Ostomachion.BlazorWebComponents;
 
