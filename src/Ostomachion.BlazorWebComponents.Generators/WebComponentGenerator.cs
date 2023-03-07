@@ -51,7 +51,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
         {
             return null;
         }
-
+        
         var slots = syntax.Members
             .OfType<PropertyDeclarationSyntax>()
             .Select(p => InitialPropertyInformation.Parse(p, context, cancellationToken))

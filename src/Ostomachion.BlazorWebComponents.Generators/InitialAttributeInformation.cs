@@ -9,6 +9,7 @@ internal record class InitialAttributeInformation
     public IMethodSymbol AttributeConstructorSymbol { get; set; } = null!;
     public AttributeArgumentSyntax? SlotNameArgument { get; set; }
     public AttributeArgumentSyntax? RootElementArgument { get; set; }
+    public AttributeArgumentSyntax? IsTemplatedArgument { get; set; }
 
     private InitialAttributeInformation() { }
 
@@ -22,12 +23,14 @@ internal record class InitialAttributeInformation
 
         var slotNameArgument = syntax.ArgumentList?.Arguments.FirstOrDefault(x => x.NameEquals is null);
         var rootElementArgument = syntax.ArgumentList?.Arguments.FirstOrDefault(x => x.NameEquals is NameEqualsSyntax n && n.Name.Identifier.ToString() == "RootElement");
+        var isTemplatedArgument = syntax.ArgumentList?.Arguments.FirstOrDefault(x => x.NameEquals is NameEqualsSyntax n && n.Name.Identifier.ToString() == "IsTemplated");
 
         return new InitialAttributeInformation
         {
             AttributeConstructorSymbol = methodSymbol,
             SlotNameArgument = slotNameArgument,
             RootElementArgument = rootElementArgument,
+            IsTemplatedArgument = isTemplatedArgument,
         };
     }
 }

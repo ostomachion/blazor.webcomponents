@@ -42,11 +42,23 @@ internal record class SlotInformation
             rootElement = context.SemanticModel.GetConstantValue(rootElementArg.Expression, cancellationToken).Value as string;
         }
 
+        var isTemplatedArg = info.AttributeInformation.IsTemplatedArgument;
+        bool isTemplated;
+        if (isTemplatedArg is null)
+        {
+            isTemplated = false;
+        }
+        else
+        {
+            isTemplated = context.SemanticModel.GetConstantValue(isTemplatedArg.Expression, cancellationToken).Value is bool b && b;
+        }
+
         return new SlotInformation
         {
             PropertyName = info.PropertySyntax.Identifier.ToString(),
             SlotName = slotName,
-            RootElement = rootElement
+            RootElement = rootElement,
+            IsTemplated = isTemplated,
         };
     }
 }

@@ -16,7 +16,7 @@ public partial class ElementDetails
     public RenderFragment Description { get; set; } = null!;
 
     [Parameter]
-    [Slot("attributes")]
+    [Slot("attributes", IsTemplated = true)]
     public AttributeList? Attributes { get; set; }
 
     [Parameter]

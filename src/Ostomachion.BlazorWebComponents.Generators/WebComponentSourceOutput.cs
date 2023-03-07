@@ -73,9 +73,7 @@ internal static class WebComponentSourceOutput
                                     builder.AddAttribute({{sequence++}}, $"wc:{nameof(this.{{slot.PropertyName}})}");
                         """);
 
-            // TODO: Check for templated slots
-            var templated = false;
-            if (templated)
+            if (slot.IsTemplated)
             {
                 builder.AppendLine($$"""
                                     builder.AddAttribute({{sequence++}}, $"wc:{nameof(this.{{slot.PropertyName}}Template)}");
