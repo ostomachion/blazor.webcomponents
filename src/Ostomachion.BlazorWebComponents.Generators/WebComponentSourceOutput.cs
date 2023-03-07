@@ -57,11 +57,42 @@ internal static class WebComponentSourceOutput
                 
                         public partial class {{item.Name}}
                         {
+                        """);
+
+        var sequence = 0;
+
+        // Output template properties.
+        foreach (var slot in item.Slots.Where(x => x.IsTemplated))
+        {
+            builder.AppendLine($$"""
+                            [Parameter]
+                            public RenderFragment<{{slot.PropertyTypeFullName}}>? {{slot.PropertyName}}Template { get; set; }
+
+                        """);
+        }
+
+        // Output slot properties.
+        foreach (var slot in item.Slots)
+        {
+            builder.AppendLine($$"""
+                            private RenderFragment {{slot.PropertyName}}Slot => (builder) =>
+                            {
+                                RenderedSlots.Add({{ToStringLiteral(slot.PropertyName)}});
+                                builder.OpenElement(0, "slot");
+                                builder.AddAttribute(1, "name", {{ToStringLiteral(slot.SlotName ?? slot.PropertyName)}});
+                                builder.AddContent(2, {{ToStringLiteral(slot.SlotName ?? slot.PropertyName)}});
+                                builder.CloseElement();
+                            };
+
+                        """);
+        }
+
+        // Output BuildRenderTreeSlots method.
+        builder.AppendLine($$"""
                             protected override void BuildRenderTreeSlots(RenderTreeBuilder builder)
                             {
                         """);
 
-        var sequence = 0;
         foreach (var slot in item.Slots)
         {
             builder.AppendLine($$"""
@@ -102,23 +133,6 @@ internal static class WebComponentSourceOutput
 
         builder.AppendLine($$"""
                             }
-                        """);
-
-        foreach (var slot in item.Slots)
-        {
-            builder.AppendLine($$"""
-                            private RenderFragment {{slot.PropertyName}}Slot => (builder) =>
-                            {
-                                RenderedSlots.Add({{ToStringLiteral(slot.PropertyName)}});
-                                builder.OpenElement(0, "slot");
-                                builder.AddAttribute(1, "name", {{ToStringLiteral(slot.SlotName ?? slot.PropertyName)}});
-                                builder.AddContent(2, {{ToStringLiteral(slot.SlotName ?? slot.PropertyName)}});
-                                builder.CloseElement();
-                            };
-                        """);
-        }
-
-        builder.Append($$"""
                         }
                         """);
 
