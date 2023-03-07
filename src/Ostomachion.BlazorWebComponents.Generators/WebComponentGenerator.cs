@@ -12,7 +12,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
         // Get all classes that inherit WebComponentBase.
         // Partial classes (e.g. from Razor) will be included once from each source file.
         var webComponentsSources = context.SyntaxProvider
-            .CreateSyntaxProvider(WebComponentPredicate, WebComponentTransform)
+            .CreateSyntaxProvider(WebComponentPredicate, WebComponentInitialTransform)
             .Where(x => x is not null);
 
         // Gather a list of unique classes that inherit WebComponentBase.
@@ -39,7 +39,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 
     private bool WebComponentPredicate(SyntaxNode n, CancellationToken _) => n is ClassDeclarationSyntax;
 
-    private WebComponentClassInformation? WebComponentTransform(GeneratorSyntaxContext context, CancellationToken cancellationToken)
+    private WebComponentClassInformation? WebComponentInitialTransform(GeneratorSyntaxContext context, CancellationToken cancellationToken)
     {
         // TODO: I tried to make this method not do more work than necessary,
         // should some of this work be split up or moved later in the process?
@@ -63,7 +63,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
             FilePath = context.Node.SyntaxTree.FilePath,
             Name = symbol.Name,
             Namespace = symbol.ContainingNamespace.ToString(),
-            Slots = slots.ToArray()
+            Slots = slots.ToArray(),
         };
     }
 }
