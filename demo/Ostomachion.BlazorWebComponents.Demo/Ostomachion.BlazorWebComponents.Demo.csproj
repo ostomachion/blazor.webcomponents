@@ -7,11 +7,9 @@
 		<DisableScopedCss>true</DisableScopedCss>
 
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>Generated Files</CompilerGeneratedFilesOutputPath>
-	</PropertyGroup>
+		<CompilerGeneratedFilesOutputPath>\Generated Files\Ostomachion.BlazorWebComponents</CompilerGeneratedFilesOutputPath>
 
-	<PropertyGroup>
-		<DefaultItemExcludes>**\Generated Files\**\*</DefaultItemExcludes>
+		<UseRazorSourceGenerator>false</UseRazorSourceGenerator>
 	</PropertyGroup>
 
 	<ItemGroup>

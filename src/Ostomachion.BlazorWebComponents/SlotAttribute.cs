@@ -9,6 +9,8 @@ public sealed class SlotAttribute : Attribute
 
     public string? RootElement { get; set; }
 
+    public bool IsTemplated { get; set; }
+
     public SlotAttribute([CallerMemberName]string slotName = null!)
     {
         SlotName = slotName;

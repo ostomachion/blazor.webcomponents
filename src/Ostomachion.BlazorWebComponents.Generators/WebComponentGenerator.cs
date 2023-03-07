@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Text;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -11,29 +9,61 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Get all .razor files.
-        var files = context.AdditionalTextsProvider
-            .Select((text, _) => text.Path)
-            .Where(path => Path.GetExtension(path) == ".razor");
-
         // Get all classes that inherit WebComponentBase.
-        var webComponents = context.SyntaxProvider.CreateSyntaxProvider(
-            (n, _) => n is ClassDeclarationSyntax c &&
-                c.BaseList is not null &&
-                c.BaseList.Types.Any(t => t.Type is NameSyntax),
-            (context, _) =>
-            {
-                var symbol = (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!;
-                return (context.Node.SyntaxTree.FilePath, symbol.Name, symbol.ContainingNamespace, symbol.BaseType);
-            })
-            .Collect();
+        // Partial classes (e.g. from Razor) will be included once from each source file.
+        var webComponentsSources = context.SyntaxProvider
+            .CreateSyntaxProvider(WebComponentPredicate, WebComponentTransform)
+            .Where(x => x is not null);
 
-        //var files = context.SyntaxProvider.CreateSyntaxProvider(
-        //    static (n, _) => n is 
+        // Gather a list of unique classes that inherit WebComponentBase.
+        var distinctNames = webComponentsSources
+            .Select((x, _) => new NameInfo(x!.Name, x.Namespace))
+            .Collect()
+            .SelectMany((x, _) => x.Distinct());
 
-        context.RegisterImplementationSourceOutput(webComponents, (context, webComponents) =>
+        // For each unique WebComponentBase, output a partial class with common members.
+        context.RegisterSourceOutput(distinctNames, WebComponentSourceOutput.CreateCommonFile);
+
+        // For each distinct WebComponentBase class, output a partial class with common members.
+        var slotSources = webComponentsSources
+            .Where(s => s!.Slots.Any())
+            .Select((x, _) => new SlotSourceInformation(x!))
+            .Collect()
+            .SelectMany((x, _) => SlotSourceInformation.Group(x));
+
+        // For each WebComponentBase declaration that defines slots, output a partial class with the slot properties.
+        context.RegisterSourceOutput(slotSources, WebComponentSourceOutput.CreateSlotSource);
+
+        // TODO: Handle CSS files???
+    }
+
+    private bool WebComponentPredicate(SyntaxNode n, CancellationToken _) => n is ClassDeclarationSyntax;
+
+    private WebComponentClassInformation? WebComponentTransform(GeneratorSyntaxContext context, CancellationToken cancellationToken)
+    {
+        // TODO: I tried to make this method not do more work than necessary,
+        // should some of this work be split up or moved later in the process?
+
+        var syntax = (ClassDeclarationSyntax)context.Node;
+        var symbol = context.SemanticModel.GetDeclaredSymbol(syntax, cancellationToken)!;
+
+        if (symbol.BaseType?.ToString() != "Ostomachion.BlazorWebComponents.WebComponentBase")
         {
-            context.AddSource("additional-files.g.txt", string.Join("\n", webComponents.Select(x => $"{Path.GetFileName(x.FilePath)} {x.Name} {x.ContainingNamespace} {x.BaseType}")));
-        });
+            return null;
+        }
+
+        var slots = syntax.Members
+            .OfType<PropertyDeclarationSyntax>()
+            .Select(p => InitialPropertyInformation.Parse(p, context, cancellationToken))
+            .OfType<InitialPropertyInformation>()
+            .Select(x => SlotInformation.Parse(x, context, cancellationToken));
+
+        return new WebComponentClassInformation
+        {
+            FilePath = context.Node.SyntaxTree.FilePath,
+            Name = symbol.Name,
+            Namespace = symbol.ContainingNamespace.ToString(),
+            Slots = slots.ToArray()
+        };
     }
 }
