@@ -32,26 +32,13 @@ internal record class SlotInformation
         }
 
         var rootElementArg = info.AttributeInformation.RootElementArgument;
-        string? rootElement;
-        if (rootElementArg is null)
-        {
-            rootElement = null;
-        }
-        else
-        {
-            rootElement = context.SemanticModel.GetConstantValue(rootElementArg.Expression, cancellationToken).Value as string;
-        }
+        string? rootElement = rootElementArg is null
+            ? null
+            : context.SemanticModel.GetConstantValue(rootElementArg.Expression, cancellationToken).Value as string;
 
         var isTemplatedArg = info.AttributeInformation.IsTemplatedArgument;
-        bool isTemplated;
-        if (isTemplatedArg is null)
-        {
-            isTemplated = false;
-        }
-        else
-        {
-            isTemplated = context.SemanticModel.GetConstantValue(isTemplatedArg.Expression, cancellationToken).Value is bool b && b;
-        }
+        bool isTemplated = isTemplatedArg is not null &&
+            context.SemanticModel.GetConstantValue(isTemplatedArg.Expression, cancellationToken).Value is bool b && b;
 
         return new SlotInformation
         {
