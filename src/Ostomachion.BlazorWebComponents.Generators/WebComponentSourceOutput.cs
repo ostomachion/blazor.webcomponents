@@ -111,10 +111,10 @@ internal static class WebComponentSourceOutput
             builder.AppendLine($$"""
                             private RenderFragment {{slot.PropertyName}}Slot => (builder) =>
                             {
-                                RenderedSlots.Add({{ToStringLiteral(slot.SlotName ?? slot.PropertyName)}});
+                                RenderedSlots.Add({{ToStringLiteral(slot.PropertyName)}});
                                 builder.OpenElement(0, "slot");
-                                builder.AddAttribute(1, "name", {{ToStringLiteral(slot.SlotName)}});
-                                builder.AddContent(2, {{ToStringLiteral(slot.SlotName)}});
+                                builder.AddAttribute(1, "name", {{ToStringLiteral(slot.SlotName ?? slot.PropertyName)}});
+                                builder.AddContent(2, {{ToStringLiteral(slot.SlotName ?? slot.PropertyName)}});
                                 builder.CloseElement();
                             };
                         """);
