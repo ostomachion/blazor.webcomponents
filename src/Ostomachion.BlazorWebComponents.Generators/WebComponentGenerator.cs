@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Ostomachion.BlazorWebComponents.Generators;
 
-[Generator]
+[Generator(LanguageNames.CSharp)]
 public partial class WebComponentGenerator : IIncrementalGenerator
 {
     // TODO: Create copies of .css files in wwwroot
