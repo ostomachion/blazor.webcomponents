@@ -6,6 +6,7 @@ namespace Ostomachion.BlazorWebComponents.Generators;
 internal record class SlotInformation
 {
     public string PropertyName { get; set; } = default!;
+    public string PropertyTypeFullName { get; set; } = default!;
     public string? SlotName { get; set; } = default!;
     public string? RootElement { get; set; } = default!;
     public bool IsTemplated { get; set; }
@@ -40,9 +41,12 @@ internal record class SlotInformation
         bool isTemplated = isTemplatedArg is not null &&
             context.SemanticModel.GetConstantValue(isTemplatedArg.Expression, cancellationToken).Value is bool b && b;
 
+        var propertyType = context.SemanticModel.GetTypeInfo(info.PropertySyntax.Type).Type!.ToString();
+
         return new SlotInformation
         {
             PropertyName = info.PropertySyntax.Identifier.ToString(),
+            PropertyTypeFullName = propertyType,
             SlotName = slotName,
             RootElement = rootElement,
             IsTemplated = isTemplated,

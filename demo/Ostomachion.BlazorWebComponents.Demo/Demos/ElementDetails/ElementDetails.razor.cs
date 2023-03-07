@@ -18,7 +18,4 @@ public partial class ElementDetails
     [Parameter]
     [Slot("attributes", IsTemplated = true)]
     public AttributeList? Attributes { get; set; }
-
-    [Parameter]
-    public RenderFragment<AttributeList>? AttributesTemplate { get; set; }
 }
