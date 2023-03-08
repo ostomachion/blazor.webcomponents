@@ -2,9 +2,9 @@
 
 <div>
     <h2>Personal ID Card</h2>
-    @PersonNameSlot
+    @Slot(nameof(PersonName))
     <ul>
-        <li>@PersonAgeSlot</li>
-        <li>@PersonOccupationSlot</li>
+        <li>@Slot(nameof(PersonAge))</li>
+        <li>@Slot(nameof(PersonOccupation))</li>
     </ul>
 </div>
