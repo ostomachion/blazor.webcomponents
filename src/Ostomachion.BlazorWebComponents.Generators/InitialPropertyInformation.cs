@@ -6,17 +6,17 @@ namespace Ostomachion.BlazorWebComponents.Generators;
 internal record class InitialPropertyInformation
 {
     public PropertyDeclarationSyntax PropertySyntax { get; set; } = null!;
-    public InitialAttributeInformation AttributeInformation { get; set; } = null!;
+    public InitialSlotAttributeInformation SlotAttributeInformation { get; set; } = null!;
 
     private InitialPropertyInformation() { }
 
     public static InitialPropertyInformation? Parse(PropertyDeclarationSyntax syntax, GeneratorSyntaxContext context, CancellationToken cancellationToken)
     {
-        var attributeInformation = syntax.AttributeLists
+        var slotAttributeInformation = syntax.AttributeLists
             .SelectMany(l => l.Attributes)
-            .Select(a => InitialAttributeInformation.Parse(a, context, cancellationToken))
+            .Select(a => InitialSlotAttributeInformation.Parse(a, context, cancellationToken))
             .FirstOrDefault(x => x is not null);
-        if (attributeInformation is null)
+        if (slotAttributeInformation is null)
         {
             return null;
         }
@@ -24,7 +24,7 @@ internal record class InitialPropertyInformation
         return new InitialPropertyInformation
         {
             PropertySyntax = syntax,
-            AttributeInformation = attributeInformation,
+            SlotAttributeInformation = slotAttributeInformation,
         };
     }
 }

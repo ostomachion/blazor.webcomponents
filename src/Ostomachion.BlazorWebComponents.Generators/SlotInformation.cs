@@ -15,7 +15,7 @@ internal record class SlotInformation
 
     public static SlotInformation Parse(InitialPropertyInformation info, GeneratorSyntaxContext context, CancellationToken cancellationToken)
     {
-        var slotNameArg = info.AttributeInformation.SlotNameArgument;
+        var slotNameArg = info.SlotAttributeInformation.SlotNameArgument;
         string? slotName;
         if (slotNameArg is null || slotNameArg.NameEquals is not null)
         {
@@ -32,11 +32,11 @@ internal record class SlotInformation
             slotName = context.SemanticModel.GetConstantValue(slotNameArg.Expression, cancellationToken).Value as string;
         }
 
-        var isTemplatedArg = info.AttributeInformation.IsTemplatedArgument;
+        var isTemplatedArg = info.SlotAttributeInformation.IsTemplatedArgument;
         bool isTemplated = isTemplatedArg is not null &&
             context.SemanticModel.GetConstantValue(isTemplatedArg.Expression, cancellationToken).Value is bool b && b;
 
-        var rootElementArg = info.AttributeInformation.RootElementArgument;
+        var rootElementArg = info.SlotAttributeInformation.RootElementArgument;
         string? rootElement = rootElementArg is null
             ? (isTemplated ? "div" : "span")
             : context.SemanticModel.GetConstantValue(rootElementArg.Expression, cancellationToken).Value as string;
