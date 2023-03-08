@@ -9,9 +9,6 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var projectDir = context.AnalyzerConfigOptionsProvider.Select((x, c)
-            => x.GlobalOptions.TryGetValue("build_property.projectdir", out var value) ? value : null);
-
         // Get all classes that inherit WebComponentBase.
         // Partial classes (e.g. from Razor) will be included once from each source file.
         var webComponentsSources = context.SyntaxProvider
