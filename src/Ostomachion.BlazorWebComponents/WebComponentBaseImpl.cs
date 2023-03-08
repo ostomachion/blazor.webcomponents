@@ -91,4 +91,6 @@ public abstract class WebComponentBaseImpl : ComponentBase
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void BuildRenderTreeSlots(RenderTreeBuilder builder) { }
+
+    protected virtual RenderFragment Slot(string propertyName) => _ => { };
 }
