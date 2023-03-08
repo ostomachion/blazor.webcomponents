@@ -9,7 +9,11 @@
     </summary>
     <div class="attributes">
         <h4><span>Attributes</span></h4>
-        @if (Slot[Attributes] is null)
+        @if (IsTemplateDefined(Attributes))
+        {
+            @Slot[Attributes]
+        }
+        else
         {
             if (Attributes?.Any() ?? false)
             {
@@ -25,10 +29,6 @@
             {
                 <p>None</p>
             }
-        }
-        else
-        {
-            @Slot[Attributes]
         }
     </div>
 </details>

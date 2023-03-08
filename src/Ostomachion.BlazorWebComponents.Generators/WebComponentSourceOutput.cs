@@ -44,14 +44,15 @@ internal static class WebComponentSourceOutput
 
     public static void CreateSlotSource(SourceProductionContext context, SlotSourceInformation item)
     {
-        // TODO: Add slot template properties.
         var builder = new StringBuilder();
         builder.AppendLine($$"""
                         #nullable enable
-                        using System;
                         using Microsoft.AspNetCore.Components;
                         using Microsoft.AspNetCore.Components.Rendering;
                         using Ostomachion.BlazorWebComponents;
+                        using System;
+                        using System.Collections.Immutable;
+                        using System.Runtime.CompilerServices;
 
                         namespace {{item.Namespace}};
                 
@@ -126,25 +127,45 @@ internal static class WebComponentSourceOutput
 
                         """);
 
-        // Output Slot method.
+        // Output Slot property.
         builder.AppendLine($$"""
-                            protected override RenderFragment Slot(string propertyName) => propertyName switch
+                            protected override SlotLookup Slot => new(new Dictionary<string, RenderFragment>
                             {
                         """);
 
         foreach (var slot in item.Slots)
         {
             builder.AppendLine($$"""
-                                {{ToStringLiteral(slot.PropertyName)}} => {{slot.PropertyName}}Slot,
+                                [{{ToStringLiteral(slot.PropertyName)}}] = {{slot.PropertyName}}Slot,
+                                ["this.{{ToStringLiteral(slot.PropertyName, quote: false)}}"] = {{slot.PropertyName}}Slot,
                         """);
         }
 
         builder.AppendLine($$"""
-                                _ => throw new ArgumentException($"{propertyName} is not a slot property name.", nameof(propertyName))
-                            };
-
+                            }.ToImmutableDictionary());
                         """);
 
+        // Output IsTemplateDefined method.
+        builder.AppendLine($$"""
+                            protected override bool IsTemplateDefined(object? property, [CallerArgumentExpression(nameof(property))]string propertyName = default!)
+                            => propertyName switch
+                            {
+                        """);
+
+        foreach (var slot in item.Slots.Where(x => x.IsTemplated))
+        {
+            builder.AppendLine($$"""
+                                {{ToStringLiteral(slot.PropertyName)}} => {{slot.PropertyName}}Template is not null,
+                                "this.{{ToStringLiteral(slot.PropertyName, quote: false)}}" => {{slot.PropertyName}}Template is not null,
+                        """);
+        }
+
+        builder.AppendLine($$"""
+                                _ => throw new ArgumentException($"'{propertyName}' is not a templated property", nameof(property))
+                            };
+                        """);
+
+        // End class.
         builder.AppendLine($$"""
                         }
                         """);
@@ -153,5 +174,5 @@ internal static class WebComponentSourceOutput
     }
 
 
-    private static string ToStringLiteral(string? value) => value is null ? "null" : SymbolDisplay.FormatLiteral(value, true);
+    private static string ToStringLiteral(string? value, bool quote = true) => value is null ? "null" : SymbolDisplay.FormatLiteral(value, quote);
 }
