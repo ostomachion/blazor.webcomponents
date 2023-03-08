@@ -16,28 +16,11 @@ public abstract class WebComponentBase : WebComponentBaseImpl
     protected new virtual void BuildRenderTree(RenderTreeBuilder builder) => BaseBuildRenderTree(builder);
 }
 
-// TODO: See if there's a better design pattern to accomplish this?
 [EditorBrowsable(EditorBrowsableState.Never)]
-public abstract class WebComponentBaseImpl : ComponentBase
+public abstract class WebComponentBaseImpl : CustomElementBase
 {
-    private static readonly Dictionary<Type, string?> _identifierMemo = new();
-    private string? GetIdentifier()
-    {
-        var type = GetType();
-        if (!_identifierMemo.TryGetValue(type, out string? value))
-        {
-            value = (string?)type
-                .GetProperty(nameof(IWebComponent.Identifier), BindingFlags.Public | BindingFlags.Static)!
-                .GetValue(null);
-
-            _identifierMemo.Add(type, value);
-        }
-
-        return value;
-    }
-
     private static readonly Dictionary<Type, string?> _stylesheetMemo = new();
-    private string? GetStylesheet()
+    protected string? GetStylesheet()
     {
         var type = GetType();
         if (!_stylesheetMemo.TryGetValue(type, out string? value))
@@ -57,18 +40,14 @@ public abstract class WebComponentBaseImpl : ComponentBase
 
     protected virtual SlotLookup Slot => new(ImmutableDictionary<string, RenderFragment>.Empty);
 
-    [Inject]
-    protected virtual IJSRuntime JSRuntime { get; set; } = null!;
-
     public virtual ShadowRootMode ShadowRootMode => ShadowRootMode.Open;
 
-    public AttributeSet HostAttributes { get; } = new();
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected new virtual void BuildRenderTreeImpl(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual void BuildRenderTreeImpl(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
+    protected new void BaseBuildRenderTree(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected void BaseBuildRenderTree(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
     protected sealed override void BuildRenderTree(RenderTreeBuilder builder)
     {
         RenderedSlots.Clear();

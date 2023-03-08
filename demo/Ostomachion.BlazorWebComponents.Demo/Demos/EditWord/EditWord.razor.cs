@@ -7,7 +7,10 @@ namespace Ostomachion.BlazorWebComponents.Demo.Demos.EditWord;
 [WebComponent("edit-word")]
 public partial class EditWord
 {
-    protected IJSObjectReference? Module { get; set; }
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; } = null!;
+
+    private IJSObjectReference? Module { get; set; }
 
     [Parameter]
     [EditorRequired]
