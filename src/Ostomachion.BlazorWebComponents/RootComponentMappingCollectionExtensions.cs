@@ -12,7 +12,7 @@ public static class RootComponentMappingCollectionExtensions
     private static void RegisterWebComponent(this RootComponentMappingCollection rootComponentMappings, Type type, string? identifier = null)
     {
         // Try to get default name from attribute.
-        identifier ??= type.GetCustomAttribute<WebComponentAttribute>()?.DefaultName;
+        identifier ??= type.GetCustomAttribute<CustomElementAttribute>()?.DefaultName;
 
         // If we still don't have a name, construct one from the qualified name if possible.
         identifier ??= type.FullName?.ToLower().Replace('.', '-') ?? throw new NotSupportedException($"Cannot create an identifier for the component {type.FullName}.");
