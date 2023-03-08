@@ -32,14 +32,14 @@ internal record class SlotInformation
             slotName = context.SemanticModel.GetConstantValue(slotNameArg.Expression, cancellationToken).Value as string;
         }
 
-        var rootElementArg = info.AttributeInformation.RootElementArgument;
-        string? rootElement = rootElementArg is null
-            ? null
-            : context.SemanticModel.GetConstantValue(rootElementArg.Expression, cancellationToken).Value as string;
-
         var isTemplatedArg = info.AttributeInformation.IsTemplatedArgument;
         bool isTemplated = isTemplatedArg is not null &&
             context.SemanticModel.GetConstantValue(isTemplatedArg.Expression, cancellationToken).Value is bool b && b;
+
+        var rootElementArg = info.AttributeInformation.RootElementArgument;
+        string? rootElement = rootElementArg is null
+            ? (isTemplated ? "div" : "span")
+            : context.SemanticModel.GetConstantValue(rootElementArg.Expression, cancellationToken).Value as string;
 
         var propertyType = context.SemanticModel.GetTypeInfo(info.PropertySyntax.Type).Type!.ToString();
 
