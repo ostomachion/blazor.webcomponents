@@ -96,5 +96,6 @@ public abstract class WebComponentBaseImpl : ComponentBase
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void BuildRenderTreeSlots(RenderTreeBuilder builder) { }
 
-    protected virtual bool IsTemplateDefined(object? property, string propertyName) => false;
+    protected virtual bool IsTemplateDefined(object? property, string propertyName = null!) => false;
 }
+
