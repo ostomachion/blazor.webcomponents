@@ -1,7 +1,6 @@
 ﻿namespace Ostomachion.BlazorWebComponents;
 
-public interface IWebComponent
+public interface IWebComponent : ICustomElement
 {
-    public static abstract string? Identifier { get; set; }
     public static abstract string? Stylesheet { get; }
 }
