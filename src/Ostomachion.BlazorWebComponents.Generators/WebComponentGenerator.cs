@@ -35,15 +35,14 @@ public partial class WebComponentGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(slotSources, WebComponentSourceOutput.CreateSlotSource);
 
         // TODO: Handle CSS files???
+        var stylesheets = context.AdditionalTextsProvider
+            .Where(x => Path.GetExtension(x.Path) == ".css");
     }
 
     private bool WebComponentPredicate(SyntaxNode n, CancellationToken _) => n is ClassDeclarationSyntax;
 
     private WebComponentClassInformation? WebComponentInitialTransform(GeneratorSyntaxContext context, CancellationToken cancellationToken)
     {
-        // TODO: I tried to make this method not do more work than necessary,
-        // should some of this work be split up or moved later in the process?
-
         var syntax = (ClassDeclarationSyntax)context.Node;
         var symbol = context.SemanticModel.GetDeclaredSymbol(syntax, cancellationToken)!;
 
@@ -51,7 +50,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
         {
             return null;
         }
-        
+
         var slots = syntax.Members
             .OfType<PropertyDeclarationSyntax>()
             .Select(p => InitialPropertyInformation.Parse(p, context, cancellationToken))
