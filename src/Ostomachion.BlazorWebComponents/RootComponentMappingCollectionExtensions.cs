@@ -1,16 +1,20 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using System.Reflection;
 
 namespace Ostomachion.BlazorWebComponents;
 public static class RootComponentMappingCollectionExtensions
 {
-    public static void RegisterWebComponent<TComponent>(this RootComponentMappingCollection rootComponentMappings, string? identifier = null)
-        where TComponent : IComponent
-        => rootComponentMappings.RegisterWebComponent(typeof(TComponent), identifier);
+    public static void RegisterCustomElement<TComponent>(this RootComponentMappingCollection rootComponentMappings, string? identifier = null)
+        where TComponent : CustomElementBase
+        => rootComponentMappings.RegisterCustomElement(typeof(TComponent), identifier);
 
-    private static void RegisterWebComponent(this RootComponentMappingCollection rootComponentMappings, Type type, string? identifier = null)
+    private static void RegisterCustomElement(this RootComponentMappingCollection rootComponentMappings, Type type, string? identifier = null)
     {
+        if (!type.IsAssignableTo(typeof(CustomElementBase)))
+        {
+            throw new ArgumentException($"Unable to register the component {type.FullName} because it does not inherit from ${nameof(CustomElementBase)}.");
+        }
+
         // Try to get default name from attribute.
         identifier ??= type.GetCustomAttribute<CustomElementAttribute>()?.DefaultName;
 
@@ -28,21 +32,21 @@ public static class RootComponentMappingCollectionExtensions
                 $"because the identifier has already been registered for the {component.FullName}.");
         }
 
-        type.GetProperty(nameof(IWebComponent.Identifier), BindingFlags.Public | BindingFlags.Static)!
+        type.GetProperty(nameof(ICustomElement.Identifier), BindingFlags.Public | BindingFlags.Static)!
             .SetValue(null, identifier);
 
         BlazorWebComponentManager.RegisterComponent(rootComponentMappings, type, identifier);
     }
 
-    public static void RegisterAllWebComponents(this RootComponentMappingCollection rootComponentMappings, Assembly assembly)
+    public static void RegisterAllCustomElements(this RootComponentMappingCollection rootComponentMappings, Assembly assembly)
     {
         var types = assembly.DefinedTypes
-            .Where(t => t.IsAssignableTo(typeof(WebComponentBase)))
+            .Where(t => t.IsAssignableTo(typeof(CustomElementBase)))
             .Where(t => !BlazorWebComponentManager.GetRegisteredTypes(rootComponentMappings).ContainsValue(t));
 
         foreach (var type in types)
         {
-            rootComponentMappings.RegisterWebComponent(type);
+            rootComponentMappings.RegisterCustomElement(type);
         }
     }
 }
