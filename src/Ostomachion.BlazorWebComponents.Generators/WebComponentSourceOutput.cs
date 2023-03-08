@@ -61,16 +61,6 @@ internal static class WebComponentSourceOutput
 
         var sequence = 0;
 
-        // Output template properties.
-        foreach (var slot in item.Slots.Where(x => x.IsTemplated))
-        {
-            builder.AppendLine($$"""
-                            [Parameter]
-                            public RenderFragment<{{slot.PropertyTypeFullName}}>? {{slot.PropertyName}}Template { get; set; }
-
-                        """);
-        }
-
         // Output slot properties.
         foreach (var slot in item.Slots)
         {
@@ -138,7 +128,7 @@ internal static class WebComponentSourceOutput
 
         // Output Slot method.
         builder.AppendLine($$"""
-                            protected override RenderTree Slot(string propertyName) => propertyName switch
+                            protected override RenderFragment Slot(string propertyName) => propertyName switch
                             {
                         """);
 
@@ -150,28 +140,9 @@ internal static class WebComponentSourceOutput
         }
 
         builder.AppendLine($$"""
-                                _ => throw new ArgumentException($"{property} is not a slot property name.", nameof(propertyName))
+                                _ => throw new ArgumentException($"{propertyName} is not a slot property name.", nameof(propertyName))
                             };
 
-                        """);
-
-        // Output Template method.
-
-        builder.AppendLine($$"""
-                            protected override RenderTree<T> Template<T>(string propertyName) => propertyName switch
-                            {
-                        """);
-
-        foreach (var slot in item.Slots)
-        {
-            builder.AppendLine($$"""
-                        {{ToStringLiteral(slot.PropertyName)}} => {{slot.PropertyName}}Template as RenderFragment<T> ?? throw new ArgumentException("Incorrect type parameter.", nameof(T)),
-                        """);
-        }
-
-        builder.AppendLine($$"""
-                                _ => throw new ArgumentException($"{property} is not a templatedee property name.", nameof(propertyName))
-                            };
                         """);
 
         builder.AppendLine($$"""
