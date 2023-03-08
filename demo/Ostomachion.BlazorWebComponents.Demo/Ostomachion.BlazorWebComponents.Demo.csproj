@@ -13,8 +13,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Include="wwwroot\css\editable-list.css" />
-	  <None Include="wwwroot\css\defined-pseudo-class.css" />
+		<None Remove="Demos\**\*.razor.css" />
+		<AdditionalFiles Include="Demos\**\*.razor.css" />
+		<AdditionalFiles Update="Demos\**\*.razor.css">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</AdditionalFiles>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="wwwroot\css\editable-list.css" />
+		<None Include="wwwroot\css\defined-pseudo-class.css" />
 	</ItemGroup>
 
 	<ItemGroup>
