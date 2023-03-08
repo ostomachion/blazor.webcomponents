@@ -9,6 +9,9 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        var projectDir = context.AnalyzerConfigOptionsProvider.Select((x, c)
+            => x.GlobalOptions.TryGetValue("build_property.projectdir", out var value) ? value : null);
+
         // Get all classes that inherit WebComponentBase.
         // Partial classes (e.g. from Razor) will be included once from each source file.
         var webComponentsSources = context.SyntaxProvider
@@ -24,7 +27,6 @@ public partial class WebComponentGenerator : IIncrementalGenerator
         // For each unique WebComponentBase class, output a partial class with common members.
         context.RegisterSourceOutput(distinctNames, WebComponentSourceOutput.CreateCommonFile);
 
-        // For each distinct WebComponentBase class, output a partial class with common members.
         var slotSources = webComponentsSources
             .Where(s => s!.Slots.Any())
             .Select((x, _) => new SlotSourceInformation(x!))
@@ -34,9 +36,19 @@ public partial class WebComponentGenerator : IIncrementalGenerator
         // For each WebComponentBase declaration that defines slots, output a partial class with the slot properties.
         context.RegisterSourceOutput(slotSources, WebComponentSourceOutput.CreateSlotSource);
 
-        // TODO: Handle CSS files???
-        var stylesheets = context.AdditionalTextsProvider
-            .Where(x => Path.GetExtension(x.Path) == ".css");
+        // For each CSS file co-located with a WebComponentBase, override the StylesheetUrl property on the component.
+        var styledComponentPaths = context.AdditionalTextsProvider
+            .Where(x => x.Path.EndsWith(".razor.css") || x.Path.EndsWith(".cs.css"))
+            .Select((x, c) => (x.Path, Text: x.GetText(c)!));
+
+        var webComponentStylesheetInformation = webComponentsSources
+            .Select((x, _) => x! with { Slots = null! })
+            .Combine(styledComponentPaths.Collect())
+            .Select((x, _) => ComponentCssInformation.Parse(x.Left, x.Right))
+            .Collect()
+            .SelectMany((x, _) => ComponentCssInformation.Group(x));
+
+        context.RegisterSourceOutput(webComponentStylesheetInformation, WebComponentSourceOutput.CreateStylesheetSource);
     }
 
     private bool WebComponentPredicate(SyntaxNode n, CancellationToken _) => n is ClassDeclarationSyntax;
@@ -56,7 +68,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
             .Select(p => InitialPropertyInformation.Parse(p, context, cancellationToken))
             .OfType<InitialPropertyInformation>()
             .Select(x => SlotInformation.Parse(x, context, cancellationToken));
-
+        
         return new WebComponentClassInformation
         {
             OriginalFilePath = GetOriginalFilePath(syntax.SyntaxTree, cancellationToken),

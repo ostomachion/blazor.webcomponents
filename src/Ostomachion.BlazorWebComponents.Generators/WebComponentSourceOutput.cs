@@ -36,8 +36,6 @@ internal static class WebComponentSourceOutput
                             _identifier = value;
                         }
                     }
-                    
-                    public static string? StylesheetUrl => null;
                 }
                 """);
     }
@@ -173,6 +171,22 @@ internal static class WebComponentSourceOutput
         context.AddSource($"{item.Namespace}.{item.Name}-slots.g.cs", builder.ToString());
     }
 
+    public static void CreateStylesheetSource(SourceProductionContext context, ComponentCssInformation item)
+    {
+        context.AddSource($"{item.Namespace}.{item.ClassName}-stylesheet.g.cs", $$"""
+                        #nullable enable
+                        using Ostomachion.BlazorWebComponents;
+                        using System;
+                        using System.IO;
+
+                        namespace {{item.Namespace}};
+                
+                        public partial class {{item.ClassName}} : IWebComponent
+                        {
+                            public static string? Stylesheet => {{ToStringLiteral(item.Stylesheet?.ToString())}};
+                        }
+                        """);
+    }
 
     private static string ToStringLiteral(string? value, bool quote = true) => value is null ? "null" : SymbolDisplay.FormatLiteral(value, quote);
 }

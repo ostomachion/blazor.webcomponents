@@ -12,24 +12,36 @@ namespace Ostomachion.BlazorWebComponents;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class WebComponentBaseImpl : ComponentBase
 {
-    private string? _identifier;
-    private string? _stylesheetUrl;
-
+    private static readonly Dictionary<Type, string?> _identifierMemo = new();
     private string? GetIdentifier()
     {
-        _identifier ??= (string?)GetType()
-            .GetProperty(nameof(IWebComponent.Identifier), BindingFlags.Public | BindingFlags.Static)!
-            .GetValue(null);
-        return _identifier;
+        var type = GetType();
+        if (!_identifierMemo.TryGetValue(type, out string? value))
+        {
+            value = (string?)type
+                .GetProperty(nameof(IWebComponent.Identifier), BindingFlags.Public | BindingFlags.Static)!
+                .GetValue(null);
+
+            _identifierMemo.Add(type, value);
+        }
+
+        return value;
     }
 
-    private string? GetStylesheetUrl()
-    {       
-        _stylesheetUrl ??= (string?)GetType()
-            .GetProperty(nameof(IWebComponent.StylesheetUrl), BindingFlags.Public | BindingFlags.Static)!
-            .GetValue(null);
+    private static readonly Dictionary<Type, string?> _stylesheetMemo = new();
+    private string? GetStylesheet()
+    {
+        var type = GetType();
+        if (!_stylesheetMemo.TryGetValue(type, out string? value))
+        {
+            value = (string?)type
+                .GetProperty(nameof(IWebComponent.Stylesheet), BindingFlags.Public | BindingFlags.Static)!
+                .GetValue(null);
 
-        return _stylesheetUrl;
+            _stylesheetMemo.Add(type, value);
+        }
+
+        return value;
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -54,7 +66,6 @@ public abstract class WebComponentBaseImpl : ComponentBase
         RenderedSlots.Clear();
 
         var identifier = GetIdentifier() ?? throw new InvalidOperationException("The web component's identifier has not been set.");
-        var stylesheetUrl = GetStylesheetUrl();
 
         builder.OpenElement(Line(), identifier);
         builder.AddAttribute(Line(), "xmlns:wc", GetType().Namespace);
@@ -70,11 +81,11 @@ public abstract class WebComponentBaseImpl : ComponentBase
             _ => throw new InvalidOperationException("Unknown shadow root mode.")
         });
 
-        if (stylesheetUrl is not null)
+        var stylesheet = GetStylesheet();
+        if (stylesheet is not null)
         {
-            builder.OpenElement(Line(), "link");
-            builder.AddAttribute(Line(), "rel", "stylesheet");
-            builder.AddAttribute(Line(), "href", stylesheetUrl);
+            builder.OpenElement(Line(), "style");
+            builder.AddContent(Line(), stylesheet);
             builder.CloseElement();
         }
 
@@ -98,4 +109,3 @@ public abstract class WebComponentBaseImpl : ComponentBase
 
     protected virtual bool IsTemplateDefined(object? property, string propertyName = null!) => false;
 }
-
