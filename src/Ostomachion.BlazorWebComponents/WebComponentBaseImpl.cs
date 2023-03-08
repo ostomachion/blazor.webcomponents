@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components;
@@ -27,11 +28,14 @@ public abstract class WebComponentBaseImpl : ComponentBase
         _stylesheetUrl ??= (string?)GetType()
             .GetProperty(nameof(IWebComponent.StylesheetUrl), BindingFlags.Public | BindingFlags.Static)!
             .GetValue(null);
+
         return _stylesheetUrl;
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected HashSet<string> RenderedSlots { get; } = new();
+
+    protected virtual SlotLookup Slot => new(ImmutableDictionary<string, RenderFragment>.Empty);
 
     [Inject]
     protected virtual IJSRuntime JSRuntime { get; set; } = null!;
@@ -91,6 +95,4 @@ public abstract class WebComponentBaseImpl : ComponentBase
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void BuildRenderTreeSlots(RenderTreeBuilder builder) { }
-
-    protected virtual RenderFragment Slot(string propertyName) => _ => { };
 }

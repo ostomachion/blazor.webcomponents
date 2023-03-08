@@ -4,12 +4,12 @@
     <summary>
         <span>
             <code class="name">&lt;@ElementName&gt;</code>
-            <i class="desc">@Slot(nameof(Description))</i>
+            <i class="desc">@Slot[Description]</i>
         </span>
     </summary>
     <div class="attributes">
         <h4><span>Attributes</span></h4>
-        @if (Slot(nameof(Attributes)) is null)
+        @if (Slot[Attributes] is null)
         {
             if (Attributes?.Any() ?? false)
             {
@@ -28,7 +28,7 @@
         }
         else
         {
-            @Slot(nameof(Attributes))
+            @Slot[Attributes]
         }
     </div>
 </details>
