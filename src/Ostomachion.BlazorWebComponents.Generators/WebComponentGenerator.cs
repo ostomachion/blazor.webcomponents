@@ -21,7 +21,7 @@ public partial class WebComponentGenerator : IIncrementalGenerator
             .Collect()
             .SelectMany((x, _) => x.Distinct());
 
-        // For each unique WebComponentBase, output a partial class with common members.
+        // For each unique WebComponentBase class, output a partial class with common members.
         context.RegisterSourceOutput(distinctNames, WebComponentSourceOutput.CreateCommonFile);
 
         // For each distinct WebComponentBase class, output a partial class with common members.
@@ -59,10 +59,34 @@ public partial class WebComponentGenerator : IIncrementalGenerator
 
         return new WebComponentClassInformation
         {
-            FilePath = context.Node.SyntaxTree.FilePath,
+            OriginalFilePath = GetOriginalFilePath(syntax.SyntaxTree, cancellationToken),
             Name = symbol.Name,
             Namespace = symbol.ContainingNamespace.ToString(),
             Slots = slots.ToArray(),
         };
+    }
+
+    private static string GetOriginalFilePath(SyntaxTree syntaxTree, CancellationToken cancellationToken)
+    {
+        var path = syntaxTree.FilePath;
+        if (!path.EndsWith(".razor.g.cs"))
+        {
+            return path;
+        }
+
+        var sourceText = syntaxTree.GetText(cancellationToken);
+        if (!sourceText.Lines.Any())
+        {
+            return path;
+        }
+
+        var firstLine = sourceText.Lines[0].Text!.ToString();
+        const string prefix = "#pragma checksum \"";
+        if (!firstLine.StartsWith(prefix))
+        {
+            return path;
+        }
+
+        return firstLine.Substring(prefix.Length, firstLine.IndexOf('"', prefix.Length) - prefix.Length);
     }
 }
