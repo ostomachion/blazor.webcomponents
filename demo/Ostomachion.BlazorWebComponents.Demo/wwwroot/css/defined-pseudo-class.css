@@ -1,4 +1,4 @@
-﻿@namespace wc 'ostomachion.blazorwebcomponents.demo.demos.definedpseudoclass';
+﻿@namespace ce 'ostomachion.blazorwebcomponents.demo.demos.definedpseudoclass';
 
 main p {
     background: yellow;
@@ -12,10 +12,10 @@ main :defined {
     font-style: italic;
 }
 
-main [wc|simplecustom]:not(:defined) {
+main [ce|simplecustom]:not(:defined) {
     display: none;
 }
 
-main [wc|simplecustom]:defined {
+main [ce|simplecustom]:defined {
     display: block;
 }
