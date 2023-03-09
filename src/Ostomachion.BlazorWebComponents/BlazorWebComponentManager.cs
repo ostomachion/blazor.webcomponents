@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
 using System.Collections.Immutable;
+using System.Reflection;
 
 namespace Ostomachion.BlazorWebComponents;
 
@@ -48,7 +49,11 @@ public class BlazorWebComponentManager : ComponentBase
         {
             foreach (var registration in registeredComponents)
             {
-                await RegisterComponentWithJavaScriptAsync(registration.Key);
+                var localName = (string?)registration.Value
+                    .GetProperty(nameof(ICustomElement.LocalName), BindingFlags.Public | BindingFlags.Static)!
+                    .GetValue(null);
+
+                await RegisterComponentWithJavaScriptAsync(registration.Key, localName);
             }
         }
     }

@@ -33,6 +33,22 @@ public abstract class CustomElementBaseImpl : ComponentBase
         return value;
     }
 
+    private static readonly Dictionary<Type, string?> _localNameMemo = new();
+    protected string? GetLocalName()
+    {
+        var type = GetType();
+        if (!_localNameMemo.TryGetValue(type, out string? value))
+        {
+            value = (string?)type
+                .GetProperty(nameof(ICustomElement.LocalName), BindingFlags.Public | BindingFlags.Static)!
+                .GetValue(null);
+
+            _localNameMemo.Add(type, value);
+        }
+
+        return value;
+    }
+
     public AttributeSet HostAttributes { get; } = new();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -43,7 +59,7 @@ public abstract class CustomElementBaseImpl : ComponentBase
     protected sealed override void BuildRenderTree(RenderTreeBuilder builder)
     {
         var identifier = GetIdentifier() ?? throw new InvalidOperationException("The web component's identifier has not been set.");
-        var localName = (string?)null; // TODO:
+        var localName = GetLocalName();
 
         if (localName is null)
         {
