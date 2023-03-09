@@ -1,15 +1,15 @@
 ﻿'use strict';
 
 window.blazorWebComponents = {
-    defineCustomElement: function (name) {
+    defineCustomElement: function (name, localName) {
         if (!customElements.get(name)) {
-            customElements.define(name,
-                class extends HTMLElement {
-                    constructor() {
-                        super();
-                    }
+            const base = localName ? document.createElement(localName).constructor : HTMLElement;
+            const definition = class extends base {
+                constructor() {
+                    super();
                 }
-            );
+            };
+            customElements.define(name, definition, localName ? { extends: localName } : {});
         }
     }
 };
