@@ -43,14 +43,15 @@ public abstract class CustomElementBaseImpl : ComponentBase
     protected sealed override void BuildRenderTree(RenderTreeBuilder builder)
     {
         var identifier = GetIdentifier() ?? throw new InvalidOperationException("The web component's identifier has not been set.");
+        var localName = (string?)null; // TODO:
 
-        if (LocalName is null)
+        if (localName is null)
         {
             builder.OpenElement(Line(), identifier);
         }
         else
         {
-            builder.OpenElement(Line(), LocalName);
+            builder.OpenElement(Line(), localName);
             builder.AddAttribute(Line(), "is", identifier);
         }
 
