@@ -90,14 +90,14 @@ internal static class CustomElementSourceOutput
                                 {
                                     builder.OpenElement({{sequence++}}, {{ToStringLiteral(slot.RootElement)}});
                                     builder.AddAttribute({{sequence++}}, "slot", {{ToStringLiteral(slot.SlotName)}});
-                                    builder.AddAttribute({{sequence++}}, "xmlns:wc", GetType().Namespace);
-                                    builder.AddAttribute({{sequence++}}, $"wc:{nameof(this.{{slot.PropertyName}})}");
+                                    builder.AddAttribute({{sequence++}}, "xmlns:ce", GetType().Namespace);
+                                    builder.AddAttribute({{sequence++}}, $"ce:{nameof(this.{{slot.PropertyName}})}");
                         """);
 
             if (slot.IsTemplated)
             {
                 builder.AppendLine($$"""
-                                    builder.AddAttribute({{sequence++}}, $"wc:{nameof(this.{{slot.PropertyName}}Template)}");
+                                    builder.AddAttribute({{sequence++}}, $"ce:{nameof(this.{{slot.PropertyName}}Template)}");
                                     if (this.{{slot.PropertyName}}Template is null)
                                     {
                                         builder.AddContent({{sequence++}}, this.{{slot.PropertyName}});
