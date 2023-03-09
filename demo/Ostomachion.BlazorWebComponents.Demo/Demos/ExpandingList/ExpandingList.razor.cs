@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Components;
+
 namespace Ostomachion.BlazorWebComponents.Demo.Demos.ExpandingList;
 
-[CustomElement("expanding-list")]
-public partial class ExpandingList
+public partial class ExpandingList : CustomElementBase
 {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default !;
 }
