@@ -12,7 +12,7 @@ internal record class ComponentCssInformation
 
     private ComponentCssInformation() { }
 
-    public static ComponentCssInformation Parse(WebComponentClassInformation component, ImmutableArray<(string Path, SourceText Text)> styledComponentPaths)
+    public static ComponentCssInformation Parse(CustomElementClassInformation component, ImmutableArray<(string Path, SourceText Text)> styledComponentPaths)
     {
         var match = styledComponentPaths.FirstOrDefault(x => Path.ChangeExtension(x.Path, null) == component.OriginalFilePath);
 

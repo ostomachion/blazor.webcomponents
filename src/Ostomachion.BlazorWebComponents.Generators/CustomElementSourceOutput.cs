@@ -4,14 +4,13 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Ostomachion.BlazorWebComponents.Generators;
 
-internal static class WebComponentSourceOutput
+internal static class CustomElementSourceOutput
 {
     public static void CreateCommonFile(SourceProductionContext context, NameInfo nameInfo)
     {
         var name = nameInfo.Name;
         var namespaceName = nameInfo.Namespace;
 
-        // TODO: Remove StylesheetUrl from here handle it in the CSS generator.
         context.AddSource($"{namespaceName}.{name}.g.cs", $$"""
                 #nullable enable
                 using System;
@@ -21,7 +20,7 @@ internal static class WebComponentSourceOutput
 
                 namespace {{namespaceName}};
 
-                public partial class {{name}} : IWebComponent
+                public partial class {{name}} : ICustomElement
                 {
                     private static string? _identifier;
                     public static string? Identifier

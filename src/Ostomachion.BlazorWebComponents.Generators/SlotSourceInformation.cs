@@ -8,11 +8,11 @@ internal record class SlotSourceInformation
 
     private SlotSourceInformation() { }
 
-    public SlotSourceInformation(WebComponentClassInformation info)
+    public SlotSourceInformation(CustomElementClassInformation info)
     {
         Name = info.Name;
         Namespace = info.Namespace;
-        Slots = info.Slots;
+        Slots = info.Slots!;
     }
 
     public static IEnumerable<SlotSourceInformation> Group(IEnumerable<SlotSourceInformation> list)
