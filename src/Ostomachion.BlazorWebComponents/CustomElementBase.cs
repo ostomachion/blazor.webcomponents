@@ -35,6 +35,8 @@ public abstract class CustomElementBaseImpl : ComponentBase
 
     public AttributeSet HostAttributes { get; } = new();
 
+    public virtual string? LocalName => null;
+
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void BuildRenderTreeImpl(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
 
@@ -44,9 +46,16 @@ public abstract class CustomElementBaseImpl : ComponentBase
     {
         var identifier = GetIdentifier() ?? throw new InvalidOperationException("The web component's identifier has not been set.");
 
-        builder.OpenElement(Line(), identifier);
-        builder.AddAttribute(Line(), "xmlns:wc", GetType().Namespace);
-        builder.AddAttribute(Line(), $"wc:{GetType().Name}");
+        if (LocalName is null)
+        {
+            builder.OpenElement(Line(), identifier);
+        }
+        else
+        {
+            builder.OpenElement(Line(), LocalName);
+            builder.AddAttribute(Line(), "is", identifier);
+        }
+
         builder.AddAttribute(Line(), "xmlns:ce", GetType().Namespace);
         builder.AddAttribute(Line(), $"ce:{GetType().Name}");
 
