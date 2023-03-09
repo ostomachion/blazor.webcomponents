@@ -16,7 +16,7 @@ public static class RootComponentMappingCollectionExtensions
         }
 
         // Try to get default name from attribute.
-        identifier ??= type.GetCustomAttribute<CustomElementAttribute>()?.DefaultName;
+        identifier ??= type.GetCustomAttribute<CustomElementAttribute>()?.DefaultIdentifier;
 
         // If we still don't have a name, construct one from the qualified name if possible.
         identifier ??= type.FullName?.ToLower().Replace('.', '-') ?? throw new NotSupportedException($"Cannot create an identifier for the component {type.FullName}.");

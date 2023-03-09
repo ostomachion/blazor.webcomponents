@@ -3,10 +3,11 @@
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 public sealed class CustomElementAttribute : Attribute
 {
-    public string? DefaultName { get; }
+    public string? DefaultIdentifier { get; }
+    public string? Extends { get; set; }
 
-    public CustomElementAttribute(string? defaultName = null)
+    public CustomElementAttribute(string? defaultIdentifier = null)
     {
-        DefaultName = defaultName;
+        DefaultIdentifier = defaultIdentifier;
     }
 }
