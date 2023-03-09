@@ -35,8 +35,6 @@ public abstract class CustomElementBaseImpl : ComponentBase
 
     public AttributeSet HostAttributes { get; } = new();
 
-    public virtual string? LocalName => null;
-
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void BuildRenderTreeImpl(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
 
