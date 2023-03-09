@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.JSInterop;
 
 namespace Ostomachion.BlazorWebComponents;
 
@@ -52,14 +51,6 @@ public abstract class WebComponentBaseImpl : CustomElementBase
     {
         RenderedSlots.Clear();
 
-        var identifier = GetIdentifier() ?? throw new InvalidOperationException("The web component's identifier has not been set.");
-
-        builder.OpenElement(Line(), identifier);
-        builder.AddAttribute(Line(), "xmlns:wc", GetType().Namespace);
-        builder.AddAttribute(Line(), $"wc:{GetType().Name}");
-
-        builder.AddMultipleAttributes(Line(), HostAttributes!);
-
         builder.OpenElement(Line(), "template");
         builder.AddAttribute(Line(), "shadowrootmode", ShadowRootMode switch
         {
@@ -85,8 +76,6 @@ public abstract class WebComponentBaseImpl : CustomElementBase
         builder.OpenRegion(Line());
         BuildRenderTreeSlots(builder);
         builder.CloseRegion();
-
-        builder.CloseElement();
 
         static int Line([CallerLineNumber] int line = 0) => line;
     }
