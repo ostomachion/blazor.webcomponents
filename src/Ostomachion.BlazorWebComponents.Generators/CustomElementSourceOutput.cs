@@ -35,6 +35,8 @@ internal static class CustomElementSourceOutput
                             _identifier = value;
                         }
                     }
+
+                    public static string? LocalName => {{ToStringLiteral(nameInfo.LocalName)}};
                 }
                 """);
     }

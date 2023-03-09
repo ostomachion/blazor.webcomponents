@@ -17,9 +17,9 @@ public partial class CustomElementGenerator : IIncrementalGenerator
 
         // Gather a list of unique classes that inherit CustomElementBase.
         var distinctNames = customElementSources
-            .Select((x, _) => new NameInfo(x!.Name, x.Namespace))
+            .Select((x, _) => new NameInfo(x!.Name, x.Namespace, x.LocalName))
             .Collect()
-            .SelectMany((x, _) => x.Distinct());
+            .SelectMany((x, _) => NameInfo.Group(x));
 
         // For each unique CustomElementBase class, output a partial class with common members.
         context.RegisterSourceOutput(distinctNames, CustomElementSourceOutput.CreateCommonFile);
@@ -62,6 +62,11 @@ public partial class CustomElementGenerator : IIncrementalGenerator
             return null;
         }
 
+        var attribute = symbol.GetAttributes()
+            .FirstOrDefault(a => a.AttributeClass?.ToString() == "Ostomachion.BlazorWebComponents.CustomElementAttribute");
+        var arguments = attribute?.NamedArguments.Where(x => x.Key == "Extends");
+        var localName = (arguments?.Any() ?? false) ? (string?)arguments.First().Value.Value : null;
+
         var slots = relevantType == RelevantType.CustomElement ? null : syntax.Members
             .OfType<PropertyDeclarationSyntax>()
             .Select(p => InitialPropertyInformation.Parse(p, context, cancellationToken))
@@ -74,6 +79,7 @@ public partial class CustomElementGenerator : IIncrementalGenerator
             RelevantType = relevantType,
             Name = symbol.Name,
             Namespace = symbol.ContainingNamespace.ToString(),
+            LocalName = localName,
             Slots = slots?.ToArray(),
         };
     }
