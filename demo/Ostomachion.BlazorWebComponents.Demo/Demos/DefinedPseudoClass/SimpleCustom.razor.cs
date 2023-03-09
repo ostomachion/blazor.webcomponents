@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components;
 
 namespace Ostomachion.BlazorWebComponents.Demo.Demos.DefinedPseudoClass;
 
-[CustomElement("simple-custom")]
 public partial class SimpleCustom
 {
     [Parameter]

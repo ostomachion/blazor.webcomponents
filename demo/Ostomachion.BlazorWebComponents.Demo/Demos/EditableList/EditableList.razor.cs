@@ -4,7 +4,6 @@ using Ostomachion.BlazorWebComponents.Demo.Models;
 
 namespace Ostomachion.BlazorWebComponents.Demo.Demos.EditableList;
 
-[CustomElement("editable-list")]
 public partial class EditableList
 {
     [Parameter]

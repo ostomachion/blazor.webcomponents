@@ -3,7 +3,6 @@ using Ostomachion.BlazorWebComponents.Demo.Models;
 
 namespace Ostomachion.BlazorWebComponents.Demo.Demos.ElementDetails;
 
-[CustomElement("element-details")]
 public partial class ElementDetails
 {
     [Parameter]
