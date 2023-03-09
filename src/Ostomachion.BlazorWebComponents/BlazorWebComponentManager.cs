@@ -53,6 +53,6 @@ public class BlazorWebComponentManager : ComponentBase
         }
     }
 
-    private async Task RegisterComponentWithJavaScriptAsync(string identifier)
-        => await JSRuntime.InvokeVoidAsync("window.blazorWebComponents.defineCustomElement", identifier);
+    private async Task RegisterComponentWithJavaScriptAsync(string identifier, string? localName = null)
+        => await JSRuntime.InvokeVoidAsync("window.blazorWebComponents.defineCustomElement", identifier, localName);
 }
