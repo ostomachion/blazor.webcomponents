@@ -1,12 +1,57 @@
 ﻿@page "/expanding-list"
 @using Ostomachion.BlazorWebComponents.Demo.Demos.ElementDetails
 
+<HeadContent>
+    <link rel="stylesheet" href="css/expanding-list.css" />
+</HeadContent>
+
 <PageHeader RelativeSourceUrl="Demos/ExpandingList" PageTitle="Expanding list web component">
     <Heading>Expanding list web component</Heading>
 </PageHeader>
 
 <main>
     <ExpandingList>
-        <li>Test</li>
+        <li>
+            UK
+            <ul>
+                <li>
+                    Yorkshire
+                    <ul>
+                        <li>
+                            Leeds
+                            <ul>
+                                <li>Train station</li>
+                                <li>Town hall</li>
+                                <li>Headrow</li>
+                            </ul>
+                        </li>
+                        <li>Bradford</li>
+                        <li>Hull</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            USA
+            <ul>
+                <li>
+                    California
+                    <ul>
+                        <li>Los Angeles</li>
+                        <li>San Francisco</li>
+                        <li>Berkeley</li>
+                    </ul>
+                </li>
+                <li>Nevada</li>
+                <li>Oregon</li>
+            </ul>
+        </li>
     </ExpandingList>
+
+    <ul>
+        <li>Not</li>
+        <li>an</li>
+        <li>expanding</li>
+        <li>list</li>
+    </ul>
 </main>
