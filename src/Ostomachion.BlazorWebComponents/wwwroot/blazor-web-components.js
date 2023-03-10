@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 window.blazorWebComponents = {
-    defineCustomElement: function (name, localName) {
+    registerCustomElement: function (name, localName) {
         if (!customElements.get(name)) {
             const base = localName ? document.createElement(localName).constructor : HTMLElement;
             const definition = class extends base {
