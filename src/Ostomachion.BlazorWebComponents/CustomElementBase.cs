@@ -49,6 +49,7 @@ public abstract class CustomElementBaseImpl : ComponentBase
         return value;
     }
 
+    public ElementReference? Host { get; private set; }
     public AttributeSet HostAttributes { get; } = new();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -75,6 +76,8 @@ public abstract class CustomElementBaseImpl : ComponentBase
         builder.AddAttribute(Line(), $"ce:{GetType().Name}");
 
         builder.AddMultipleAttributes(Line(), HostAttributes!);
+
+        builder.AddElementReferenceCapture(Line(), el => Host = el);
 
         builder.OpenRegion(Line());
         BuildRenderTreeImpl(builder);
