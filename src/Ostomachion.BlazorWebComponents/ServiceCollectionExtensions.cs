@@ -8,7 +8,7 @@ public static class ServiceCollectionExtensions
     {
         rootComponents.Add<CustomElementRegistrarComponent>("head::after");
         var registrar = new CustomElementRegistrar();
-        services.AddSingleton(registrar);
+        services.AddSingleton<ICustomElementRegistrar>(registrar);
         configure(registrar);
     }
 }
