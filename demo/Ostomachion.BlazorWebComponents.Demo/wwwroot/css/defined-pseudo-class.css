@@ -4,7 +4,7 @@ main p {
     background: yellow;
 }
 
-main [wc|simplecustom] {
+main [ce|simplecustom] {
     background: cyan;
 }
 
