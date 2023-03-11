@@ -122,9 +122,9 @@ public class AttributeSet : IDictionary<string, object?>
     /// </summary>
     /// <param name="item">The attribute to located in the <see cref="AttributeSet"/>.</param>
     /// <returns>
-    ///     <see langword="true"/> if the <see cref="AttributeSet"/> contains an attribute with the specified
-    ///     name and value, or if the <c>Value</c> of <see cref="item"/> is null and the <see cref="AttributeSet"/>
-    ///     does not contain an attribute with the specified name; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the <see cref="AttributeSet"/> contains an attribute with the specified
+    /// name and value, or if the <c>Value</c> of <see cref="item"/> is null and the <see cref="AttributeSet"/>
+    /// does not contain an attribute with the specified name; otherwise, <see langword="false"/>.
     /// </returns>
     /// <exception cref="ArgumentNullException">If the <c>Key</c> of <paramref name="item"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">If the <c>Key</c> of <paramref name="item"/> is not a valid attribute name.</exception>
@@ -139,8 +139,8 @@ public class AttributeSet : IDictionary<string, object?>
     /// </summary>
     /// <param name="name">The name to locate in the <see cref="AttributeSet"/>.</param>
     /// <returns>
-    ///     <see langword="true"/> if the <see cref="AttributeSet"/> contains an attribute with the name; otherwise,
-    ///     <see langword="false"/>.
+    /// <see langword="true"/> if the <see cref="AttributeSet"/> contains an attribute with the name; otherwise,
+    /// <see langword="false"/>.
     /// </returns>
     /// <exception cref="ArgumentNullException">If <paramref name="name"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">If <paramref name="name"/> is not a valid attribute name.</exception>
@@ -161,8 +161,8 @@ public class AttributeSet : IDictionary<string, object?>
     /// </summary>
     /// <param name="name">The name of the attribute to remove.</param>
     /// <returns>
-    ///     <see langword="true"/> if the attribute is successfully removed; otherwise, <see langword="false"/>. This method
-    ///     also returns <see langword="false"/> if <paramref name="name"/> was not found in the <see cref="AttributeSet"/>.
+    /// <see langword="true"/> if the attribute is successfully removed; otherwise, <see langword="false"/>. This method
+    /// also returns <see langword="false"/> if <paramref name="name"/> was not found in the <see cref="AttributeSet"/>.
     /// </returns>
     /// <exception cref="ArgumentNullException">If <paramref name="name"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">If <paramref name="name"/> is not a valid attribute name.</exception>
@@ -178,15 +178,15 @@ public class AttributeSet : IDictionary<string, object?>
     /// </summary>
     /// <param name="item"></param>
     /// <returns>
-    ///     <para>
-    ///         <see langword="true"/> if <paramref name="item"/> was successfully removed from the <see cref="AttributeSet"/>;
-    ///         otherwise <see langword="false"/>. This method also returns <see langword="false"/> if <paramref name="item"/>
-    ///         was not found in the <see cref="AttributeSet"/>.
-    ///     </para>
-    ///     <para>
-    ///         Note that if the <c>Value</c> of <paramref name="item"/> is <see langword="null"/>, the item is considered to be
-    ///         "found" if the <see cref="AttributeSet"/> <i>does not</i> contain an attribute with the specified name.
-    ///     </para>
+    /// <para>
+    /// <see langword="true"/> if <paramref name="item"/> was successfully removed from the <see cref="AttributeSet"/>;
+    /// otherwise <see langword="false"/>. This method also returns <see langword="false"/> if <paramref name="item"/>
+    /// was not found in the <see cref="AttributeSet"/>.
+    /// </para>
+    /// <para>
+    /// Note that if the <c>Value</c> of <paramref name="item"/> is <see langword="null"/>, the item is considered to be
+    /// "found" if the <see cref="AttributeSet"/> <i>does not</i> contain an attribute with the specified name.
+    /// </para>
     /// </returns>
     /// <exception cref="ArgumentNullException">If the <c>Key</c> of <paramref name="item"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">If the <c>Key</c> of <paramref name="item"/> is not a valid attribute name.</exception>
@@ -207,12 +207,12 @@ public class AttributeSet : IDictionary<string, object?>
     /// </summary>
     /// <param name="name">The name whose value to get.</param>
     /// <param name="value">
-    ///     When this method returns, the value associated with the specified key, if the key is found;
-    ///     otherwise, <see langword="null"/>. This parameter is passed uninitialized.
+    /// When this method returns, the value associated with the specified key, if the key is found;
+    /// otherwise, <see langword="null"/>. This parameter is passed uninitialized.
     /// </param>
     /// <returns>
-    ///     <see langword="true"/> if the <see cref="AttributeSet"/> contains an attribute with the specified name;
-    ///     otherwise <see langword="false"/>.
+    /// <see langword="true"/> if the <see cref="AttributeSet"/> contains an attribute with the specified name;
+    /// otherwise <see langword="false"/>.
     /// </returns>
     /// <exception cref="ArgumentNullException">If <paramref name="name"/> is <see langword="null"/>"</exception>
     /// <exception cref="ArgumentException">If <paramref name="name"/> is not a valid attribute name.</exception>
