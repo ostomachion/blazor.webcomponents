@@ -1,17 +1,23 @@
 ﻿using System.Collections.Immutable;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Ostomachion.BlazorWebComponents;
+
+/// <inheritdoc cref="ICustomElementRegistrar"/>
 public class CustomElementRegistrar : ICustomElementRegistrar
 {
     private Dictionary<string, Type> _registrations { get; } = new();
 
     public IImmutableDictionary<string, Type> Registrations => _registrations.ToImmutableDictionary();
 
+
+    /// <inheritdoc cref="ICustomElementRegistrar.Register{TComponent}(string?)"/>
     public void Register<TComponent>(string? identifier = null)
         where TComponent : CustomElementBase
         => Register(typeof(TComponent), identifier);
 
+    /// <inheritdoc cref="ICustomElementRegistrar.Register(Type, string?)"/>
     public void Register(Type type, string? identifier = null)
     {
         if (!type.IsAssignableTo(typeof(CustomElementBase)))
@@ -28,7 +34,13 @@ public class CustomElementRegistrar : ICustomElementRegistrar
         if (_registrations.TryGetValue(identifier, out var existingType))
         {
             throw new InvalidOperationException($"Unable to register the component {type.FullName} with identifier {identifier} " +
-                $"because the identifier has already been registered for the {existingType.FullName}.");
+                $"because the identifier has already been registered for the component {existingType.FullName}.");
+        }
+
+        if (_registrations.ContainsValue(type))
+        {
+            throw new InvalidOperationException($"Unable to register the component {type.FullName} with identifier {identifier} " +
+                $"because the component has already been registered.");
         }
 
         type.GetProperty(nameof(ICustomElement.Identifier), BindingFlags.Public | BindingFlags.Static)!
@@ -37,6 +49,7 @@ public class CustomElementRegistrar : ICustomElementRegistrar
         _registrations.Add(identifier, type);
     }
 
+    /// <inheritdoc cref="ICustomElementRegistrar.RegisterAll(Assembly)"/>
     public void RegisterAll(Assembly assembly)
     {
         var types = assembly.DefinedTypes
@@ -46,6 +59,17 @@ public class CustomElementRegistrar : ICustomElementRegistrar
         foreach (var type in types)
         {
             Register(type);
+        }
+    }
+
+    private static void ThrowIfInvalidIdentifier(string identifier, [CallerArgumentExpression(nameof(identifier))] string? paramName = null)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(identifier, paramName);
+
+        // TODO:
+        if (!identifier.Contains('-'))
+        {
+            throw new ArgumentException($"{identifier} is not a valid custom element identifier.", paramName);
         }
     }
 }
