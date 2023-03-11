@@ -30,4 +30,8 @@
 		<ProjectReference Include="..\..\src\Ostomachion.BlazorWebComponents\Ostomachion.BlazorWebComponents.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\img\" />
+	</ItemGroup>
+
 </Project>
