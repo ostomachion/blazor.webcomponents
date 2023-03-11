@@ -80,7 +80,7 @@ public class ClassList : ISet<string>
             var list = classes.Split(AsciiWhitespace, StringSplitOptions.RemoveEmptyEntries);
             foreach (var item in list)
             {
-                _ = _value.Add(item);
+                _value.Add(item);
             }
         }
 
@@ -173,7 +173,7 @@ public class ClassList : ISet<string>
     public void UnionWith(IEnumerable<string> other) => _value.UnionWith(other);
 
     /// <inheritdoc/>
-    void ICollection<string>.Add(string item) => _ = Add(item);
+    void ICollection<string>.Add(string item) => Add(item);
 
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_value).GetEnumerator();
