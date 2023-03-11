@@ -14,7 +14,7 @@ public class AttributeList : IDictionary<string, RenderFragment>
         get => _value[key].Value;
         set
         {
-            _ = _value.Remove(key);
+            _value.Remove(key);
             _value.Add(new(key, value));
         }
     }

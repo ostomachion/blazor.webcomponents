@@ -47,7 +47,7 @@ public class AttributeSet : IDictionary<string, object?>
             }
             else if (value is null)
             {
-                _ = _value.Remove(name);
+                _value.Remove(name);
             }
             else if (_value.ContainsKey(name))
             {
@@ -65,7 +65,7 @@ public class AttributeSet : IDictionary<string, object?>
         var classList = ClassList.ToString();
         if (classList is null)
         {
-            _ = _value.Remove("class");
+            _value.Remove("class");
         }
         else if (_value.ContainsKey("class"))
         {
@@ -198,7 +198,7 @@ public class AttributeSet : IDictionary<string, object?>
         var found = Contains(item);
         if (found)
         {
-            _ = _value.Remove(item.Key);
+            _value.Remove(item.Key);
         }
 
         return found;
