@@ -164,7 +164,7 @@ internal static class CustomElementSourceOutput
         foreach (var slot in item.Slots.Where(x => x.IsTemplated))
         {
             builder.AppendLine($$"""
-                                    {{ToStringLiteral(slot.PropertyName)}} or this.{{ToStringLiteral(slot.PropertyName, quote: false)}} => {{slot.PropertyName}}Template is not null,
+                                    {{ToStringLiteral(slot.PropertyName)}} or "this.{{ToStringLiteral(slot.PropertyName, quote: false)}}" => {{slot.PropertyName}}Template is not null,
                         """);
         }
 
