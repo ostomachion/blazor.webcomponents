@@ -78,6 +78,7 @@ public abstract class WebComponentBaseImpl : CustomElementBase
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected new void BaseBuildRenderTree(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
 
+    /// <inheritdoc/>
     protected sealed override void BuildRenderTree(RenderTreeBuilder builder)
     {
         RenderedSlots.Clear();
@@ -111,8 +112,22 @@ public abstract class WebComponentBaseImpl : CustomElementBase
         static int Line([CallerLineNumber] int line = 0) => line;
     }
 
+    /// <summary>
+    /// Intended for internal use only. Called by <see cref="BuildRenderTree(RenderTreeBuilder)"/> to
+    /// add the relevant <c>slot</c> elements to the light DOM.
+    /// </summary>
+    /// <param name="builder">A <see cref="RenderTreeBuilder"/> that will receive the render output.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void BuildRenderTreeSlots(RenderTreeBuilder builder) { }
 
+    /// <summary>
+    /// Determines whether or not a template parameter has been set for the specified property.
+    /// </summary>
+    /// <param name="property">The property to check.</param>
+    /// <param name="propertyName">The name of the property to check.</param>
+    /// <returns>
+    /// <see langword="true"/> if a template parameter has been set for the specified property;
+    /// <see langword="false"/> otherwise.
+    /// </returns>
     protected virtual bool IsTemplateDefined(object? property, string propertyName = null!) => false;
 }
