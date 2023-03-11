@@ -13,8 +13,8 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to configure.</param>
     /// <param name="rootComponents">The <see cref="RootComponentMappingCollection"/> for the app.</param>
-    /// <param name="configure">An action delegate to configure the provided <see cref="CustomElementRegistrar"/>.</param>
-    public static void AddBlazorWebComponents(this IServiceCollection services, RootComponentMappingCollection rootComponents, Action<CustomElementRegistrar> configure)
+    /// <param name="configure">An action delegate to configure the provided <see cref="ICustomElementRegistrar"/>.</param>
+    public static void AddBlazorWebComponents(this IServiceCollection services, RootComponentMappingCollection rootComponents, Action<ICustomElementRegistrar> configure)
     {
         rootComponents.Add<CustomElementRegistrarComponent>("head::after");
         var registrar = new CustomElementRegistrar();
