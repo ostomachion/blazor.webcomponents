@@ -14,29 +14,14 @@ public class AttributeSet : IDictionary<string, object?>
     /// <summary>
     /// Represents the value of the "class" attribute.
     /// </summary>
-    public ClassList ClassList { get; } = new();
+    public ClassList ClassList { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AttributeSet"/> class.
     /// </summary>
     public AttributeSet()
     {
-        ClassList.Updated += (s, e) =>
-        {
-            var classList = ClassList.ToString();
-            if (classList is null)
-            {
-                _ = _value.Remove("class");
-            }
-            else if (_value.ContainsKey("class"))
-            {
-                _value["class"] = classList;
-            }
-            else
-            {
-                _value.Add("class", classList);
-            }
-        };
+        ClassList = new(ClassListUpdated);
     }
 
     /// <summary>
@@ -72,6 +57,23 @@ public class AttributeSet : IDictionary<string, object?>
             {
                 _value.Add(name, value);
             }
+        }
+    }
+
+    private void ClassListUpdated()
+    {
+        var classList = ClassList.ToString();
+        if (classList is null)
+        {
+            _ = _value.Remove("class");
+        }
+        else if (_value.ContainsKey("class"))
+        {
+            _value["class"] = classList;
+        }
+        else
+        {
+            _value.Add("class", classList);
         }
     }
 
