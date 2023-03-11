@@ -23,6 +23,8 @@ internal static class CustomElementSourceOutput
                 public partial class {{name}} : ICustomElement
                 {
                     private static string? _identifier;
+
+                    /// <inheritdoc/>
                     public static string? Identifier
                     {
                         get => _identifier;
@@ -35,7 +37,8 @@ internal static class CustomElementSourceOutput
                             _identifier = value;
                         }
                     }
-
+                
+                    /// <inheritdoc/>
                     public static string? LocalName => {{ToStringLiteral(nameInfo.LocalName)}};
                 }
                 """);
@@ -65,6 +68,9 @@ internal static class CustomElementSourceOutput
         foreach (var slot in item.Slots)
         {
             builder.AppendLine($$"""
+                            /// <summary>
+                            /// Represents the rendered <c>slot</c> element in the light DOM for the {{slot.PropertyName}} property.
+                            /// </summary>
                             private RenderFragment {{slot.PropertyName}}Slot => (builder) =>
                             {
                                 RenderedSlots.Add({{ToStringLiteral(slot.PropertyName)}});
@@ -79,6 +85,7 @@ internal static class CustomElementSourceOutput
 
         // Output BuildRenderTreeSlots method.
         builder.AppendLine($$"""
+                            /// <inheritdoc/>
                             protected override void BuildRenderTreeSlots(RenderTreeBuilder builder)
                             {
                         """);
@@ -128,6 +135,7 @@ internal static class CustomElementSourceOutput
 
         // Output Slot property.
         builder.AppendLine($$"""
+                            /// <inheritdoc/>
                             protected override SlotLookup Slot => new(new Dictionary<string, RenderFragment>
                             {
                         """);
@@ -142,26 +150,28 @@ internal static class CustomElementSourceOutput
 
         builder.AppendLine($$"""
                             }.ToImmutableDictionary());
+
                         """);
 
         // Output IsTemplateDefined method.
         builder.AppendLine($$"""
+                            /// <inheritdoc/>
                             protected override bool IsTemplateDefined(object? property, [CallerArgumentExpression(nameof(property))]string propertyName = default!)
-                            => propertyName switch
-                            {
+                                => propertyName switch
+                                {
                         """);
 
         foreach (var slot in item.Slots.Where(x => x.IsTemplated))
         {
             builder.AppendLine($$"""
-                                {{ToStringLiteral(slot.PropertyName)}} => {{slot.PropertyName}}Template is not null,
-                                "this.{{ToStringLiteral(slot.PropertyName, quote: false)}}" => {{slot.PropertyName}}Template is not null,
+                                    {{ToStringLiteral(slot.PropertyName)}} => {{slot.PropertyName}}Template is not null,
+                                    "this.{{ToStringLiteral(slot.PropertyName, quote: false)}}" => {{slot.PropertyName}}Template is not null,
                         """);
         }
 
         builder.AppendLine($$"""
-                                _ => throw new ArgumentException($"'{propertyName}' is not a templated property", nameof(property))
-                            };
+                                    _ => throw new ArgumentException($"'{propertyName}' is not a templated property", nameof(property))
+                                };
                         """);
 
         // End class.
@@ -184,6 +194,7 @@ internal static class CustomElementSourceOutput
                 
                         public partial class {{item.ClassName}} : IWebComponent
                         {
+                            /// <inheritdoc/>
                             public static string? Stylesheet => {{ToStringLiteral(item.Stylesheet?.ToString())}};
                         }
                         """);
