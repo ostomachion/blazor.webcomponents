@@ -137,19 +137,19 @@ internal static class CustomElementSourceOutput
         builder.AppendLine($$"""
                             /// <inheritdoc/>
                             protected override SlotLookup Slot => new(new Dictionary<string, RenderFragment>
-                            {
+                                {
                         """);
 
         foreach (var slot in item.Slots)
         {
             builder.AppendLine($$"""
-                                [{{ToStringLiteral(slot.PropertyName)}}] = {{slot.PropertyName}}Slot,
-                                ["this.{{ToStringLiteral(slot.PropertyName, quote: false)}}"] = {{slot.PropertyName}}Slot,
+                                    [{{ToStringLiteral(slot.PropertyName)}}] = {{slot.PropertyName}}Slot,
+                                    ["this.{{ToStringLiteral(slot.PropertyName, quote: false)}}"] = {{slot.PropertyName}}Slot,
                         """);
         }
 
         builder.AppendLine($$"""
-                            }.ToImmutableDictionary());
+                                }.ToImmutableDictionary());
 
                         """);
 
@@ -164,8 +164,7 @@ internal static class CustomElementSourceOutput
         foreach (var slot in item.Slots.Where(x => x.IsTemplated))
         {
             builder.AppendLine($$"""
-                                    {{ToStringLiteral(slot.PropertyName)}} => {{slot.PropertyName}}Template is not null,
-                                    "this.{{ToStringLiteral(slot.PropertyName, quote: false)}}" => {{slot.PropertyName}}Template is not null,
+                                    {{ToStringLiteral(slot.PropertyName)}} or this.{{ToStringLiteral(slot.PropertyName, quote: false)}} => {{slot.PropertyName}}Template is not null,
                         """);
         }
 
