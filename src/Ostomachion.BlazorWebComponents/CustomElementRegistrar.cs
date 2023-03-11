@@ -11,7 +11,6 @@ public class CustomElementRegistrar : ICustomElementRegistrar
 
     public IImmutableDictionary<string, Type> Registrations => _registrations.ToImmutableDictionary();
 
-
     /// <inheritdoc cref="ICustomElementRegistrar.Register{TComponent}(string?)"/>
     public void Register<TComponent>(string? identifier = null)
         where TComponent : CustomElementBase
@@ -61,6 +60,9 @@ public class CustomElementRegistrar : ICustomElementRegistrar
             Register(type);
         }
     }
+
+    /// <inheritdoc cref="ICustomElementRegistrar.RegisterAll"/>
+    public void RegisterAll() => ((ICustomElementRegistrar)this).RegisterAll();
 
     private static void ThrowIfInvalidIdentifier(string identifier, [CallerArgumentExpression(nameof(identifier))] string? paramName = null)
     {
