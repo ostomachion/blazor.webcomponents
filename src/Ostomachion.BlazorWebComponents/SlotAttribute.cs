@@ -4,7 +4,8 @@ using System.Runtime.CompilerServices;
 namespace Ostomachion.BlazorWebComponents;
 
 /// <summary>
-/// Marks a property as a template slot. When rendered as a slot, its contents will be rendered in the light DOM.
+/// Marks a property as a template slot. The framework will create a <c>*Slot</c> property with a type of
+/// <see cref="RenderFragment"/>. Its contents will be rendered in the light DOM.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class SlotAttribute : Attribute

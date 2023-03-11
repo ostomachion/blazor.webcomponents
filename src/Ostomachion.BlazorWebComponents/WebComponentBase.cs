@@ -8,17 +8,33 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace Ostomachion.BlazorWebComponents;
 
 // TODO: See if there's a better design pattern to accomplish this?
+/// <summary>
+/// Represents a component wrapped in a custom element and encapsulated by a shadow DOM.
+/// </summary>
 public abstract class WebComponentBase : WebComponentBaseImpl
 {
+    /// <summary>
+    /// Intended for internal use only. Use <see cref="BuildRenderTree(RenderTreeBuilder)"/> instead.
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected sealed override void BuildRenderTreeImpl(RenderTreeBuilder builder) => BuildRenderTree(builder);
+
+    /// <inheritdoc cref="ComponentBase.BuildRenderTree(RenderTreeBuilder)"/>
     protected new virtual void BuildRenderTree(RenderTreeBuilder builder) => BaseBuildRenderTree(builder);
 }
 
+/// <summary>
+/// Internal use. Use <see cref="CustomElementBase"/> instead.
+/// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class WebComponentBaseImpl : CustomElementBase
 {
     private static readonly Dictionary<Type, string?> _stylesheetMemo = new();
+
+    /// <summary>
+    /// Gets the value of <see cref="IWebComponent.Stylesheet"/> defined on the current type.
+    /// </summary>
+    /// <returns>The value of <see cref="IWebComponent.Stylesheet"/> defined on the current type.</returns>
     protected string? GetStylesheet()
     {
         var type = GetType();
@@ -34,16 +50,31 @@ public abstract class WebComponentBaseImpl : CustomElementBase
         return value;
     }
 
+    /// <summary>
+    /// Intended for internal use only. A collection of the names of the slots that are currently rendered.
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected HashSet<string> RenderedSlots { get; } = new();
 
+    /// <summary>
+    /// A <see cref="SlotLookup"/> to get the slot associated with a property marked with <see cref="SlotAttribute"/>.
+    /// </summary>
     protected virtual SlotLookup Slot => new(ImmutableDictionary<string, RenderFragment>.Empty);
 
+    /// <summary>
+    /// Them encapsulation mode of the shadow root for this web component.
+    /// </summary>
     public virtual ShadowRootMode ShadowRootMode => ShadowRootMode.Open;
 
+    /// <summary>
+    /// Intended for internal use only. Use <see cref="WebComponentBase.BuildRenderTree(RenderTreeBuilder)"/> instead.
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected new virtual void BuildRenderTreeImpl(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
 
+    /// <summary>
+    /// Intended for internal use only. Use <see cref="WebComponentBase.BuildRenderTree(RenderTreeBuilder)"/> instead.
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected new void BaseBuildRenderTree(RenderTreeBuilder builder) => base.BuildRenderTree(builder);
 
