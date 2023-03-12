@@ -46,10 +46,4 @@ public interface ICustomElementRegistrar
     /// </summary>
     /// <param name="assembly">The assembly in which to look for custom element components.</param>
     void RegisterAll(Assembly assembly);
-
-    /// <summary>
-    /// Finds and registers all classes in the calling assembly that inherit <see cref="CustomElementBase"/> using their
-    /// default name. If a component has previously been registered, this method does not attempt to register it again.
-    /// </summary>
-    public void RegisterAll() => RegisterAll(Assembly.GetCallingAssembly());
 }
