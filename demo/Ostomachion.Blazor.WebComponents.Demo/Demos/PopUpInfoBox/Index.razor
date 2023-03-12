@@ -1,0 +1,19 @@
+﻿@page "/pop-up-info-box"
+@using Ostomachion.Blazor.WebComponents.Demo.Demos.PopUpInfoBox
+
+<PageHeader RelativeSourceUrl="Demos/PopUpInfoBox" PageTitle="Pop up info box - web components">
+    <Heading>Pop-up info widget - web components</Heading>
+</PageHeader>
+
+<main>
+    <form>
+        <div>
+            <label for="cvc">
+                Enter your CVC
+                <PopupInfo Image="img/alt.png"
+                           Text="Your card validation code (CVC) is an extra security feature — it is the last 3 or 4 numbers on the back of your card." />
+            </label>
+            <input type="text" id="cvc">
+        </div>
+    </form>
+</main>

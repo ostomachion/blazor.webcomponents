@@ -1,0 +1,21 @@
+﻿@namespace ce 'ostomachion.blazor.webcomponents.demo.demos.definedpseudoclass';
+
+main p {
+    background: yellow;
+}
+
+main [ce|simplecustom] {
+    background: cyan;
+}
+
+main :defined {
+    font-style: italic;
+}
+
+main [ce|simplecustom]:not(:defined) {
+    display: none;
+}
+
+main [ce|simplecustom]:defined {
+    display: block;
+}
