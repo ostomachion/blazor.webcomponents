@@ -7,8 +7,9 @@ using System.Reflection;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+builder.RootComponents.Add<CustomElementRegistrarComponent>("head::after");
 
-builder.Services.AddBlazorWebComponents(builder.RootComponents, r => r.RegisterAll(Assembly.GetExecutingAssembly()));
+builder.Services.AddBlazorWebComponents(r => r.RegisterAll(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
