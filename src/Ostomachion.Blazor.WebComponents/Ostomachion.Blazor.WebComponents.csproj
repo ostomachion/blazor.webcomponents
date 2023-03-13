@@ -5,9 +5,9 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Title>Blazor Web Components</Title>
-		<Version>1.0.0-preview</Version>
-		<Authors>ostomachion</Authors>
-		<Description>A simple library that allows Blazor components to be rendered as real standards-based Web Components using custom elements, shadow DOM, and HTML templates. </Description>
+		<Version>1.0.0-preview2</Version>
+		<Authors>Josh Hufford</Authors>
+		<Description>A simple library that allows Blazor components to be rendered as real standards-based Web Components using custom elements, shadow DOM, and HTML templates.</Description>
 		<Copyright>Copyright © Josh Hufford 2023</Copyright>
 		<RepositoryUrl>https://github.com/ostomachion/blazor.webcomponents</RepositoryUrl>
 		<PackageTags>Blazor; ShadowDOM; ShadowRoot; WebComponents; HtmlTemplate; CustomElement;</PackageTags>
