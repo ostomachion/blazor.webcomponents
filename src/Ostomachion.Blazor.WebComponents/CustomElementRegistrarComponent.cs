@@ -10,7 +10,7 @@ namespace Ostomachion.Blazor.WebComponents;
 /// A special component that is responsible for defining custom elements that have been registered through
 /// <see cref="CustomElementRegistrar"/> with the JavaScript framework. This is added as a root component
 /// to <c>head::after</c> by <see cref="ServiceCollectionExtensions.AddBlazorWebComponents(IServiceCollection,
-/// RootComponentMappingCollection, Action{CustomElementRegistrar})"/>
+/// Action{CustomElementRegistrar})"/>.
 /// </summary>
 public sealed class CustomElementRegistrarComponent : ComponentBase
 {
