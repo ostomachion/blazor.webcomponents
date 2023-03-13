@@ -56,20 +56,20 @@ projects.
 
 That's it! You've got a full standards-based web component from Blazor!
 
-    *Rendered output*
-    ```html
-    <my-component>
-      #shadowroot (open)
-        <style>
-          .shadow { background: lightgray; }
-          .light { background: lightyellow; }
-        </style>
-        <p class="shadow">Shadow: It's dark in here</p>
-        <p class="light">Light: <slot name="light" /></p>
+*Rendered output*
+```html
+<my-component>
+    #shadowroot (open)
+    <style>
+        .shadow { background: lightgray; }
+        .light { background: lightyellow; }
+    </style>
+    <p class="shadow">Shadow: It's dark in here</p>
+    <p class="light">Light: <slot name="light" /></p>
 
-      <span slot="light">Good morning</span>
-    </my-component>
-    ```
+    <span slot="light">Good morning</span>
+</my-component>
+```
 
 ## Installation
 
@@ -218,7 +218,7 @@ generally encapsulated from CSS and JavaScript outside the component.
 A property can be marked with a `SlotAttribute` to allow it to be passed to the
 component as a [slot](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots).
 
-To render a slot property in the light DOM, the `Slot` property.
+Use the `Slot` property To render a slot property in the light DOM.
 [(Example)](#basic-slot)
 
 Slots are mostly used for parameter properties. However, if the type of the
@@ -239,7 +239,13 @@ can be overridden by specifying the `RootElement` property on the `SlotAttribute
 
 ## Notes on CSS
 
-TODO:
+Since the host element name of a custom element component can vary, CSS selectors
+become fragile. As a workaround, this library adds custom namespaced elements to
+custom elements. The attribute name is equal to the class name in lowercase with
+a namespace equal to the namespace of the class in lowercase. This not only
+provides a unique name for each component, it more closely matches the source
+Razor file.
+[(Example)](#css-selectors)
 
 ## ⚠️ Notes on Technical Limitations ⚠️
 
@@ -677,10 +683,40 @@ public class Test : WebComponentBase
 ```html
 <docs-test>
   #shadow-root (open)
-    <p><slot name="value" /></p>
+    <slot name="value" />
 
-  <span slot="value">Hello!</span>
+  <p slot="value">Hello!</p>
 </docs-test>
+```
+
+### CSS Selectors
+
+*Test.razor*
+```razor
+@inherits WebComponentBase
+Hello, world!
+```
+
+*Example.razor.cs*
+```csharp
+namespace Example;
+
+[custom-element("docs-test")]
+public class Test : WebComponentBase { }
+```
+
+*Index.razor*
+```razor
+<Test>
+```
+
+*Index.razor.css***
+```css
+@namespace ce 'example';
+
+[ce|test] {
+    border: 1px solid black;
+}
 ```
 
 ---
