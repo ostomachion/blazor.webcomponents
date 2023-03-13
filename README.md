@@ -707,7 +707,7 @@ public class Test : WebComponentBase { }
 
 *Index.razor*
 ```razor
-<Test>
+<Test />
 ```
 
 *Index.razor.css***
