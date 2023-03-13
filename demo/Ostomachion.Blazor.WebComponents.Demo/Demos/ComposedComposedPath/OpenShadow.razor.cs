@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace Ostomachion.Blazor.WebComponents.Demo.Demos.ComposedComposedPath;
 
-public partial class OpenShadow
+[CustomElement("open-shadow")]
+public partial class OpenShadow : WebComponentBase
 {
     public override ShadowRootMode ShadowRootMode => ShadowRootMode.Open;
 

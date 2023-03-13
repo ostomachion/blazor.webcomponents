@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace Ostomachion.Blazor.WebComponents.Demo.Demos.PopUpInfoBox;
 
-public partial class PopupInfo
+[CustomElement("popup-info")]
+public partial class PopupInfo : WebComponentBase
 {
     [Parameter]
     [EditorRequired]

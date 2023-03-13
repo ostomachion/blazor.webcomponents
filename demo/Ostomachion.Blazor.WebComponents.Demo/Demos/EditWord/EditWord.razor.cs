@@ -4,7 +4,8 @@ using Microsoft.JSInterop;
 
 namespace Ostomachion.Blazor.WebComponents.Demo.Demos.EditWord;
 
-public partial class EditWord
+[CustomElement("edit-word")]
+public partial class EditWord : WebComponentBase
 {
     [Inject]
     private IJSRuntime JSRuntime { get; set; } = null!;

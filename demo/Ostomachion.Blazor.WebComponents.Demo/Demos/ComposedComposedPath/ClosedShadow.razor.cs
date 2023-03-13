@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace Ostomachion.Blazor.WebComponents.Demo.Demos.ComposedComposedPath;
 
-public partial class ClosedShadow
+[CustomElement("closed-shadow")]
+public partial class ClosedShadow : WebComponentBase
 {
     public override ShadowRootMode ShadowRootMode => ShadowRootMode.Closed;
 

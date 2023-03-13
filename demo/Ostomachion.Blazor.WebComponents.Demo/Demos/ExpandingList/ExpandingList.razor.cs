@@ -3,7 +3,8 @@ using Microsoft.JSInterop;
 
 namespace Ostomachion.Blazor.WebComponents.Demo.Demos.ExpandingList;
 
-public partial class ExpandingList
+[CustomElement("expanding-list", Extends = "ul")]
+public partial class ExpandingList : CustomElementBase
 {
     [Inject]
     public IJSRuntime JSRuntime { get; set; } = default!;
