@@ -12,9 +12,13 @@ internal record class ComponentCssInformation
 
     private ComponentCssInformation() { }
 
-    public static ComponentCssInformation Parse(CustomElementClassInformation component, ImmutableArray<(string Path, SourceText Text)> styledComponentPaths)
+    public static ComponentCssInformation Parse(CustomElementClassInformation component, ImmutableArray<(string Path, SourceText Text)> styledComponentPaths, bool hasRazorFiles)
     {
-        var match = styledComponentPaths.FirstOrDefault(x => Path.ChangeExtension(x.Path, null) == component.OriginalFilePath);
+        var match = styledComponentPaths.FirstOrDefault(x =>
+            // Checks for a source file as the parent of the CSS file.
+            Path.ChangeExtension(x.Path, null) == component.OriginalFilePath ||
+            // If Razor source generators are enabled, also check for a source file as the sibling of the CSS file.
+            !hasRazorFiles && x.Path == Path.ChangeExtension(component.OriginalFilePath, ".css"));
 
         return new ComponentCssInformation
         {
