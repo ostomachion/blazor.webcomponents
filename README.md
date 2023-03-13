@@ -239,7 +239,13 @@ can be overridden by specifying the `RootElement` property on the `SlotAttribute
 
 ## Notes on CSS
 
-TODO:
+Since the host element name of a custom element component can vary, CSS selectors
+become fragile. As a workaround, this library adds custom namespaced elements to
+custom elements. The attribute name is equal to the class name in lowercase with
+a namespace equal to the namespace of the class in lowercase. This not only
+provides a unique name for each component, it more closely matches the source
+Razor file.
+[(Example)](#css-selectors)
 
 ## ⚠️ Notes on Technical Limitations ⚠️
 
@@ -681,6 +687,36 @@ public class Test : WebComponentBase
 
   <p slot="value">Hello!</p>
 </docs-test>
+```
+
+### CSS Selectors
+
+*Test.razor*
+```razor
+@inherits WebComponentBase
+Hello, world!
+```
+
+*Example.razor.cs*
+```csharp
+namespace Example;
+
+[custom-element("docs-test")]
+public class Test : WebComponentBase { }
+```
+
+*Index.razor*
+```razor
+<Test>
+```
+
+*Index.razor.css***
+```css
+@namespace ce 'example';
+
+[ce|test] {
+    border: 1px solid black;
+}
 ```
 
 ---
