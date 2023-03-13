@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace Ostomachion.Blazor.WebComponents.Demo.Demos.SimpleTemplate;
 
-public partial class MyParagraph
+[CustomElement("my-paragraph")]
+public partial class MyParagraph : WebComponentBase
 {
     [Parameter]
     [EditorRequired]

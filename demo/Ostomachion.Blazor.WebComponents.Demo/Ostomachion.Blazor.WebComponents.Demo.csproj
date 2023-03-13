@@ -8,8 +8,6 @@
 
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 		<CompilerGeneratedFilesOutputPath>\Generated Files\Ostomachion.Blazor.WebComponents</CompilerGeneratedFilesOutputPath>
-
-		<UseRazorSourceGenerator>false</UseRazorSourceGenerator>
 	</PropertyGroup>
 
 	<ItemGroup>

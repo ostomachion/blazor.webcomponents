@@ -38,11 +38,17 @@ public partial class CustomElementGenerator : IIncrementalGenerator
             .Where(x => x.Path.EndsWith(".razor.css") || x.Path.EndsWith(".cs.css"))
             .Select((x, c) => (x.Path, Text: x.GetText(c)!));
 
+        var hasRazorFiles = customElementSources
+            .Where(x => Path.GetExtension(x!.OriginalFilePath) == ".razor")
+            .Collect()
+            .Select((x, _) => x.Any());
+
         var webComponentStylesheetInformation = customElementSources
             .Where(x => x!.RelevantType == RelevantType.WebComponent)
             .Select((x, _) => x! with { Slots = null })
             .Combine(styledComponentPaths.Collect())
-            .Select((x, _) => ComponentCssInformation.Parse(x.Left, x.Right))
+            .Combine(hasRazorFiles)
+            .Select((x, _) => ComponentCssInformation.Parse(x.Left.Left, x.Left.Right, x.Right))
             .Collect()
             .SelectMany((x, _) => ComponentCssInformation.Group(x));
 
