@@ -60,12 +60,12 @@ That's it! You've got a full standards-based web component from Blazor!
 ```html
 <my-component>
     #shadowroot (open)
-    <style>
+      <style>
         .shadow { background: lightgray; }
         .light { background: lightyellow; }
-    </style>
-    <p class="shadow">Shadow: It's dark in here</p>
-    <p class="light">Light: <slot name="light" /></p>
+      </style>
+      <p class="shadow">Shadow: It's dark in here</p>
+      <p class="light">Light: <slot name="light" /></p>
 
     <span slot="light">Good morning</span>
 </my-component>
