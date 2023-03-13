@@ -9,7 +9,7 @@ public partial class CustomElementGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Get all classes that inherit CustomElementBAse.
+        // Get all classes that inherit CustomElementBase.
         // Partial classes (e.g. from Razor) will be included once from each source file.
         var customElementSources = context.SyntaxProvider
             .CreateSyntaxProvider(CustomElementPredicate, CustomElementInitialTransform)
