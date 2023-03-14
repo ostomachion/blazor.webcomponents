@@ -10,6 +10,7 @@ internal record class InitialSlotAttributeInformation
     public AttributeArgumentSyntax? SlotNameArgument { get; set; }
     public AttributeArgumentSyntax? RootElementArgument { get; set; }
     public AttributeArgumentSyntax? IsTemplatedArgument { get; set; }
+    public AttributeArgumentSyntax? DefaultTextArgument { get; set; }
 
     private InitialSlotAttributeInformation() { }
 
@@ -24,6 +25,7 @@ internal record class InitialSlotAttributeInformation
         var slotNameArgument = syntax.ArgumentList?.Arguments.FirstOrDefault(x => x.NameEquals is null);
         var rootElementArgument = syntax.ArgumentList?.Arguments.FirstOrDefault(x => x.NameEquals is NameEqualsSyntax n && n.Name.Identifier.ToString() == "RootElement");
         var isTemplatedArgument = syntax.ArgumentList?.Arguments.FirstOrDefault(x => x.NameEquals is NameEqualsSyntax n && n.Name.Identifier.ToString() == "IsTemplated");
+        var defaultTextArgument = syntax.ArgumentList?.Arguments.FirstOrDefault(x => x.NameEquals is NameEqualsSyntax n && n.Name.Identifier.ToString() == "DefaultText");
 
         return new InitialSlotAttributeInformation
         {
@@ -31,6 +33,7 @@ internal record class InitialSlotAttributeInformation
             SlotNameArgument = slotNameArgument,
             RootElementArgument = rootElementArgument,
             IsTemplatedArgument = isTemplatedArgument,
+            DefaultTextArgument = defaultTextArgument,
         };
     }
 }
