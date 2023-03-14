@@ -19,5 +19,5 @@ p {
 
 ::slotted(*) {
     color: lightseagreen;
-    font-family: sans-serif;
+    font-weight: bold;
 }
