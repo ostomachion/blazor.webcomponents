@@ -76,7 +76,7 @@ internal static class CustomElementSourceOutput
                                 RenderedSlots.Add({{ToStringLiteral(slot.PropertyName)}});
                                 builder.OpenElement(0, "slot");
                                 builder.AddAttribute(1, "name", {{ToStringLiteral(slot.SlotName ?? slot.PropertyName)}});
-                                builder.AddContent(2, {{ToStringLiteral(slot.SlotName ?? slot.PropertyName)}});
+                                builder.AddContent(2, {{ToStringLiteral(slot.DefaultText ?? slot.SlotName ?? slot.PropertyName)}});
                                 builder.CloseElement();
                             };
 

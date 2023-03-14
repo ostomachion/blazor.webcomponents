@@ -27,6 +27,12 @@ public sealed class SlotAttribute : Attribute
     public bool IsTemplated { get; set; }
 
     /// <summary>
+    /// The text to display if the slot is rendered but no value has been provided. Defaults to
+    /// <see cref="SlotName"/>.
+    /// </summary>
+    public string? DefaultText { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of <see cref="SlotAttribute"/>.
     /// </summary>
     /// <param name="slotName">The identifier for the slot.</param>

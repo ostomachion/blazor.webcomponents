@@ -10,6 +10,7 @@ internal record class SlotInformation
     public string? SlotName { get; set; } = default!;
     public string? RootElement { get; set; } = default!;
     public bool IsTemplated { get; set; }
+    public string? DefaultText { get; set; }
 
     private SlotInformation() { }
 
@@ -41,6 +42,11 @@ internal record class SlotInformation
             ? (isTemplated ? "div" : "span")
             : context.SemanticModel.GetConstantValue(rootElementArg.Expression, cancellationToken).Value as string;
 
+        var defaultTextArg = info.SlotAttributeInformation.DefaultTextArgument;
+        string? defaultText = defaultTextArg is null
+            ? null
+            : context.SemanticModel.GetConstantValue(defaultTextArg.Expression, cancellationToken).Value as string;
+
         var propertyType = context.SemanticModel.GetTypeInfo(info.PropertySyntax.Type).Type!.ToString();
 
         return new SlotInformation
@@ -50,6 +56,7 @@ internal record class SlotInformation
             SlotName = slotName,
             RootElement = rootElement,
             IsTemplated = isTemplated,
+            DefaultText = defaultText,
         };
     }
 }
