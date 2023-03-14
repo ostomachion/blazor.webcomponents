@@ -1,4 +1,4 @@
-﻿# <img src="https://raw.githubusercontent.com/ostomachion/blazor.webcomponents/main/icon.png" alt="Blazor Web Components Logo" height="48px" style="position: relative; top: 16px"> Blazor Web Components
+﻿# BlazorWebComponents
 
 A simple library that allows Blazor components to be rendered as real
 standards-based Web Components using custom elements, shadow DOM, and HTML
@@ -35,7 +35,6 @@ projects.
         public string ShadowContent { get; set; } = default!;
 
         [Parameter]
-        [EditorRequired]
         [Slot("light")]
         public string LightContent { get; set; } = default!;
     }
@@ -65,7 +64,7 @@ That's it! You've got a full standards-based web component from Blazor!
         .light { background: lightyellow; }
       </style>
       <p class="shadow">Shadow: It's dark in here</p>
-      <p class="light">Light: <slot name="light" /></p>
+      <p class="light">Light: <slot name="light">light</slot></p>
 
     <span slot="light">Good morning</span>
 </my-component>
@@ -236,6 +235,11 @@ default, this is a `div` if the type of the property is `RenderFragment` or if
 the slot is rendered with a template and a `span` otherwise. The default behavior
 can be overridden by specifying the `RootElement` property on the `SlotAttribute`.
 [(Example)](#slot-root-element)
+
+If a slot is rendered, but the value of its associated property is `null`, the
+name of the slot will be rendered as a default value. This value can be changed
+by setting the `DefaultText` property of the `SlotAttribute`.
+[(Example)](#slot-default-text)
 
 ## Notes on CSS
 
@@ -596,7 +600,7 @@ public class Test : WebComponentBase
 <docs-test>
   #shadow-root (open)
     <p>Dark content: Hello!</p>
-    <p>Light content: <slot name="value" /></p>
+    <p>Light content: <slot name="value">value</slot></p>
 
   <span slot="value">Hello!</span>
 </docs-test>
@@ -646,7 +650,7 @@ public class Test : WebComponentBase
 <docs-test>
   #shadow-root (open)
     <div>
-      <slot name="value" />
+      <slot name="value">value</slot>
     </div>
 
   <div slot="value">
@@ -683,9 +687,38 @@ public class Test : WebComponentBase
 ```html
 <docs-test>
   #shadow-root (open)
-    <slot name="value" />
+    <slot name="value">value</slot>
 
   <p slot="value">Hello!</p>
+</docs-test>
+```
+
+### Slot Default Text
+
+*Test.razor*
+```razor
+@inherits WebComponentBase
+@Slot[Value]
+```
+
+*Example.razor.cs*
+```csharp
+namespace Example;
+
+[custom-element("docs-test")]
+public class Test : WebComponentBase
+{
+    [Slot("value", DefaultText = "MISSING")]
+    public string? Value => null;
+}
+```
+
+*Rendered output*
+```html
+<docs-test>
+  #shadow-root (open)
+    <slot name="value">MISSING</slot>
+
 </docs-test>
 ```
 
