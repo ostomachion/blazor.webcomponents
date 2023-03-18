@@ -2,9 +2,9 @@
 
 <div>
     <h2>Personal ID Card</h2>
-    @Slot[PersonName]
+    <Slot Name="person-name" For="PersonName">MISSING NAME</Slot>
     <ul>
-        <li>@Slot[PersonAge]</li>
-        <li>@Slot[PersonOccupation]</li>
+        <li><Slot Name="person-age" For="PersonAge">MISSING AGE</Slot></li>
+        <li><Slot Name="person-occupatin" For="PersonOccupation">MISSING OCCUPATION</Slot></li>
     </ul>
 </div>

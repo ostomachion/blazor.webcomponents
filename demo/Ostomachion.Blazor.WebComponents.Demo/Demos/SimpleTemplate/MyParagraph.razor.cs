@@ -7,6 +7,5 @@ public partial class MyParagraph : WebComponentBase
 {
     [Parameter]
     [EditorRequired]
-    [Slot("my-text")]
     public RenderFragment ChildContent { get; set; } = default!;
 }
