@@ -19,8 +19,8 @@ projects.
     *MyComponent.razor*
     ```razor
     @inherits CustomElementBase
-    <p class="shadow">Shadow: @ShadowContent</p>
-    <p class="light">Light: @Slot[LightContent]</p>
+    <p class="shadow">Shadow: @Value</p>
+    <p class="light">Light: <Slot Name="value" For="Value">missing value</Slot></p>
     ```
 
     *MyComponent.razor.cs*
@@ -32,11 +32,7 @@ projects.
     {
         [Parameter]
         [EditorRequired]
-        public string ShadowContent { get; set; } = default!;
-
-        [Parameter]
-        [Slot("light")]
-        public string LightContent { get; set; } = default!;
+        public string Value { get; set; } = default!;
     }
     ```
 
@@ -49,8 +45,7 @@ projects.
 4. Add the component to the main page.
 
     ```razor
-    <MyComponent ShadowContent="It's dark in here"
-                 LightContent="Good morning" />
+    <MyComponent Value="Hello, world!" />
     ```
 
 That's it! You've got a full standards-based web component from Blazor!
@@ -63,10 +58,10 @@ That's it! You've got a full standards-based web component from Blazor!
         .shadow { background: lightgray; }
         .light { background: lightyellow; }
       </style>
-      <p class="shadow">Shadow: It's dark in here</p>
-      <p class="light">Light: <slot name="light">light</slot></p>
+      <p class="shadow">Shadow: Hello, world!</p>
+      <p class="light">Light: <slot name="value">missing value</slot></p>
 
-    <span slot="light">Good morning</span>
+    <span slot="value">Hello, world!</span>
 </my-component>
 ```
 
@@ -77,6 +72,10 @@ dotnet add package Ostomachion.Blazor.WebComponents
 ```
 
 ## Setup
+
+First, follow the installation and setup instructions for
+[Ostomachion.Blazor.ShadowDom](https://github.com/ostomachion/blazor.shadowdom/blob/main/README.md).
+(This will be included automatically in a future release.)
 
 ### WebAssembly
 
@@ -214,32 +213,7 @@ shadow root.
 By default, the content of a web component is rendered in the shadow DOM and
 generally encapsulated from CSS and JavaScript outside the component.
 
-A property can be marked with a `SlotAttribute` to allow it to be passed to the
-component as a [slot](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots).
-
-Use the `Slot` property To render a slot property in the light DOM.
-[(Example)](#basic-slot)
-
-Slots are mostly used for parameter properties. However, if the type of the
-property is not a basic type or `RenderFragment`, the rendered value will not be
-very useful. This can be fixed by setting the `IsTemplated` property on the
-`SlotAttribute`. This allows the consumer of the component to optionally pass in
-a `FooTemplate` parameter with a type of `RenderFragment<Bar>` (if `Foo` is the
-slotted property with a type of `Bar`). If the slotted property is rendered in the
-light DOM and the consumer provided a template, the template will be rendered in
-the light DOM with the slotted property as its context.
-[(Example)](#templated-slot)
-
-Each slotted property must be contained by an element in the light DOM. By
-default, this is a `div` if the type of the property is `RenderFragment` or if
-the slot is rendered with a template and a `span` otherwise. The default behavior
-can be overridden by specifying the `RootElement` property on the `SlotAttribute`.
-[(Example)](#slot-root-element)
-
-If a slot is rendered, but the value of its associated property is `null`, the
-name of the slot will be rendered as a default value. This value can be changed
-by setting the `DefaultText` property of the `SlotAttribute`.
-[(Example)](#slot-default-text)
+TODO
 
 ## Notes on CSS
 
@@ -570,154 +544,6 @@ p {
         }
     </style>
     <p>Hello, world!</p>
-
-</docs-test>
-```
-
-### Basic Slot
-
-*Test.razor*
-```razor
-@inherits WebComponentBase
-<p>Dark content: @Value</p>
-<p>Light content: @Slot[Value]</p>
-```
-
-*Example.razor.cs*
-```csharp
-namespace Example;
-
-[custom-element("docs-test")]
-public class Test : WebComponentBase
-{
-    [Slot("value")]
-    public string Value => "Hello!"
-}
-```
-
-*Rendered output*
-```html
-<docs-test>
-  #shadow-root (open)
-    <p>Dark content: Hello!</p>
-    <p>Light content: <slot name="value">value</slot></p>
-
-  <span slot="value">Hello!</span>
-</docs-test>
-```
-
-### Templated Slot
-
-*Test.razor*
-```razor
-@inherits WebComponentBase
-<div>
-    @Slot[Test]
-</div>
-```
-
-*Example.razor.cs*
-```csharp
-namespace Example;
-
-[custom-element("docs-test")]
-public class Test : WebComponentBase
-{
-    [Parameter]
-    [EditorRequired]
-    [Slot("value", IsTemplated = true)]
-    public List<string> Value { get; set; } = default!;
-}
-```
-
-*Index.razor*
-```razor
-@{ var list = new List<string> { "hello", "web", "components" };
-<Test Value="@list">
-    <ValueTemplate>
-        <ul>
-            @foreach (var item in context)
-            {
-                <li>@item</li>
-            }
-        </ul>
-    </ValueTemplate>
-</Test>
-```
-
-*Rendered output*
-```html
-<docs-test>
-  #shadow-root (open)
-    <div>
-      <slot name="value">value</slot>
-    </div>
-
-  <div slot="value">
-    <ul>
-      <li>hello</li>
-      <li>web</li>
-      <li>components</li>
-    </ul>
-  </span>
-</docs-test>
-```
-
-### Slot Root Element
-
-*Test.razor*
-```razor
-@inherits WebComponentBase
-@Slot[Value]
-```
-
-*Example.razor.cs*
-```csharp
-namespace Example;
-
-[custom-element("docs-test")]
-public class Test : WebComponentBase
-{
-    [Slot("value", RootElement = "p")]
-    public string Value => "Hello!"
-}
-```
-
-*Rendered output*
-```html
-<docs-test>
-  #shadow-root (open)
-    <slot name="value">value</slot>
-
-  <p slot="value">Hello!</p>
-</docs-test>
-```
-
-### Slot Default Text
-
-*Test.razor*
-```razor
-@inherits WebComponentBase
-@Slot[Value]
-```
-
-*Example.razor.cs*
-```csharp
-namespace Example;
-
-[custom-element("docs-test")]
-public class Test : WebComponentBase
-{
-    [Slot("value", DefaultText = "MISSING")]
-    public string? Value => null;
-}
-```
-
-*Rendered output*
-```html
-<docs-test>
-  #shadow-root (open)
-    <slot name="value">MISSING</slot>
 
 </docs-test>
 ```
