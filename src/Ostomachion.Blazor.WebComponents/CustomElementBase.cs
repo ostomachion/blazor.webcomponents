@@ -109,8 +109,7 @@ public abstract class CustomElementBaseImpl : ComponentBase
             builder.AddAttribute(Line(), "is", identifier);
         }
 
-        builder.AddAttribute(Line(), "xmlns:ce", GetType().Namespace);
-        builder.AddAttribute(Line(), $"ce:{GetType().Name}");
+        builder.AddAttribute(Line(), $"{GetType().Namespace?.ToLowerInvariant()}|{GetType().Name.ToLowerInvariant()}");
 
         builder.AddMultipleAttributes(Line(), HostAttributes!);
 
