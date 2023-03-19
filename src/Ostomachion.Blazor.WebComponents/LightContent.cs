@@ -3,13 +3,25 @@ using Microsoft.AspNetCore.Components.Rendering;
 
 namespace Ostomachion.Blazor.WebComponents;
 
-public class LightContent : ComponentBase
+/// <summary>
+/// Represents the content in the light DOM of a <see cref="WebComponentBase"/> that will
+/// be rendered in the component using <c>slot</c> elements. This class is managed by
+/// <see cref="Slot{T}"/> and <see cref="WebComponentBase"/>.
+/// </summary>
+internal class LightContent : ComponentBase
 {
+    /// <summary>
+    /// A collection of pairs of slot names together with the object to render.
+    /// </summary>
     [Parameter]
     public List<KeyValuePair<string, object?>> Slots { get; set; } = default!;
 
+    /// <summary>
+    /// Causes the component to rerender.
+    /// </summary>
     public void Rerender() => StateHasChanged();
 
+    /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         var n = 3;
