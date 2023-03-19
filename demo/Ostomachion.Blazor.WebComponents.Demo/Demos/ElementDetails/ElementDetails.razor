@@ -3,33 +3,26 @@
 <details>
     <summary>
         <span>
-            <code class="name">&lt;@ElementName&gt;</code>
-            <i class="desc">@Slot[Description]</i>
+            <code class="name">&lt;<Slot Name="element-name" For="ElementName">NEED NAME</Slot>&gt;</code>
+            <i class="desc"><Slot Name="description" For="Description">NEED DESCRIPTION</Slot></i>
         </span>
     </summary>
     <div class="attributes">
         <h4><span>Attributes</span></h4>
-        @if (IsTemplateDefined(Attributes))
-        {
-            @Slot[Attributes]
-        }
-        else
-        {
-            if (Attributes?.Any() ?? false)
-            {
+        <Slot Name="attributes" For="Attributes">
+            <Template>
                 <dl>
-                    @foreach (var item in Attributes)
+                    @foreach (var item in context!)
                     {
                         <dt>@item.Key</dt>
                         <dd>@item.Value</dd>
                     }
                 </dl>
-            }
-            else
-            {
+            </Template>
+            <ChildContent>
                 <p>None</p>
-            }
-        }
+            </ChildContent>
+        </Slot>
     </div>
 </details>
 <hr>

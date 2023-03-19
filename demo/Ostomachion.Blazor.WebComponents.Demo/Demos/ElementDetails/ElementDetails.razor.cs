@@ -12,11 +12,9 @@ public partial class ElementDetails : WebComponentBase
 
     [Parameter]
     [EditorRequired]
-    [Slot("description", RootElement = "span")]
     public RenderFragment Description { get; set; } = null!;
 
     [Parameter]
-    [Slot("attributes", IsTemplated = true)]
     public AttributeList? Attributes { get; set; }
 
     [Parameter]

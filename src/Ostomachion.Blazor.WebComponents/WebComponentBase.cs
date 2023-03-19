@@ -29,6 +29,9 @@ public abstract class WebComponentBase : WebComponentBaseImpl
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class WebComponentBaseImpl : CustomElementBase
 {
+    private readonly List<KeyValuePair<string?, object?>> _slots = new();
+    private LightContent? _lightContent;
+
     private static readonly Dictionary<Type, string?> _stylesheetMemo = new();
 
     /// <summary>
@@ -51,17 +54,6 @@ public abstract class WebComponentBaseImpl : CustomElementBase
     }
 
     /// <summary>
-    /// Intended for internal use only. A collection of the names of the slots that are currently rendered.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected HashSet<string> RenderedSlots { get; } = new();
-
-    /// <summary>
-    /// A <see cref="SlotLookup"/> to get the slot associated with a property marked with <see cref="SlotAttribute"/>.
-    /// </summary>
-    protected virtual SlotLookup Slot => new(ImmutableDictionary<string, RenderFragment>.Empty);
-
-    /// <summary>
     /// Them encapsulation mode of the shadow root for this web component.
     /// </summary>
     public virtual ShadowRootMode ShadowRootMode => ShadowRootMode.Open;
@@ -81,7 +73,7 @@ public abstract class WebComponentBaseImpl : CustomElementBase
     /// <inheritdoc/>
     protected sealed override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        RenderedSlots.Clear();
+        _slots.Clear();
 
         builder.OpenElement(Line(), "template");
         builder.AddAttribute(Line(), "shadowrootmode", ShadowRootMode switch
@@ -99,35 +91,39 @@ public abstract class WebComponentBaseImpl : CustomElementBase
             builder.CloseElement();
         }
 
-        builder.OpenRegion(Line());
-        BuildRenderTreeImpl(builder);
-        builder.CloseRegion();
+        builder.OpenComponent<CascadingValue<WebComponentBase>>(Line());
+        builder.AddAttribute(Line(), "Value", this as WebComponentBase);
+        builder.AddAttribute(Line(), "Name", "Parent");
+        builder.AddAttribute(Line(), "ChildContent", (RenderFragment)(builder =>
+        {
+            builder.OpenRegion(Line());
+            BuildRenderTreeImpl(builder);
+            builder.CloseRegion();
+        }));
+        builder.CloseComponent();
 
         builder.CloseElement();
 
-        builder.OpenRegion(Line());
-        BuildRenderTreeSlots(builder);
-        builder.CloseRegion();
+        builder.OpenComponent<LightContent>(Line());
+        builder.AddAttribute(Line(), nameof(LightContent.Slots), _slots);
+        builder.AddComponentReferenceCapture(Line(), x => _lightContent = (LightContent)x);
+        builder.CloseComponent();
 
         static int Line([CallerLineNumber] int line = 0) => line;
     }
 
-    /// <summary>
-    /// Intended for internal use only. Called by <see cref="BuildRenderTree(RenderTreeBuilder)"/> to
-    /// add the relevant <c>slot</c> elements to the light DOM.
-    /// </summary>
-    /// <param name="builder">A <see cref="RenderTreeBuilder"/> that will receive the render output.</param>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual void BuildRenderTreeSlots(RenderTreeBuilder builder) { }
+    public void RegisterSlot<T>(string? name, T? value, RenderFragment<T>? template)
+    {
+        object? renderedValue = value is not null && template is not null ? template(value) : value;
 
-    /// <summary>
-    /// Determines whether or not a template parameter has been set for the specified property.
-    /// </summary>
-    /// <param name="property">The property to check.</param>
-    /// <param name="propertyName">The name of the property to check.</param>
-    /// <returns>
-    /// <see langword="true"/> if a template parameter has been set for the specified property;
-    /// <see langword="false"/> otherwise.
-    /// </returns>
-    protected virtual bool IsTemplateDefined(object? property, string propertyName = null!) => false;
+        if (_slots.Any(x => x.Key == name))
+        {
+            throw new InvalidOperationException(name is null
+                ? "Only one Slot without a name can be added to a component."
+                : $"A Slot with name {name} has already been added to the component.");
+        }
+
+        _slots.Add(new(name, renderedValue));
+        _lightContent?.Rerender();
+    }
 }

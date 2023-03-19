@@ -24,15 +24,6 @@ public partial class CustomElementGenerator : IIncrementalGenerator
         // For each unique CustomElementBase class, output a partial class with common members.
         context.RegisterSourceOutput(distinctNames, CustomElementSourceOutput.CreateCommonFile);
 
-        var slotSources = customElementSources
-            .Where(s => s!.RelevantType == RelevantType.WebComponent && s.Slots!.Any())
-            .Select((x, _) => new SlotSourceInformation(x!))
-            .Collect()
-            .SelectMany((x, _) => SlotSourceInformation.Group(x));
-
-        // For each WebComponentBase declaration that defines slots, output a partial class with the slot properties.
-        context.RegisterSourceOutput(slotSources, CustomElementSourceOutput.CreateSlotSource);
-
         // For each CSS file co-located with a WebComponentBase, override the StylesheetUrl property on the component.
         var styledComponentPaths = context.AdditionalTextsProvider
             .Where(x => x.Path.EndsWith(".razor.css") || x.Path.EndsWith(".cs.css"))
@@ -45,10 +36,9 @@ public partial class CustomElementGenerator : IIncrementalGenerator
 
         var webComponentStylesheetInformation = customElementSources
             .Where(x => x!.RelevantType == RelevantType.WebComponent)
-            .Select((x, _) => x! with { Slots = null })
             .Combine(styledComponentPaths.Collect())
             .Combine(hasRazorFiles)
-            .Select((x, _) => ComponentCssInformation.Parse(x.Left.Left, x.Left.Right, x.Right))
+            .Select((x, _) => ComponentCssInformation.Parse(x.Left.Left!, x.Left.Right, x.Right))
             .Collect()
             .SelectMany((x, _) => ComponentCssInformation.Group(x));
 
@@ -73,12 +63,6 @@ public partial class CustomElementGenerator : IIncrementalGenerator
         var arguments = attribute?.NamedArguments.Where(x => x.Key == "Extends");
         var localName = (arguments?.Any() ?? false) ? (string?)arguments.First().Value.Value : null;
 
-        var slots = relevantType == RelevantType.CustomElement ? null : syntax.Members
-            .OfType<PropertyDeclarationSyntax>()
-            .Select(p => InitialPropertyInformation.Parse(p, context, cancellationToken))
-            .OfType<InitialPropertyInformation>()
-            .Select(x => SlotInformation.Parse(x, context, cancellationToken));
-        
         return new CustomElementClassInformation
         {
             OriginalFilePath = GetOriginalFilePath(syntax.SyntaxTree, cancellationToken),
@@ -86,7 +70,6 @@ public partial class CustomElementGenerator : IIncrementalGenerator
             Name = symbol.Name,
             Namespace = symbol.ContainingNamespace.ToString(),
             LocalName = localName,
-            Slots = slots?.ToArray(),
         };
     }
 
