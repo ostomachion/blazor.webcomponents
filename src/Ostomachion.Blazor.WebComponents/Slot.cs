@@ -22,6 +22,11 @@ public class Slot<T> : ComponentBase
     [Parameter]
     public RenderFragment ChildContent { get; set; } = default!;
 
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object> Attributes { get; set; } = default!;
+
+    public ElementReference ElementReference { get; private set; }
+
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         if (Parent is null)
@@ -33,7 +38,9 @@ public class Slot<T> : ComponentBase
 
         builder.OpenElement(0, "slot");
         builder.AddAttribute(1, "name", Name);
-        builder.AddContent(2, ChildContent);
+        builder.AddMultipleAttributes(2, Attributes);
+        builder.AddElementReferenceCapture(3, x => ElementReference = x);
+        builder.AddContent(4, ChildContent);
         builder.CloseElement();
     }
 }
