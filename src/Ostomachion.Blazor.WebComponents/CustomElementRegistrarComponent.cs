@@ -22,25 +22,28 @@ public sealed class CustomElementRegistrarComponent : ComponentBase
 
     [Inject]
     private ICustomElementRegistrar Registrar { get; set; } = default!;
-    
-    protected async override Task OnInitializedAsync()
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        foreach (var registration in Registrar.Registrations)
+        if (firstRender)
         {
-            var localName = (string?)registration.Value
-                .GetProperty(nameof(ICustomElement.LocalName), BindingFlags.Public | BindingFlags.Static)!
-                .GetValue(null);
-
-            var modulePath = (string?)registration.Value
-                .GetProperty(nameof(ICustomElement.ModulePath), BindingFlags.Public | BindingFlags.Static)!
-                .GetValue(null);
-
-            if (modulePath is not null)
+            foreach (var registration in Registrar.Registrations)
             {
-                modulePath = new Uri(new Uri(NavigationManager.BaseUri), modulePath).AbsoluteUri;
-            }
+                var localName = (string?)registration.Value
+                    .GetProperty(nameof(ICustomElement.LocalName), BindingFlags.Public | BindingFlags.Static)!
+                    .GetValue(null);
 
-            await RegisterCustomElementWithJavaScriptAsync(registration.Key, localName, modulePath);
+                var modulePath = (string?)registration.Value
+                    .GetProperty(nameof(ICustomElement.ModulePath), BindingFlags.Public | BindingFlags.Static)!
+                    .GetValue(null);
+
+                if (modulePath is not null)
+                {
+                    modulePath = new Uri(new Uri(NavigationManager.BaseUri), modulePath).AbsoluteUri;
+                }
+
+                await RegisterCustomElementWithJavaScriptAsync(registration.Key, localName, modulePath);
+            }
         }
     }
 
