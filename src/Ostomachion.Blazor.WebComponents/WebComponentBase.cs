@@ -30,7 +30,7 @@ public abstract class WebComponentBase : WebComponentBaseImpl
 public abstract class WebComponentBaseImpl : CustomElementBase
 {
     private readonly List<KeyValuePair<string?, object?>> _slots = new();
-    private SlottedLightContent? _lightContent;
+    private SlottedLightContent? _slottedLightContent;
 
     private static readonly Dictionary<Type, string?> _stylesheetMemo = new();
 
@@ -106,13 +106,22 @@ public abstract class WebComponentBaseImpl : CustomElementBase
 
         builder.OpenComponent<SlottedLightContent>(Line());
         builder.AddAttribute(Line(), nameof(SlottedLightContent.Slots), _slots);
-        builder.AddComponentReferenceCapture(Line(), x => _lightContent = (SlottedLightContent)x);
+        builder.AddComponentReferenceCapture(Line(), x => _slottedLightContent = (SlottedLightContent)x);
         builder.CloseComponent();
 
         static int Line([CallerLineNumber] int line = 0) => line;
     }
 
-    public void RegisterSlot<T>(string? name, T? value, RenderFragment<T>? template)
+    /// <summary>
+    /// Registers a <see cref="Slot{T}"/> or <see cref="LightContent"/> component so that this
+    /// component can render the appropriate light content.
+    /// </summary>
+    /// <typeparam name="T">The type of the slotted content.</typeparam>
+    /// <param name="name">The name of the slot.</param>
+    /// <param name="value">The slotted content.</param>
+    /// <param name="template">A template to render the slotted content.</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    internal void RegisterSlot<T>(string? name, T? value, RenderFragment<T>? template)
     {
         object? renderedValue = value is not null && template is not null ? template(value) : value;
 
@@ -124,6 +133,6 @@ public abstract class WebComponentBaseImpl : CustomElementBase
         }
 
         _slots.Add(new(name, renderedValue));
-        _lightContent?.Rerender();
+        _slottedLightContent?.Rerender();
     }
 }
