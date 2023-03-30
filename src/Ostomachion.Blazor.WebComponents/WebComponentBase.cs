@@ -100,7 +100,7 @@ public abstract class WebComponentBaseImpl : CustomElementBase
         builder.AddAttribute(Line(), "Name", "Parent");
 
         // Build the render tree defined by CustomElementBase to the shadow root under the CascadingValue.
-        builder.AddAttribute(Line(), "ChildContent", BuildRenderTreeImpl);
+        builder.AddAttribute(Line(), "ChildContent", (RenderFragment)BuildRenderTreeImpl);
 
         builder.CloseComponent(); // CascadingValue
 
