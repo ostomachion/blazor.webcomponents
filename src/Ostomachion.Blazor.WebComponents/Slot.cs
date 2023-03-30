@@ -29,10 +29,16 @@ public class Slot<T> : ComponentBase
     public string? Name { get; set; }
 
     /// <summary>
-    /// The parent <see cref="WebComponentBase"/> component.
+    /// Method invoked when the slot is changed.
     /// </summary>
-    [CascadingParameter(Name = "Parent")]
-    public WebComponentBase? Parent { get; set; }
+    [Parameter]
+    public Action<EventArgs>? OnSlotChange { get; set; } = default!;
+
+    /// <summary>
+    /// Additional attributes to add to the rendered <c>slot</c> element.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object> Attributes { get; set; } = default!;
 
     /// <summary>
     /// An optional <see cref="RenderFragment{TValue}"/> to apply to the value of
@@ -49,20 +55,15 @@ public class Slot<T> : ComponentBase
     public RenderFragment ChildContent { get; set; } = default!;
 
     /// <summary>
-    /// Additional attributes to add to the rendered <c>slot</c> element.
+    /// The parent <see cref="WebComponentBase"/> component.
     /// </summary>
-    [Parameter(CaptureUnmatchedValues = true)]
-    public IReadOnlyDictionary<string, object> Attributes { get; set; } = default!;
+    [CascadingParameter(Name = "Parent")]
+    public WebComponentBase? Parent { get; set; }
 
     /// <summary>
     /// A reference to the rendered <c>slot</c> element.
     /// </summary>
     public ElementReference ElementReference { get; private set; }
-
-    /// <summary>
-    /// Method invoked when the slot is changed.
-    /// </summary>
-    public Action<EventArgs>? OnSlotChange { get; set; } = default!;
 
     /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
