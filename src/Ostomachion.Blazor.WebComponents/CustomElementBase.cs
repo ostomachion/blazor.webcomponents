@@ -127,6 +127,7 @@ public abstract class CustomElementBaseImpl : ComponentBase
         var identifier = GetIdentifier() ?? throw new InvalidOperationException("The web component's identifier has not been set.");
         var localName = GetLocalName();
 
+        // Custom element, either an autonomous element or a customized built-in element.
         if (localName is null)
         {
             builder.OpenElement(Line(), identifier);
@@ -137,12 +138,14 @@ public abstract class CustomElementBaseImpl : ComponentBase
             builder.AddAttribute(Line(), "is", identifier);
         }
 
+        // Special namespaced attribute for CSS selectors.
         builder.AddAttribute(Line(), $"{GetType().Namespace?.ToLowerInvariant()}|{GetType().Name.ToLowerInvariant()}");
 
         builder.AddMultipleAttributes(Line(), HostAttributes!);
 
         builder.AddElementReferenceCapture(Line(), el => Host = el);
 
+        // Add the user-defined content, e.g. from the .razor file.
         builder.OpenRegion(Line());
         BuildRenderTreeImpl(builder);
         builder.CloseRegion();
