@@ -75,6 +75,7 @@ public abstract class WebComponentBaseImpl : CustomElementBase
     {
         _slots.Clear();
 
+        // Root <template> element for declarative shadow DOM.
         builder.OpenElement(Line(), "template");
         builder.AddAttribute(Line(), "shadowrootmode", ShadowRootMode switch
         {
@@ -83,31 +84,34 @@ public abstract class WebComponentBaseImpl : CustomElementBase
             _ => throw new InvalidOperationException("Unknown shadow root mode.")
         });
 
+        // <style> element inside shadow root.
         var stylesheet = GetStylesheet();
         if (stylesheet is not null)
         {
             builder.OpenElement(Line(), "style");
             builder.AddContent(Line(), stylesheet);
-            builder.CloseElement();
+            builder.CloseElement(); // style
         }
 
+        // Add a CascadingValue named Parent to pass this component to any children,
+        // specifically Slot and LightContent components.
         builder.OpenComponent<CascadingValue<WebComponentBase>>(Line());
         builder.AddAttribute(Line(), "Value", this as WebComponentBase);
         builder.AddAttribute(Line(), "Name", "Parent");
-        builder.AddAttribute(Line(), "ChildContent", (RenderFragment)(builder =>
-        {
-            builder.OpenRegion(Line());
-            BuildRenderTreeImpl(builder);
-            builder.CloseRegion();
-        }));
-        builder.CloseComponent();
 
-        builder.CloseElement();
+        // Build the render tree defined by CustomElementBase to the shadow root under the CascadingValue.
+        builder.AddAttribute(Line(), "ChildContent", (RenderFragment)BuildRenderTreeImpl);
 
+        builder.CloseComponent(); // CascadingValue
+
+        builder.CloseElement(); // template
+
+        // Add a SlottedLightContent component for Slot and LightContent components to interact with
+        // through the Parent CascadingValue and the RegisterSlot method.
         builder.OpenComponent<SlottedLightContent>(Line());
         builder.AddAttribute(Line(), nameof(SlottedLightContent.Slots), _slots);
         builder.AddComponentReferenceCapture(Line(), x => _slottedLightContent = (SlottedLightContent)x);
-        builder.CloseComponent();
+        builder.CloseComponent(); // SlottedLightContent
 
         static int Line([CallerLineNumber] int line = 0) => line;
     }

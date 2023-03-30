@@ -24,42 +24,39 @@ internal class SlottedLightContent : ComponentBase
     /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        var n = 3;
-        for (int i = 0; i < Slots.Count; i++)
+        int sequence = 0;
+        foreach (var slot in Slots.Where(x => x.Value is not null))
         {
-            var slot = Slots[i];
-            if (slot.Value is null)
-            {
-                continue;
-            }
+            BuildSlotRenderTree(builder, slot.Key, slot.Value, ref sequence);
+        }
+    }
 
+    protected static void BuildSlotRenderTree(RenderTreeBuilder builder, string name, object? value, ref int sequence)
+    {
+        var hasName = !String.IsNullOrEmpty(name);
+
+        if (hasName)
+        {
             // TODO: Set element name.
-            if (!String.IsNullOrEmpty(slot.Key))
-            {
-                builder.OpenElement(n * i, "span");
-            }
+            builder.OpenElement(sequence++, "span");
+            builder.SetKey(name);
+            builder.AddAttribute(sequence++, "slot", name);
+        }
 
-            builder.SetKey(slot.Key);
-            if (!String.IsNullOrEmpty(slot.Key))
-            {
-                builder.AddAttribute(n * i + 1, "slot", slot.Key);
-            }
+        if (value is RenderFragment renderFragment)
+        {
+            builder.OpenRegion(sequence++);
+            renderFragment(builder);
+            builder.CloseRegion();
+        }
+        else
+        {
+            builder.AddContent(sequence++, value);
+        }
 
-            if (slot.Value is RenderFragment rf)
-            {
-                builder.OpenRegion(n * i + 2);
-                rf(builder);
-                builder.CloseRegion();
-            }
-            else
-            {
-                builder.AddContent(n * i + 2, slot.Value);
-            }
-
-            if (!String.IsNullOrEmpty(slot.Key))
-            {
-                builder.CloseElement();
-            }
+        if (hasName)
+        {
+            builder.CloseElement();
         }
     }
 }

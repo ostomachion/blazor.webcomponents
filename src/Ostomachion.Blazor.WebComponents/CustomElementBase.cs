@@ -84,27 +84,27 @@ public abstract class CustomElementBaseImpl : ComponentBase
     public AttributeSet HostAttributes { get; } = new();
 
     /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeVoidAsync(IJSObjectReference, string, object?[]?)"/>
-    public async ValueTask InvokeVoidAsync(string identifier, params object?[]? args)
+    public async ValueTask InvokeJSVoidAsync(string identifier, params object?[]? args)
         => await JSRuntime.InvokeVoidAsync("window.blazorWebComponents.invokeMethod", Host, identifier, args);
 
     /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeVoidAsync(IJSObjectReference, string, CancellationToken, object?[]?)"/>
-    public async ValueTask InvokeVoidAsync(string identifier, CancellationToken cancellationToken, params object?[]? args)
+    public async ValueTask InvokeJSVoidAsync(string identifier, CancellationToken cancellationToken, params object?[]? args)
         => await JSRuntime.InvokeVoidAsync("window.blazorWebComponents.invokeMethod", cancellationToken, Host, identifier, args);
 
     /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeVoidAsync(IJSObjectReference, string, TimeSpan, object?[]?)"/>
-    public async ValueTask InvokeVoidAsync(string identifier, TimeSpan timeout, params object?[]? args)
+    public async ValueTask InvokeJSVoidAsync(string identifier, TimeSpan timeout, params object?[]? args)
         => await JSRuntime.InvokeVoidAsync("window.blazorWebComponents.invokeMethod", timeout, Host, identifier, args);
 
     /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeAsync{TValue}(IJSObjectReference, string, object?[]?)"/>
-    public async ValueTask<TValue> InvokeAsync<TValue>(string identifier, params object?[]? args)
+    public async ValueTask<TValue> InvokeJSAsync<TValue>(string identifier, params object?[]? args)
         => await JSRuntime.InvokeAsync<TValue>("window.blazorWebComponents.invokeMethod", Host, identifier, args);
 
     /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeAsync{TValue}(IJSObjectReference, string, CancellationToken, object?[]?)"/>
-    public async ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, params object?[]? args)
+    public async ValueTask<TValue> InvokeJSAsync<TValue>(string identifier, CancellationToken cancellationToken, params object?[]? args)
         => await JSRuntime.InvokeAsync<TValue>("window.blazorWebComponents.invokeMethod", cancellationToken, Host, identifier, args);
 
     /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeAsync{TValue}(IJSObjectReference, string, TimeSpan, object?[]?)"/>
-    public async ValueTask<TValue> InvokeAsync<TValue>(string identifier, TimeSpan timeout, params object?[]? args)
+    public async ValueTask<TValue> InvokeJSAsync<TValue>(string identifier, TimeSpan timeout, params object?[]? args)
         => await JSRuntime.InvokeAsync<TValue>("window.blazorWebComponents.invokeMethod", timeout, Host, identifier, args);
 
     /// <summary>
@@ -127,6 +127,7 @@ public abstract class CustomElementBaseImpl : ComponentBase
         var identifier = GetIdentifier() ?? throw new InvalidOperationException("The web component's identifier has not been set.");
         var localName = GetLocalName();
 
+        // Custom element, either an autonomous element or a customized built-in element.
         if (localName is null)
         {
             builder.OpenElement(Line(), identifier);
@@ -137,12 +138,14 @@ public abstract class CustomElementBaseImpl : ComponentBase
             builder.AddAttribute(Line(), "is", identifier);
         }
 
+        // Special namespaced attribute for CSS selectors.
         builder.AddAttribute(Line(), $"{GetType().Namespace?.ToLowerInvariant()}|{GetType().Name.ToLowerInvariant()}");
 
         builder.AddMultipleAttributes(Line(), HostAttributes!);
 
         builder.AddElementReferenceCapture(Line(), el => Host = el);
 
+        // Add the user-defined content, e.g. from the .razor file.
         builder.OpenRegion(Line());
         BuildRenderTreeImpl(builder);
         builder.CloseRegion();
