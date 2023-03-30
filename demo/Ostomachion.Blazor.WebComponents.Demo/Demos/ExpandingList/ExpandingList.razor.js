@@ -1,8 +1,8 @@
-export function initialize(self) {
+export function initialize() {
     // Get ul and li elements that are a child of this custom ul element
     // li elements can be containers if they have uls within them
-    const uls = Array.from(self.querySelectorAll('ul'));
-    const lis = Array.from(self.querySelectorAll('li'));
+    const uls = Array.from(this.querySelectorAll('ul'));
+    const lis = Array.from(this.querySelectorAll('li'));
 
     // Hide all child uls
     // These lists will be shown when the user clicks a higher level container

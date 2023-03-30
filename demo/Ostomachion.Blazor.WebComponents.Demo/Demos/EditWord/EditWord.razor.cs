@@ -1,17 +1,11 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 
 namespace Ostomachion.Blazor.WebComponents.Demo.Demos.EditWord;
 
 [CustomElement("edit-word")]
 public partial class EditWord : WebComponentBase
 {
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = null!;
-
-    private IJSObjectReference? Module { get; set; }
-
     [Parameter]
     [EditorRequired]
     public string Value { get; set; } = null!;
@@ -38,13 +32,8 @@ public partial class EditWord : WebComponentBase
         Editing = false;
     }
 
-    private async Task SelectAllAsync() => await (Module?.InvokeVoidAsync("selectAll", _input) ?? ValueTask.CompletedTask);
-    private async Task UpdateWidthAsync() => await (Module?.InvokeVoidAsync("updateWidth", _input, _span) ?? ValueTask.CompletedTask);
-
-    protected override async Task OnInitializedAsync()
-    {
-        Module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Demos/EditWord/EditWord.razor.js");
-    }
+    private async Task SelectAllAsync() => await InvokeVoidAsync("selectAll", _input);
+    private async Task UpdateWidthAsync() => await InvokeVoidAsync("updateWidth", _input, _span);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
