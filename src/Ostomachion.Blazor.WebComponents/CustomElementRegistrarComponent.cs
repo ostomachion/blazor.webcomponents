@@ -15,12 +15,15 @@ namespace Ostomachion.Blazor.WebComponents;
 public sealed class CustomElementRegistrarComponent : ComponentBase
 {
     [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
+    [Inject]
     private IJSRuntime JSRuntime { get; set; } = default!;
 
     [Inject]
     private ICustomElementRegistrar Registrar { get; set; } = default!;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    
+    protected async override Task OnInitializedAsync()
     {
         foreach (var registration in Registrar.Registrations)
         {
@@ -28,10 +31,19 @@ public sealed class CustomElementRegistrarComponent : ComponentBase
                 .GetProperty(nameof(ICustomElement.LocalName), BindingFlags.Public | BindingFlags.Static)!
                 .GetValue(null);
 
-            await RegisterCustomElementWithJavaScriptAsync(registration.Key, localName);
+            var modulePath = (string?)registration.Value
+                .GetProperty(nameof(ICustomElement.ModulePath), BindingFlags.Public | BindingFlags.Static)!
+                .GetValue(null);
+
+            if (modulePath is not null)
+            {
+                modulePath = new Uri(new Uri(NavigationManager.BaseUri), modulePath).AbsoluteUri;
+            }
+
+            await RegisterCustomElementWithJavaScriptAsync(registration.Key, localName, modulePath);
         }
     }
 
-    private async Task RegisterCustomElementWithJavaScriptAsync(string identifier, string? localName = null)
-        => await JSRuntime.InvokeVoidAsync("window.blazorWebComponents.registerCustomElement", identifier, localName);
+    private async Task RegisterCustomElementWithJavaScriptAsync(string identifier, string? localName = null, string? modulePath = null)
+        => await JSRuntime.InvokeVoidAsync("window.blazorWebComponents.registerCustomElement", identifier, localName, modulePath);
 }

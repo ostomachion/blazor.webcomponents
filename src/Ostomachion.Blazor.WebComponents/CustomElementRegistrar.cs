@@ -8,7 +8,7 @@ namespace Ostomachion.Blazor.WebComponents;
 /// <inheritdoc cref="ICustomElementRegistrar"/>
 public partial class CustomElementRegistrar : ICustomElementRegistrar
 {
-    private Dictionary<string, Type> _registrations { get; } = new();
+    private readonly Dictionary<string, Type> _registrations = new();
 
     public IImmutableDictionary<string, Type> Registrations => _registrations.ToImmutableDictionary();
 

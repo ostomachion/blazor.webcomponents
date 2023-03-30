@@ -1,0 +1,22 @@
+﻿@inherits WebComponentBase
+
+<article>
+    <div>
+        <ul>
+            @foreach (var item in Items)
+            {
+                <li @onclick="_ => ItemClick(item)" class="@(item == Choice ? "selected" : null)">@item.Name</li>
+            }
+        </ul>
+    </div>
+    <div>
+        <RawSlot Name="choice" OnSlotChangeAsync="SlotChangeAsync"/>
+    </div>
+</article>
+
+<LightContent>
+    @foreach (var item in Items)
+    {
+        <p data-name="@item.Name" slot="@(item == Choice ? "choice" : null)">@item.Summary</p>
+    }
+</LightContent>

@@ -20,19 +20,23 @@ public class Slot<T> : ComponentBase
     public T? For { get; set; }
 
     /// <summary>
-    /// The name of the slot. If this is <see langword="null"/>, the light content will
-    /// be added directly to the parent element with a <c>slot</c> attribute. Only one
-    /// unnamed slot can be rendered on a component at a time, and each rendered named
-    /// slot must have a unique name on the component.
+    /// The name of the slot. Only one unnamed slot can be rendered on a component at a
+    /// time, and each rendered named slot must have a unique name on the component.
     /// </summary>
     [Parameter]
     public string? Name { get; set; }
 
     /// <summary>
-    /// The parent <see cref="WebComponentBase"/> component.
+    /// Method invoked when the slot is changed.
     /// </summary>
-    [CascadingParameter(Name = "Parent")]
-    public WebComponentBase? Parent { get; set; }
+    [Parameter]
+    public Action<EventArgs>? OnSlotChange { get; set; } = default!;
+
+    /// <summary>
+    /// Additional attributes to add to the rendered <c>slot</c> element.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object> Attributes { get; set; } = default!;
 
     /// <summary>
     /// An optional <see cref="RenderFragment{TValue}"/> to apply to the value of
@@ -49,15 +53,15 @@ public class Slot<T> : ComponentBase
     public RenderFragment ChildContent { get; set; } = default!;
 
     /// <summary>
-    /// Additional attributes to add to the rendered <c>slot</c> element.
+    /// The parent <see cref="WebComponentBase"/> component.
     /// </summary>
-    [Parameter(CaptureUnmatchedValues = true)]
-    public IReadOnlyDictionary<string, object> Attributes { get; set; } = default!;
+    [CascadingParameter(Name = "Parent")]
+    public WebComponentBase? Parent { get; set; }
 
     /// <summary>
     /// A reference to the rendered <c>slot</c> element.
     /// </summary>
-    public ElementReference ElementReference { get; private set; }
+    public ElementReference? ElementReference { get; private set; }
 
     /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
@@ -71,9 +75,14 @@ public class Slot<T> : ComponentBase
 
         builder.OpenElement(0, "slot");
         builder.AddAttribute(1, "name", Name);
-        builder.AddMultipleAttributes(2, Attributes);
-        builder.AddElementReferenceCapture(3, x => ElementReference = x);
-        builder.AddContent(4, ChildContent);
+        if (OnSlotChange is not null)
+        {
+            builder.AddAttribute(2, "onslotchange", EventCallback.Factory.Create(this, OnSlotChange));
+        }
+
+        builder.AddMultipleAttributes(3, Attributes);
+        builder.AddElementReferenceCapture(4, x => ElementReference = x);
+        builder.AddContent(5, ChildContent);
         builder.CloseElement();
     }
 }

@@ -9,38 +9,45 @@ public partial class CustomElementGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        var projectDirectory = context.AnalyzerConfigOptionsProvider
+            .Select((x, _) => x.GlobalOptions.TryGetValue("build_property.projectdir", out var projectDirectory)
+                ? projectDirectory
+                : throw new Exception("Cannot read projectdir build property."));
+
         // Get all classes that inherit CustomElementBase.
         // Partial classes (e.g. from Razor) will be included once from each source file.
         var customElementSources = context.SyntaxProvider
             .CreateSyntaxProvider(CustomElementPredicate, CustomElementInitialTransform)
             .Where(x => x is not null);
 
-        // Gather a list of unique classes that inherit CustomElementBase.
-        var distinctNames = customElementSources
-            .Select((x, _) => new NameInfo(x!.Name, x.Namespace, x.LocalName))
-            .Collect()
-            .SelectMany((x, _) => NameInfo.Group(x));
-
-        // For each unique CustomElementBase class, output a partial class with common members.
-        context.RegisterSourceOutput(distinctNames, CustomElementSourceOutput.CreateCommonFile);
-
-        // For each CSS file co-located with a WebComponentBase, override the StylesheetUrl property on the component.
-        var styledComponentPaths = context.AdditionalTextsProvider
-            .Where(x => x.Path.EndsWith(".razor.css") || x.Path.EndsWith(".cs.css"))
-            .Select((x, c) => (x.Path, Text: x.GetText(c)!));
-
         var hasRazorFiles = customElementSources
             .Where(x => Path.GetExtension(x!.OriginalFilePath) == ".razor")
             .Collect()
             .Select((x, _) => x.Any());
 
+        // Gather a list of unique classes that inherit CustomElementBase.
+        var commonInfo = customElementSources
+            .Combine(hasRazorFiles)
+            .Combine(projectDirectory)
+            .Select((x, _) => CommonInformation.Parse(x.Left.Left!, x.Left.Right, x.Right))
+            .Collect()
+            .SelectMany((x, _) => CommonInformation.Group(x));
+
+        // For each unique CustomElementBase class, output a partial class with common members.
+        context.RegisterSourceOutput(commonInfo, CustomElementSourceOutput.CreateCommonFile);
+
+        // For each CSS file co-located with a WebComponentBase, override the StylesheetUrl property on the component.
+        var stylesheetPaths = context.AdditionalTextsProvider
+            .Where(x => x.Path.EndsWith(".razor.css") || x.Path.EndsWith(".cs.css"))
+            .Select((x, c) => (x.Path, Text: x.GetText(c)!));
+
         var webComponentStylesheetInformation = customElementSources
             .Where(x => x!.RelevantType == RelevantType.WebComponent)
-            .Combine(styledComponentPaths.Collect())
+            .Combine(stylesheetPaths.Collect())
             .Combine(hasRazorFiles)
-            .Select((x, _) => ComponentCssInformation.Parse(x.Left.Left!, x.Left.Right, x.Right))
+            .Select((x, _) => ComponentStylesheetInformation.Parse(x.Left.Left!, x.Left.Right, x.Right))
             .Collect()
-            .SelectMany((x, _) => ComponentCssInformation.Group(x));
+            .SelectMany((x, _) => ComponentStylesheetInformation.Group(x));
 
         context.RegisterSourceOutput(webComponentStylesheetInformation, CustomElementSourceOutput.CreateStylesheetSource);
     }

@@ -16,4 +16,10 @@ public interface ICustomElement
     /// built-in element
     /// </summary>
     public static abstract string? LocalName { get; }
+
+    /// <summary>
+    /// The relative path to the JavaScript file collocated with this component, or <see langword="null"/>
+    /// if no such file exists.
+    /// </summary>
+    public static abstract string? ModulePath { get; }
 }
