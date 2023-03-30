@@ -1,0 +1,22 @@
+﻿@page "/slot-change"
+@using Ostomachion.Blazor.WebComponents.Demo.Demos.SlotChange
+
+<PageHeader RelativeSourceUrl="Demos/SlotChange" PageTitle="slotchange example">
+    <Heading>slotchange event example</Heading>
+</PageHeader>
+
+<main>
+    @{
+        var items = new SummaryDisplayItem[]
+        {
+            new() { Name = "Apples", Summary = "A common, sweet, crunchy fruit, usually green or yellow in color." },
+            new() { Name = "Pears", Summary = "A fairly common, sweet, usually green fruit, usually softer than Apples." },
+            new() { Name = "Bananas", Summary = "A long, curved, yellow fruit, with a fairly gentle flavor." },
+            new() { Name = "Oranges", Summary = "Orange in color, usually sweet but can be sharp, often contains pips." },
+            new() { Name = "Peaches", Summary = "An orange fruit with big stone in the middle, and sweet, juicy flesh." },
+            new() { Name = "Strawberries", Summary = "A red fruit with yellow seeds on the outside; has a sweet flavor and a pretty shape." },
+            new() { Name = "Blueberries", Summary = "They are berries and they are blue; sweet in flavor, small in size, round." },
+        };
+    }
+    <SummaryDisplay Items="items" />
+</main>

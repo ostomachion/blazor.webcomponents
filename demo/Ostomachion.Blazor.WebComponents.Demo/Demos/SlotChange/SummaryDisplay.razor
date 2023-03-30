@@ -1,0 +1,16 @@
+﻿@inherits WebComponentBase
+
+<article>
+    <div>
+        <ul>
+            @foreach (var item in Items)
+            {
+                ElementReference el;
+                <li @ref="el" @onclick="_ => ItemClickAsync(el)">@item.Name</li>
+            }
+        </ul>
+    </div>
+    <div>
+        <Slot Name="choice" For="Choice" OnSlotChange="SlotChange" />
+    </div>
+</article>
