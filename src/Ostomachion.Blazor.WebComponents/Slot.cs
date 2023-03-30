@@ -33,6 +33,12 @@ public class Slot<T> : ComponentBase
     public Action<EventArgs>? OnSlotChange { get; set; } = default!;
 
     /// <summary>
+    /// Method invoked when the slot is changed.
+    /// </summary>
+    [Parameter]
+    public Func<EventArgs, Task>? OnSlotChangeAsync { get; set; } = default!;
+
+    /// <summary>
     /// Additional attributes to add to the rendered <c>slot</c> element.
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)]
@@ -75,7 +81,17 @@ public class Slot<T> : ComponentBase
 
         builder.OpenElement(0, "slot");
         builder.AddAttribute(1, "name", Name);
-        if (OnSlotChange is not null)
+
+        if (OnSlotChangeAsync is not null && OnSlotChange is not null)
+        {
+            throw new InvalidOperationException($"Cannot set both {nameof(OnSlotChangeAsync)} and {nameof(OnSlotChange)}.");
+        }
+
+        if (OnSlotChangeAsync is not null)
+        {
+            builder.AddAttribute(2, "onslotchange", EventCallback.Factory.Create(this, OnSlotChangeAsync));
+        }
+        else if (OnSlotChange is not null)
         {
             builder.AddAttribute(2, "onslotchange", EventCallback.Factory.Create(this, OnSlotChange));
         }
