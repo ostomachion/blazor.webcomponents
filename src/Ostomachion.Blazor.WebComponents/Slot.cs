@@ -59,6 +59,11 @@ public class Slot<T> : ComponentBase
     /// </summary>
     public ElementReference ElementReference { get; private set; }
 
+    /// <summary>
+    /// Method invoked when the slot is changed.
+    /// </summary>
+    public Action<EventArgs>? OnSlotChange { get; set; } = default!;
+
     /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
@@ -71,9 +76,14 @@ public class Slot<T> : ComponentBase
 
         builder.OpenElement(0, "slot");
         builder.AddAttribute(1, "name", Name);
-        builder.AddMultipleAttributes(2, Attributes);
-        builder.AddElementReferenceCapture(3, x => ElementReference = x);
-        builder.AddContent(4, ChildContent);
+        if (OnSlotChange is not null)
+        {
+            builder.AddAttribute(2, "onslotchange", EventCallback.Factory.Create(this, OnSlotChange));
+        }
+
+        builder.AddMultipleAttributes(3, Attributes);
+        builder.AddElementReferenceCapture(4, x => ElementReference = x);
+        builder.AddContent(5, ChildContent);
         builder.CloseElement();
     }
 }
