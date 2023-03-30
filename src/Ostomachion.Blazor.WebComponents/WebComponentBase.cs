@@ -30,7 +30,7 @@ public abstract class WebComponentBase : WebComponentBaseImpl
 public abstract class WebComponentBaseImpl : CustomElementBase
 {
     private readonly List<KeyValuePair<string?, object?>> _slots = new();
-    private LightContent? _lightContent;
+    private SlottedLightContent? _lightContent;
 
     private static readonly Dictionary<Type, string?> _stylesheetMemo = new();
 
@@ -104,9 +104,9 @@ public abstract class WebComponentBaseImpl : CustomElementBase
 
         builder.CloseElement();
 
-        builder.OpenComponent<LightContent>(Line());
-        builder.AddAttribute(Line(), nameof(LightContent.Slots), _slots);
-        builder.AddComponentReferenceCapture(Line(), x => _lightContent = (LightContent)x);
+        builder.OpenComponent<SlottedLightContent>(Line());
+        builder.AddAttribute(Line(), nameof(SlottedLightContent.Slots), _slots);
+        builder.AddComponentReferenceCapture(Line(), x => _lightContent = (SlottedLightContent)x);
         builder.CloseComponent();
 
         static int Line([CallerLineNumber] int line = 0) => line;
@@ -119,7 +119,7 @@ public abstract class WebComponentBaseImpl : CustomElementBase
         if (_slots.Any(x => x.Key == name))
         {
             throw new InvalidOperationException(name is null
-                ? "Only one Slot without a name can be added to a component."
+                ? "Only one LightComponent and/or Slot without a name can be added to a component."
                 : $"A Slot with name {name} has already been added to the component.");
         }
 

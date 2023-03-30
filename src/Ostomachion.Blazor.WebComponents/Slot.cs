@@ -20,10 +20,8 @@ public class Slot<T> : ComponentBase
     public T? For { get; set; }
 
     /// <summary>
-    /// The name of the slot. If this is <see langword="null"/>, the light content will
-    /// be added directly to the parent element with a <c>slot</c> attribute. Only one
-    /// unnamed slot can be rendered on a component at a time, and each rendered named
-    /// slot must have a unique name on the component.
+    /// The name of the slot. Only one unnamed slot can be rendered on a component at a
+    /// time, and each rendered named slot must have a unique name on the component.
     /// </summary>
     [Parameter]
     public string? Name { get; set; }
@@ -63,7 +61,7 @@ public class Slot<T> : ComponentBase
     /// <summary>
     /// A reference to the rendered <c>slot</c> element.
     /// </summary>
-    public ElementReference ElementReference { get; private set; }
+    public ElementReference? ElementReference { get; private set; }
 
     /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
