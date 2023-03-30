@@ -32,8 +32,8 @@ public partial class EditWord : WebComponentBase
         Editing = false;
     }
 
-    private async Task SelectAllAsync() => await InvokeVoidAsync("selectAll", _input);
-    private async Task UpdateWidthAsync() => await InvokeVoidAsync("updateWidth", _input, _span);
+    private async Task SelectAllAsync() => await InvokeJSVoidAsync("selectAll", _input);
+    private async Task UpdateWidthAsync() => await InvokeJSVoidAsync("updateWidth", _input, _span);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

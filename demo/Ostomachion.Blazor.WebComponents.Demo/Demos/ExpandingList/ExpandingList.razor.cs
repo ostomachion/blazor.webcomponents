@@ -12,7 +12,7 @@ public partial class ExpandingList : CustomElementBase
     {
         if (firstRender)
         {
-            await InvokeVoidAsync("initialize");
+            await InvokeJSVoidAsync("initialize");
         }
     }
 }

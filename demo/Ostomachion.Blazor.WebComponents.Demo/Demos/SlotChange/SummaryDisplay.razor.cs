@@ -17,5 +17,5 @@ public partial class SummaryDisplay : WebComponentBase
         Choice = item;
     }
 
-    private async Task SlotChangeAsync(EventArgs _) => await InvokeVoidAsync("slotChange");
+    private async Task SlotChangeAsync(EventArgs _) => await InvokeJSVoidAsync("slotChange");
 }
