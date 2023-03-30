@@ -34,4 +34,6 @@ window.blazorWebComponents = {
             customElements.define(name, definition, localName ? { extends: localName } : {});
         }
     },
+
+    invokeMethod: (customElement, name, args) => customElement[name](...args),
 };

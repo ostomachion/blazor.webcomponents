@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.JSInterop;
 
 namespace Ostomachion.Blazor.WebComponents;
 
@@ -28,6 +29,9 @@ public abstract class CustomElementBase : CustomElementBaseImpl
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class CustomElementBaseImpl : ComponentBase
 {
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; } = default!;
+
     private static readonly Dictionary<Type, string?> _identifierMemo = new();
     private static readonly Dictionary<Type, string?> _localNameMemo = new();
 
@@ -78,6 +82,30 @@ public abstract class CustomElementBaseImpl : ComponentBase
     /// Allows managing the attributes set on the generated custom element that wraps this component.
     /// </summary>
     public AttributeSet HostAttributes { get; } = new();
+
+    /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeVoidAsync(IJSObjectReference, string, object?[]?)"/>
+    public async ValueTask InvokeVoidAsync(string identifier, params object?[]? args)
+        => await JSRuntime.InvokeVoidAsync("window.blazorWebComponents.invokeMethod", Host, identifier, args);
+
+    /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeVoidAsync(IJSObjectReference, string, CancellationToken, object?[]?)"/>
+    public async ValueTask InvokeVoidAsync(string identifier, CancellationToken cancellationToken, params object?[]? args)
+        => await JSRuntime.InvokeVoidAsync("window.blazorWebComponents.invokeMethod", cancellationToken, Host, identifier, args);
+
+    /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeVoidAsync(IJSObjectReference, string, TimeSpan, object?[]?)"/>
+    public async ValueTask InvokeVoidAsync(string identifier, TimeSpan timeout, params object?[]? args)
+        => await JSRuntime.InvokeVoidAsync("window.blazorWebComponents.invokeMethod", timeout, Host, identifier, args);
+
+    /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeAsync{TValue}(IJSObjectReference, string, object?[]?)"/>
+    public async ValueTask<TValue> InvokeAsync<TValue>(string identifier, params object?[]? args)
+        => await JSRuntime.InvokeAsync<TValue>("window.blazorWebComponents.invokeMethod", Host, identifier, args);
+
+    /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeAsync{TValue}(IJSObjectReference, string, CancellationToken, object?[]?)"/>
+    public async ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, params object?[]? args)
+        => await JSRuntime.InvokeAsync<TValue>("window.blazorWebComponents.invokeMethod", cancellationToken, Host, identifier, args);
+
+    /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeAsync{TValue}(IJSObjectReference, string, TimeSpan, object?[]?)"/>
+    public async ValueTask<TValue> InvokeAsync<TValue>(string identifier, TimeSpan timeout, params object?[]? args)
+        => await JSRuntime.InvokeAsync<TValue>("window.blazorWebComponents.invokeMethod", timeout, Host, identifier, args);
 
     /// <summary>
     /// Intended for internal use only. Use <see cref="CustomElementBase.BuildRenderTree(RenderTreeBuilder)"/> instead.
