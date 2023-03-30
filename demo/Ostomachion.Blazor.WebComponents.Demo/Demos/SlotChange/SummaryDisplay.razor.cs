@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Ostomachion.Blazor.WebComponents.Demo.Models;
 
 namespace Ostomachion.Blazor.WebComponents.Demo.Demos.SlotChange;
@@ -9,15 +10,12 @@ public partial class SummaryDisplay : WebComponentBase
     [Parameter]
     public IEnumerable<SummaryDisplayItem> Items { get; set; } = default!;
 
-    public SummaryDisplay? Choice { get; set; }
+    public SummaryDisplayItem? Choice { get; set; }
 
-    public async Task ItemClickAsync(ElementReference elementReference)
+    private void ItemClick(SummaryDisplayItem item)
     {
-        await InvokeVoidAsync("handleClick");
+        Choice = item;
     }
 
-    public void SlotChange(EventArgs e)
-    {
-
-    }
+    private async Task SlotChangeAsync(EventArgs _) => await InvokeVoidAsync("slotChange");
 }

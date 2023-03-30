@@ -1,21 +1,5 @@
-﻿export function handleClick(element) {
-    const items = Array.from(this.querySelectorAll('li'));
-    const descriptions = Array.from(this.querySelectorAll('p'));
-
-    items.forEach(item => {
-        item.style.backgroundColor = 'white';
-    });
-
-    descriptions.forEach(description => {
-        updateDisplay(description, element);
-    });
-}
-
-function updateDisplay(description, item) {
-    description.removeAttribute('slot');
-
-    if (description.getAttribute('data-name') === item.textContent) {
-        description.setAttribute('slot', 'choice');
-        item.style.backgroundColor = '#bad0e4';
-    }
+﻿export function slotChange() {
+    const slots = this.shadowRoot.querySelectorAll('slot');
+    const nodes = slots[0].assignedNodes();
+    console.log(`Element in Slot "${slots[0].name}" changed to "${nodes[0].outerHTML}".`);
 }

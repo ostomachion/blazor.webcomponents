@@ -5,12 +5,18 @@
         <ul>
             @foreach (var item in Items)
             {
-                ElementReference el;
-                <li @ref="el" @onclick="_ => ItemClickAsync(el)">@item.Name</li>
+                <li @onclick="_ => ItemClick(item)" class="@(item == Choice ? "selected" : null)">@item.Name</li>
             }
         </ul>
     </div>
     <div>
-        <Slot Name="choice" For="Choice" OnSlotChange="SlotChange" />
+        <RawSlot Name="choice" OnSlotChangeAsync="SlotChangeAsync"/>
     </div>
 </article>
+
+<LightContent>
+    @foreach (var item in Items)
+    {
+        <p data-name="@item.Name" slot="@(item == Choice ? "choice" : null)">@item.Summary</p>
+    }
+</LightContent>
