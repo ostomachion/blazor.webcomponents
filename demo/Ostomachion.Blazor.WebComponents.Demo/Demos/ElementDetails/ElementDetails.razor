@@ -9,15 +9,13 @@
     </summary>
     <div class="attributes">
         <h4><span>Attributes</span></h4>
-        <Slot Name="attributes" For="Attributes">
+        <Slot Name="attributes" For="Attributes" ElementName="dl">
             <Template>
-                <dl>
-                    @foreach (var item in context!)
-                    {
-                        <dt>@item.Key</dt>
-                        <dd>@item.Value</dd>
-                    }
-                </dl>
+                @foreach (var item in context!)
+                {
+                    <dt>@item.Key</dt>
+                    <dd>@item.Value</dd>
+                }
             </Template>
             <ChildContent>
                 <p>None</p>
