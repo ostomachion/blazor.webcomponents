@@ -29,7 +29,7 @@ public abstract class WebComponentBase : WebComponentBaseImpl
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class WebComponentBaseImpl : CustomElementBase
 {
-    private readonly List<KeyValuePair<string?, object?>> _slots = new();
+    private readonly List<ISlot> _slots = new();
     private SlottedLightContent? _slottedLightContent;
 
     private static readonly Dictionary<Type, string?> _stylesheetMemo = new();
@@ -125,18 +125,16 @@ public abstract class WebComponentBaseImpl : CustomElementBase
     /// <param name="value">The slotted content.</param>
     /// <param name="template">A template to render the slotted content.</param>
     /// <exception cref="InvalidOperationException"></exception>
-    internal void RegisterSlot<T>(string? name, T? value, RenderFragment<T>? template)
+    internal void RegisterSlot(ISlot slot)
     {
-        object? renderedValue = value is not null && template is not null ? template(value) : value;
-
-        if (_slots.Any(x => x.Key == name))
+        if (_slots.Any(x => x.Name == slot.Name))
         {
-            throw new InvalidOperationException(name is null
+            throw new InvalidOperationException(slot.Name is null
                 ? "Only one LightComponent and/or Slot without a name can be added to a component."
-                : $"A Slot with name {name} has already been added to the component.");
+                : $"A Slot with name {slot.Name} has already been added to the component.");
         }
 
-        _slots.Add(new(name, renderedValue));
+        _slots.Add(slot);
         _slottedLightContent?.Rerender();
     }
 }

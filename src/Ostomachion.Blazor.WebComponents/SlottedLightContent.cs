@@ -14,7 +14,7 @@ internal class SlottedLightContent : ComponentBase
     /// A collection of pairs of slot names together with the object to render.
     /// </summary>
     [Parameter]
-    public List<KeyValuePair<string, object?>> Slots { get; set; } = default!;
+    public List<ISlot> Slots { get; set; } = default!;
 
     /// <summary>
     /// Causes the component to rerender.
@@ -25,25 +25,25 @@ internal class SlottedLightContent : ComponentBase
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         int sequence = 0;
-        foreach (var slot in Slots.Where(x => x.Value is not null))
+        foreach (var slot in Slots.Where(x => x.RenderedValue is not null))
         {
-            BuildSlotRenderTree(builder, slot.Key, slot.Value, ref sequence);
+            BuildSlotRenderTree(builder, slot, ref sequence);
         }
     }
 
-    protected static void BuildSlotRenderTree(RenderTreeBuilder builder, string name, object? value, ref int sequence)
+    protected static void BuildSlotRenderTree(RenderTreeBuilder builder, ISlot slot, ref int sequence)
     {
-        var hasName = !String.IsNullOrEmpty(name);
+        var hasName = !String.IsNullOrEmpty(slot.Name);
 
         if (hasName)
         {
-            // TODO: Set element name.
-            builder.OpenElement(sequence++, "span");
-            builder.SetKey(name);
-            builder.AddAttribute(sequence++, "slot", name);
+            var elementName = slot.ElementName ?? (slot.RenderedValue is RenderFragment ? "div" : "span");
+            builder.OpenElement(sequence++, elementName);
+            builder.SetKey(slot.Name);
+            builder.AddAttribute(sequence++, "slot", slot.Name);
         }
 
-        if (value is RenderFragment renderFragment)
+        if (slot.RenderedValue is RenderFragment renderFragment)
         {
             builder.OpenRegion(sequence++);
             renderFragment(builder);
@@ -51,7 +51,7 @@ internal class SlottedLightContent : ComponentBase
         }
         else
         {
-            builder.AddContent(sequence++, value);
+            builder.AddContent(sequence++, slot.RenderedValue);
         }
 
         if (hasName)
