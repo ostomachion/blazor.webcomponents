@@ -9,7 +9,7 @@ namespace Ostomachion.Blazor.WebComponents;
 /// component that inherits <see cref="WebComponentBase"/>.
 /// </summary>
 /// <typeparam name="T">The type of the value to be added to the light DOM.</typeparam>
-public class Slot<T> : ComponentBase
+public class Slot<T> : ComponentBase, ISlot
     where T : notnull
 {
     /// <summary>
@@ -25,6 +25,10 @@ public class Slot<T> : ComponentBase
     /// </summary>
     [Parameter]
     public string? Name { get; set; }
+
+    /// <inheritdoc/>
+    [Parameter]
+    public string? ElementName { get; set; }
 
     /// <summary>
     /// Method invoked when the slot is changed.
@@ -70,6 +74,9 @@ public class Slot<T> : ComponentBase
     public ElementReference? ElementReference { get; private set; }
 
     /// <inheritdoc/>
+    public object? RenderedValue => For is not null && Template is not null ? Template(For) : For;
+
+    /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         if (Parent is null)
@@ -77,7 +84,7 @@ public class Slot<T> : ComponentBase
             throw new InvalidOperationException("The Slot component can only be used in components that inherit WebComponentBase.");
         }
 
-        Parent.RegisterSlot(Name, For, Template);
+        Parent.RegisterSlot(this);
 
         builder.OpenElement(0, "slot");
         builder.AddAttribute(1, "name", Name);

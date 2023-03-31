@@ -8,7 +8,7 @@ namespace Ostomachion.Blazor.WebComponents;
 /// as a full <see cref="Slot{T}"/>. Note that this can only be used inside  component
 /// that inherits <see cref="WebComponentBase"/>.
 /// </summary>
-public class LightContent : ComponentBase
+public class LightContent : ComponentBase, ISlot
 {
     /// <summary>
     /// The content to render in the light DOM.
@@ -23,6 +23,15 @@ public class LightContent : ComponentBase
     public WebComponentBase? Parent { get; set; }
 
     /// <inheritdoc/>
+    public string? Name => null;
+
+    /// <inheritdoc/>
+    public object? RenderedValue => ChildContent;
+
+    /// <inheritdoc/>
+    public string? ElementName => null;
+
+    /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         if (Parent is null)
@@ -30,6 +39,6 @@ public class LightContent : ComponentBase
             throw new InvalidOperationException("The LightComponent component can only be used in components that inherit WebComponentBase.");
         }
 
-        Parent.RegisterSlot(null, ChildContent, null);
+        Parent.RegisterSlot(this);
     }
 }
