@@ -2,6 +2,11 @@
 
 window.blazorWebComponents = {
     registerCustomElement: async function (name, localName, modulePath) {
+        const specialMethods = [
+            'constructor',
+            'getObservedAttributes',
+        ];
+
         if (!customElements.get(name)) {
             let module = null;
             if (modulePath) {
@@ -17,15 +22,25 @@ window.blazorWebComponents = {
             const definition = class extends base {
                 constructor() {
                     super();
+
                     if (module?.constructor) {
                         module.constructor.call(this);
+                    }
+                }
+
+                static get observedAttributes() {
+                    if (module?.getObservedAttributes) {
+                        return module.getObservedAttributes.call(this);
+                    }
+                    else {
+                        return [];
                     }
                 }
             };
 
             if (module !== null) {
                 for (const [key, value] of Object.entries(module)) {
-                    if (key !== 'constructor') {
+                    if (!specialMethods.includes(key)) {
                         definition.prototype[key] = value;
                     }
                 }

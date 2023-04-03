@@ -1,10 +1,22 @@
 ﻿@page "/life-cycle-callbacks"
 @using Ostomachion.Blazor.WebComponents.Demo.Demos.LifeCycleCallbacks
+@using System.Drawing;
 
 <PageHeader RelativeSourceUrl="Demos/LifeCycleCallbacks" PageTitle="Life cycle callbacks test">
     <Heading>Life cycle callbacks test</Heading>
 </PageHeader>
 
 <main>
+    <div>
+        <button @onclick="AddClick" disabled="@_renderSquare">Add custom-square to DOM</button>
+        <button @onclick="UpdateClick" disabled="@(!_renderSquare)">Update attributes</button>
+        <button @onclick="RemoveClick" disabled="@(!_renderSquare)">Remove custom-square from DOM</button>
+    </div>
 
+    @if (_renderSquare)
+    {
+        <CustomSquare Length="_length" Color="_color" />
+    }
 </main>
+
+

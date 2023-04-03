@@ -73,15 +73,58 @@ public abstract class CustomElementBaseImpl : ComponentBase
         return value;
     }
 
+    private ElementReference? _host;
+
     /// <summary>
     /// An <see cref="ElementReference"/> to the generated custom element that wraps this component.
     /// </summary>
-    public ElementReference? Host { get; private set; }
+    public ElementReference? Host {
+        get => _host;
+        private set
+        {
+            _host = value;
+            JSRuntime.InvokeVoidAsync("");
+        }
+    }
 
     /// <summary>
     /// Allows managing the attributes set on the generated custom element that wraps this component.
     /// </summary>
     public AttributeSet HostAttributes { get; } = new();
+
+    /// <summary>
+    /// A list of attributes to be observed by <see cref="AttributeChangedCallback(string, string, string)"/>.
+    /// </summary>
+    [JSInvokable]
+    public virtual IEnumerable<string>? GetObservedAttributes() => null;
+
+    /// <summary>
+    /// Invoked each time the custom element is appended into a document-connected element. This will happen
+    /// each time the node is moved, and may happen before the element's contents have been fully parsed. 
+    /// </summary>
+    [JSInvokable]
+    public virtual void ConnectedCallback() { }
+
+    /// <summary>
+    /// Invoked each time the custom element is disconnected from the document's DOM.
+    /// </summary>
+    [JSInvokable]
+    public virtual void DisconnectedCallback() { }
+
+    /// <summary>
+    /// Invoked each time the custom element is moved to a new document.
+    /// </summary>
+    [JSInvokable]
+    public virtual void AdoptedCallback() { }
+
+    /// <summary>
+    /// Invoked each time one of the custom element's attributes is added, removed, or changed. Which attributes
+    /// to notice change for is specified by <see cref="ObservedAttributes"/>.
+    /// </summary>
+    /// <param name="name">The name of the changed attribute.</param>
+    /// <param name="oldValue">The value of the attribute before the change.</param>
+    /// <param name="newValue">The value of the attribute after the change.</param>
+    public virtual void AttributeChangedCallback(string name, string oldValue, string newValue) { }
 
     /// <inheritdoc cref="JSObjectReferenceExtensions.InvokeVoidAsync(IJSObjectReference, string, object?[]?)"/>
     public async ValueTask InvokeJSVoidAsync(string identifier, params object?[]? args)
