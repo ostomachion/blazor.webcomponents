@@ -3,10 +3,12 @@
 window.blazorWebComponents = {
     registerCustomElement: async function (name, localName, modulePath) {
         if (!customElements.get(name)) {
-            let module = null;
+            let ModuleClass = null;
+            let test = null;
             if (modulePath) {
                 try {
-                    module = await import(modulePath);
+                    test = await import(modulePath);
+                    ModuleClass = test.default;
                 } catch {
                     // Probably means the component isn't used. Just ignore this.
                 }
@@ -14,24 +16,24 @@ window.blazorWebComponents = {
 
             const base = localName ? document.createElement(localName).constructor : HTMLElement;
 
-            const definition = class extends base {
+            class Definition extends base {
                 constructor() {
                     super();
-                    if (module?.constructor) {
-                        module.constructor.call(this);
-                    }
-                }
-            };
-
-            if (module !== null) {
-                for (const [key, value] of Object.entries(module)) {
-                    if (key !== 'constructor') {
-                        definition.prototype[key] = value;
+                    if (ModuleClass !== null) {
+                        Object.assign(this, new ModuleClass());
                     }
                 }
             }
 
-            customElements.define(name, definition, localName ? { extends: localName } : {});
+            if (ModuleClass !== null) {
+                for (const key of Object.getOwnPropertyNames(ModuleClass.prototype)) {
+                    if (key !== 'constructor') {
+                        Definition.prototype[key] = ModuleClass.prototype[key];
+                    }
+                }
+            }
+
+            customElements.define(name, Definition, localName ? { extends: localName } : {});
         }
     },
 

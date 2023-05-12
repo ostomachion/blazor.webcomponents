@@ -20,7 +20,7 @@ projects.
     ```razor
     @inherits CustomElementBase
     <p class="shadow">Shadow: @Value</p>
-    <p class="light">Light: <Slot Name="value" For="Value">missing value</Slot></p>
+    <p class="light">Light: <Slot Name="value" For="Value"/></p>
     ```
 
     *MyComponent.razor.cs*
@@ -59,7 +59,7 @@ That's it! You've got a full standards-based web component from Blazor!
         .light { background: lightyellow; }
       </style>
       <p class="shadow">Shadow: Hello, world!</p>
-      <p class="light">Light: <slot name="value">missing value</slot></p>
+      <p class="light">Light: <slot name="value"></slot></p>
 
     <span slot="value">Hello, world!</span>
 </my-component>
@@ -213,7 +213,7 @@ shadow root.
 By default, the content of a web component is rendered in the shadow DOM and
 generally encapsulated from CSS and JavaScript outside the component.
 
-TODO
+
 
 ## Notes on CSS
 
